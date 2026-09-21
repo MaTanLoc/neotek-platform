@@ -1,0 +1,1 @@
+export function NeotekCard({ children, className = '', variant = 'default', ...props }) { return <article className={`neotek-card neotek-card--${variant} ${className}`.trim()} {...props}>{children}</article> }

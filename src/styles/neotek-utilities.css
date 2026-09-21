@@ -1,0 +1,28 @@
+.neotek-visually-hidden {
+   position: absolute;
+   width: 1px;
+   height: 1px;
+   padding: 0;
+   margin: -1px;
+   overflow: hidden;
+   clip: rect(0, 0, 0, 0);
+   white-space: nowrap;
+   border: 0
+}
+
+.neotek-site-shell {
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column
+}
+
+.neotek-setup-content {
+   display: grid;
+   max-width: 760px;
+   gap: var(--neotek-space-6)
+}
+
+.neotek-setup-card {
+   display: grid;
+   gap: var(--neotek-space-4)
+}

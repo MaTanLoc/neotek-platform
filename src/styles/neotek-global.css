@@ -1,0 +1,41 @@
+*, *::before, *::after {
+   box-sizing: border-box
+}
+
+html {
+   scroll-behavior: smooth
+}
+
+body {
+   min-width: 320px;
+   margin: 0;
+   background: var(--neotek-color-background);
+   color: var(--neotek-color-text-primary);
+   font-family: var(--neotek-font-family-base);
+   -webkit-font-smoothing: antialiased;
+   text-rendering: optimizeLegibility
+}
+
+img {
+   display: block;
+   max-width: 100%
+}
+
+button, input, textarea, select {
+   font: inherit
+}
+
+a {
+   color: inherit;
+   text-decoration: none
+}
+
+:focus-visible {
+   outline: 3px solid var(--neotek-color-border-focus);
+   outline-offset: 3px
+}
+
+::selection {
+   background: var(--neotek-color-primary-soft);
+   color: var(--neotek-color-text-primary)
+}

@@ -1,0 +1,9 @@
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App'
+import './i18n'
+import './styles/neotek-tokens.css'
+import './styles/neotek-typography.css'
+import './styles/neotek-global.css'
+import './styles/neotek-utilities.css'
+createRoot(document.getElementById('root')).render(<StrictMode><App /></StrictMode>)

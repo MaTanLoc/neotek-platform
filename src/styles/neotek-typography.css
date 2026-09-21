@@ -1,0 +1,59 @@
+body {
+   font-size: var(--neotek-font-size-md);
+   line-height: var(--neotek-line-height-normal)
+}
+
+h1, h2, h3, h4, p {
+   margin: 0
+}
+
+h1, h2, h3, h4 {
+   color: var(--neotek-color-text-primary);
+   letter-spacing: -.03em
+}
+
+h1 {
+   font-size: clamp(var(--neotek-font-size-5xl), 6vw, var(--neotek-font-size-6xl));
+   font-weight: var(--neotek-font-weight-extrabold);
+   line-height: var(--neotek-line-height-tight)
+}
+
+h2 {
+   font-size: var(--neotek-font-size-3xl);
+   font-weight: var(--neotek-font-weight-bold);
+   line-height: var(--neotek-line-height-snug)
+}
+
+h3 {
+   font-size: var(--neotek-font-size-2xl);
+   font-weight: var(--neotek-font-weight-bold)
+}
+
+h4 {
+   font-size: var(--neotek-font-size-xl);
+   font-weight: var(--neotek-font-weight-semibold)
+}
+
+.neotek-lead {
+   color: var(--neotek-color-text-secondary);
+   font-size: var(--neotek-font-size-lg);
+   line-height: var(--neotek-line-height-relaxed)
+}
+
+.neotek-eyebrow {
+   color: var(--neotek-color-primary);
+   font-size: var(--neotek-font-size-sm);
+   font-weight: var(--neotek-font-weight-semibold);
+   letter-spacing: .08em;
+   text-transform: uppercase
+}
+
+@media(max-width:767px) {
+   h2 {
+      font-size: var(--neotek-font-size-2xl)
+   }
+
+   .neotek-lead {
+      font-size: var(--neotek-font-size-md)
+   }
+}

@@ -1,0 +1,187 @@
+.proof-metrics-section {
+  position: relative;
+  overflow: hidden;
+  padding-block: var(--neotek-space-12);
+  background: var(--neotek-color-primary);
+  color: var(--neotek-color-text-inverse);
+}
+
+.proof-metrics-container {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: clamp(var(--neotek-space-8), 7vw, var(--neotek-space-20));
+  width: min(100% - (var(--neotek-container-padding-desktop) * 2), var(--neotek-container-wide-max-width));
+  max-width: var(--neotek-container-wide-max-width);
+}
+
+.proof-metrics-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(var(--neotek-space-8), 7vw, var(--neotek-space-20));
+}
+
+.proof-visual-reserved {
+  min-width: 0;
+}
+
+.proof-metrics-content {
+  min-width: 0;
+}
+
+.proof-metrics-intro {
+  max-width: 560px;
+}
+
+.proof-metrics-intro__title {
+  color: var(--neotek-white);
+}
+
+.proof-metrics-intro__description {
+  max-width: 540px;
+  margin-top: var(--neotek-space-3);
+  color: color-mix(in srgb, var(--neotek-white) 78%, transparent);
+  font-size: var(--neotek-font-size-sm);
+  line-height: var(--neotek-line-height-relaxed);
+}
+
+.proof-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: center;
+  gap: var(--neotek-space-8) var(--neotek-space-6);
+  margin-top: var(--neotek-space-8);
+}
+
+.proof-metric-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--neotek-space-4);
+  min-width: 0;
+  opacity: 0;
+  padding-block: var(--neotek-space-2);
+  transition: opacity var(--neotek-duration-normal) var(--neotek-ease-standard);
+}
+
+.proof-metric-item.is-visible {
+  opacity: 1;
+}
+
+.proof-metric-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid color-mix(in srgb, var(--neotek-white) 50%, transparent);
+  border-radius: var(--neotek-radius-full);
+  color: var(--neotek-white);
+}
+
+.proof-metric-item__content {
+  min-width: 0;
+}
+
+.proof-metric-card__value {
+  color: var(--neotek-white);
+  font-size: clamp(var(--neotek-font-size-2xl), 3vw, var(--neotek-font-size-4xl));
+  font-weight: var(--neotek-font-weight-extrabold);
+  line-height: 1;
+}
+
+.proof-metric-card__label {
+  margin-top: var(--neotek-space-2);
+  color: color-mix(in srgb, var(--neotek-white) 76%, transparent);
+  font-size: var(--neotek-font-size-sm);
+  font-weight: var(--neotek-font-weight-regular);
+  line-height: var(--neotek-line-height-snug);
+}
+
+.proof-metrics-actions {
+  grid-column: 2;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: var(--neotek-space-3);
+  margin-top: var(--neotek-space-8);
+}
+
+.proof-metrics-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.proof-metrics-action--purchase::after {
+  transition: transform var(--neotek-duration-fast) var(--neotek-ease-standard);
+}
+
+.proof-metrics-action--purchase:hover::after {
+  transform: translateX(3px);
+}
+
+@media (max-width: 1100px) {
+  .proof-metrics-container {
+    width: calc(100% - (var(--neotek-container-padding-tablet) * 2));
+    column-gap: var(--neotek-space-8);
+  }
+
+  .proof-metrics-row {
+    gap: var(--neotek-space-8);
+  }
+
+  .proof-metrics-container {
+    display: block;
+  }
+
+  .proof-metrics-grid {
+    column-gap: var(--neotek-space-4);
+  }
+
+  .proof-metric-item {
+    gap: var(--neotek-space-3);
+  }
+
+  .proof-metrics-actions {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 767px) {
+  .proof-metrics-container {
+    width: calc(100% - (var(--neotek-container-padding-mobile) * 2));
+  }
+
+  .proof-metrics-row {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    gap: var(--neotek-space-8);
+  }
+
+  .proof-visual-reserved {
+    min-height: var(--neotek-space-12);
+  }
+
+  .proof-metrics-grid {
+    grid-template-columns: 1fr;
+    gap: var(--neotek-space-2);
+  }
+
+  .proof-metrics-actions {
+    grid-column: 1;
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: var(--neotek-space-10);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proof-metric-item,
+  .proof-metrics-action--purchase::after {
+    transition: none;
+  }
+}

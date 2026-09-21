@@ -1,0 +1,123 @@
+.neotek-container {
+   width: min(100%, var(--neotek-container-max-width));
+   margin-inline: auto;
+   padding-inline: var(--neotek-container-padding-desktop)
+}
+
+.neotek-section {
+   padding-block: var(--neotek-section-spacing-desktop)
+}
+
+.neotek-section--subtle {
+   background: var(--neotek-color-background-subtle)
+}
+
+.neotek-section--muted {
+   background: var(--neotek-color-background-muted)
+}
+
+.neotek-section--dark {
+   background: var(--neotek-color-background-dark);
+   color: var(--neotek-color-text-inverse)
+}
+
+.neotek-card {
+   padding: var(--neotek-space-6);
+   border: 1px solid var(--neotek-color-border);
+   border-radius: var(--neotek-radius-lg);
+   background: var(--neotek-color-background);
+   color: var(--neotek-color-text-primary)
+}
+
+.neotek-card--elevated {
+   box-shadow: var(--neotek-shadow-md)
+}
+
+.neotek-card--interactive {
+   transition: transform var(--neotek-duration-normal) var(--neotek-ease-standard), box-shadow var(--neotek-duration-normal) var(--neotek-ease-standard)
+}
+
+.neotek-card--interactive:hover {
+   transform: translateY(-2px);
+   box-shadow: var(--neotek-shadow-md)
+}
+
+.neotek-card--dark {
+   border-color: var(--neotek-gray-700);
+   background: var(--neotek-color-background-dark);
+   color: var(--neotek-color-text-inverse)
+}
+
+.neotek-button {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   min-height: 44px;
+   padding: var(--neotek-space-3) var(--neotek-space-5);
+   border: 1px solid transparent;
+   border-radius: var(--neotek-radius-md);
+   font-size: var(--neotek-font-size-sm);
+   font-weight: var(--neotek-font-weight-semibold);
+   line-height: 1;
+   cursor: pointer;
+   transition: background-color var(--neotek-duration-fast) var(--neotek-ease-standard), border-color var(--neotek-duration-fast) var(--neotek-ease-standard), color var(--neotek-duration-fast) var(--neotek-ease-standard)
+}
+
+.neotek-button--primary {
+   background: var(--neotek-color-primary);
+   color: var(--neotek-color-text-inverse)
+}
+
+.neotek-button--primary:hover {
+   background: var(--neotek-color-primary-hover)
+}
+
+.neotek-button--secondary {
+   background: var(--neotek-color-background-muted);
+   color: var(--neotek-color-text-primary)
+}
+
+.neotek-button--outline {
+   border-color: var(--neotek-color-border-strong);
+   background: transparent
+}
+
+.neotek-button--outline:hover {
+   border-color: var(--neotek-color-primary);
+   color: var(--neotek-color-primary)
+}
+
+.neotek-button--ghost {
+   background: transparent
+}
+
+.neotek-button--ghost:hover {
+   background: var(--neotek-color-background-muted)
+}
+
+.neotek-badge {
+   display: inline-flex;
+   width: fit-content;
+   padding: var(--neotek-space-1) var(--neotek-space-2);
+   border-radius: var(--neotek-radius-full);
+   background: var(--neotek-color-primary-soft);
+   color: var(--neotek-color-primary);
+   font-size: var(--neotek-font-size-xs);
+   font-weight: var(--neotek-font-weight-semibold)
+}
+
+@media(max-width:1023px) {
+   .neotek-section {
+      padding-block: var(--neotek-section-spacing-tablet)
+   }
+}
+
+@media(max-width:767px) {
+   .neotek-container {
+      padding-inline: var(--neotek-container-padding-mobile)
+   }
+
+   .neotek-section {
+      padding-block: var(--neotek-section-spacing-mobile)
+   }
+}
