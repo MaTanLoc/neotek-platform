@@ -2,7 +2,7 @@ export const heroSlides = [
   {
     id: 'neotek-group',
     // Set this to a real asset path when the first Hero image is ready.
-    image: null,
+    image: "https://res.cloudinary.com/drslg1shx/image/upload/v1790394707/ChatGPT_Image_10_31_27_26_thg_9_2026_t1wiys.png",
     mobileImage: null,
     imagePosition: 'center',
     mobileImagePosition: 'center',
@@ -12,7 +12,7 @@ export const heroSlides = [
   },
   {
     id: 'erp-solutions',
-    image: null,
+    image: "https://res.cloudinary.com/drslg1shx/image/upload/v1790394707/ChatGPT_Image_10_46_04_26_thg_9_2026_j4nwab.png",
     mobileImage: null,
     imagePosition: 'center',
     mobileImagePosition: 'center',
@@ -22,7 +22,7 @@ export const heroSlides = [
   },
   {
     id: 'digital-transformation',
-    image: null,
+    image: "https://res.cloudinary.com/drslg1shx/image/upload/v1790394707/ChatGPT_Image_10_46_12_26_thg_9_2026_hemfx0.png",
     mobileImage: null,
     imagePosition: 'center',
     mobileImagePosition: 'center',

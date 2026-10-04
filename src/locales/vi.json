@@ -1,13 +1,555 @@
 {
-  "nav": {"solutions":"Giải pháp","about":"Về Neotek","careers":"Tuyển dụng","support":"Hỗ trợ","knowledge":"Kiến thức","login":"Đăng nhập","demo":"Đăng ký Demo","main":"Điều hướng chính","mobile":"Điều hướng di động","openMenu":"Mở menu điều hướng","closeMenu":"Đóng menu","language":"Chuyển ngôn ngữ","vietnamese":"Tiếng Việt","english":"English"},
-  "hero": {"slides": {"neotekGroup":{"eyebrow":"Neotek Group","title":"Management Art for Enterprise.","description":"Công nghệ kiến tạo nghệ thuật quản trị doanh nghiệp.","primary":"Đăng ký Demo","secondary":"Khám phá nền tảng ngay"},"erpSolutions":{"eyebrow":"NeoERP","title":"[TODO: Giải pháp NeoERP]","description":"[TODO: Mô tả giải pháp theo tài liệu NeoERP và Figma.]","primary":"Đặt lịch demo","secondary":"Xem giải pháp"},"digitalTransformation":{"eyebrow":"Chuyển đổi số","title":"[TODO: Chuyển đổi số doanh nghiệp]","description":"[TODO: Nội dung mô tả theo tài liệu chính thức NeoTek.]","primary":"Tư vấn nghiệp vụ","secondary":"Khám phá tính năng"}},"previous":"Slide trước","next":"Slide tiếp theo","choose":"Chọn slide hero","slide":"Chuyển tới slide {{count}}"},
-  "why": {"title":"Vì sao doanh nghiệp cần một nền tảng quản trị tích hợp?","description":"Khi dữ liệu và quy trình được kết nối, doanh nghiệp có thêm cơ sở để quản lý xuyên suốt và ra quyết định nhất quán.","items":{"centralizedData":{"title":"Dữ liệu tập trung","description":"Thông tin được quản lý tập trung, giúp các bộ phận và đơn vị truy cập, tìm kiếm và khai thác dữ liệu trên cùng một hệ thống."},"endToEnd":{"title":"Liên kết xuyên suốt","description":"Dữ liệu được kế thừa giữa các nghiệp vụ, hạn chế nhập liệu lặp lại và giúp các bộ phận phối hợp trên cùng một nguồn thông tin."},"clearProcess":{"title":"Quy trình rõ ràng","description":"Các quy trình phê duyệt có thể được thực hiện trực tuyến theo điều kiện và cấp phê duyệt được thiết lập."},"multiEntity":{"title":"Quản trị đa đơn vị","description":"Với mô hình nhiều công ty hoặc chi nhánh, dữ liệu có thể được quản lý tập trung và đồng nhất, hỗ trợ theo dõi hoạt động toàn hệ thống."},"timelyInfo":{"title":"Thông tin kịp thời","description":"Hệ thống cung cấp báo cáo và thông tin quản trị nhanh chóng, hỗ trợ người quản trị nắm bắt tình hình của toàn hệ thống."}}},
-  "solutions": {"title":"Giải pháp quản trị toàn diện cho doanh nghiệp","aria":"Các nhóm giải pháp","groups":{"business":{"title":"Kinh doanh","description":"Xây dựng quy trình bán hàng, chăm sóc khách hàng và theo dõi cơ hội kinh doanh từ đầu đến cuối."},"supplyChain":{"title":"Chuỗi cung ứng","description":"Kết nối mua hàng, tồn kho, vận chuyển và luồng hàng hóa trên cùng một nền tảng quản lý."},"manufacturing":{"title":"Sản xuất","description":"Lập kế hoạch, kiểm soát nguyên liệu, quy trình sản xuất và chi phí theo từng công đoạn."},"management":{"title":"Quản trị","description":"Kết nối nhân sự, dự án, tài chính và thông tin quản trị để hỗ trợ ra quyết định toàn doanh nghiệp."}},"modules":{"sales":"Bán hàng","crm":"CRM","procurement":"Mua hàng","inventory":"Kho vận","production":"Sản xuất","maintenance":"Bảo trì","hr":"Nhân sự","project":"Dự án","finance":"Tài chính"}},
-  "metrics":{"articles":"Bài viết","ebook":"Ebook & Template","webinar":"Video & Webinar","courses":"Khóa học","title":"Những con số đáng chú ý","description":"Những con số tiêu biểu giúp hình dung quy mô và hệ sinh thái nội dung, giải pháp mà NeoTek đang xây dựng.","actions":{"trial":"Dùng thử miễn phí","pricing":"Báo giá","purchase":"Mua ngay"}},
-  "trustedBy":{"title":"Được tin tưởng bởi các doanh nghiệp trong nhiều lĩnh vực"},
-  "testimonials":{"title":"Ý kiến khách hàng & đối tác","demo":"DEMO","placeholder":"Nội dung phản hồi khách hàng và đối tác đang chờ dữ liệu được xác thực.","demoData":"Dữ liệu testimonial: TODO"},
-  "cta":{"eyebrow":"ĐỒNG HÀNH CÙNG DOANH NGHIỆP","title":"Doanh nghiệp của bạn đang gặp bài toán quản trị?","titleLine1":"Doanh nghiệp của bạn","titleLine2":"đang gặp bài toán quản trị?","description":"Cùng NeoTek tìm giải pháp phù hợp với mô hình và quy trình thực tế của doanh nghiệp.","descriptionLine1":"Cùng NeoTek tìm giải pháp phù hợp với mô hình và quy trình thực tế","descriptionLine2":"của doanh nghiệp.","demo":"Đăng ký Demo","platform":"Khám phá nền tảng ngay"},
-  "faq":{"eyebrow":"GIẢI ĐÁP VỀ NEOERP","title":"Câu hỏi thường gặp","items":{"whatIs":"NeoERP là gì? Giải pháp phù hợp với những doanh nghiệp nào?","modules":"NeoERP bao gồm những phân hệ quản trị nào?","integration":"NeoERP có thể kết nối với các hệ thống khác không?","multiCompany":"NeoERP hỗ trợ doanh nghiệp có nhiều công ty hoặc chi nhánh như thế nào?","access":"Tôi có thể truy cập NeoERP trên máy tính và thiết bị di động không?","sharedData":"Các phòng ban có thể sử dụng chung dữ liệu trên NeoERP như thế nào?","budget":"NeoERP có hỗ trợ quản lý ngân sách và dự báo không?","finance":"NeoERP hỗ trợ báo cáo và hợp nhất tài chính cho doanh nghiệp nhiều đơn vị như thế nào?"},"answers":{"whatIs":"NeoERP là giải pháp hoạch định nguồn lực doanh nghiệp, tích hợp các chức năng kinh doanh của nhiều phòng ban vào một hệ thống phần mềm thống nhất. Giải pháp có thể được sử dụng cho doanh nghiệp có nhu cầu quản lý tập trung các hoạt động kinh doanh, vận hành, tài chính và các nghiệp vụ liên quan.","modules":"Các nhóm chức năng được tài liệu giới thiệu gồm bán hàng, CRM, mua hàng, kho, logistics, quản lý dự án, nhân sự và tiền lương, kế toán và tài chính, ngân sách và dự báo, sản xuất và bảo trì.","integration":"NeoERP có thể kết nối với các hệ thống khác thông qua Webservice. Phạm vi kết nối cụ thể phụ thuộc vào hệ thống và yêu cầu tích hợp được xác định cho từng doanh nghiệp.","multiCompany":"NeoERP hỗ trợ quản lý dữ liệu tập trung và nhất quán cho mô hình nhiều công ty hoặc chi nhánh, đồng thời cho phép theo dõi kế toán độc lập theo từng đơn vị và lập báo cáo tài chính hợp nhất.","access":"NeoERP là hệ thống trên nền tảng web, có thể được truy cập thông qua máy tính và thiết bị di động.","sharedData":"Dữ liệu khách hàng và dữ liệu kinh doanh có thể được quản lý tập trung trên cùng hệ thống. Các chức năng giữa phòng ban được tích hợp để thông tin được kế thừa giữa các nghiệp vụ, bao gồm cả việc kết nối giao dịch từ mua hàng, bán hàng, kho, giá vốn sản xuất và thu chi với kế toán.","budget":"Phân hệ Ngân sách & Dự báo sử dụng dữ liệu lịch sử để hỗ trợ lập ngân sách và dự báo doanh thu.","finance":"Phân hệ Kế toán & Tài chính tổng hợp dữ liệu kế toán và hỗ trợ các báo cáo kế toán, báo cáo tài chính và báo cáo quản trị. Với doanh nghiệp nhiều đơn vị, hệ thống hỗ trợ theo dõi kế toán theo từng đơn vị và báo cáo tài chính hợp nhất."}},
-  "footer":{"tagline":"Management Art for Enterprise.","description":"NeoTek phát triển giải pháp quản trị doanh nghiệp, kết nối dữ liệu, quy trình và các phòng ban trên một nền tảng thống nhất.","cta":"Bạn muốn tìm hiểu NeoERP?","demo":"Đăng ký Demo","groups":{"solutions":"GIẢI PHÁP","about":"VỀ NEOTEK","resources":"TÀI NGUYÊN","support":"HỖ TRỢ"},"links":{"neoerp":"NeoERP","business":"Kinh doanh","supplyChain":"Chuỗi cung ứng","manufacturing":"Sản xuất","management":"Quản trị","about":"Giới thiệu NeoTek","careers":"Tuyển dụng","partners":"Đối tác","knowledge":"Kiến thức","faq":"Câu hỏi thường gặp","contact":"Liên hệ","support":"Hỗ trợ"},"addressLabel":"Địa chỉ","company":"CÔNG TY TNHH NEOTEK","address":"Số 02 Trường Sơn, Quận Tân Bình, TP. Hồ Chí Minh","copyright":"© NeoTek. All rights reserved.","privacy":"Chính sách bảo mật","terms":"Điều khoản sử dụng","navigation":"Điều hướng chân trang","legal":"Thông tin pháp lý"},
-  "common":{"previous":"Trước","next":"Tiếp","close":"Đóng"}
+  "seo": {
+    "home": {
+      "title": "NeoTek | Nền tảng quản trị doanh nghiệp",
+      "description": "Khám phá nền tảng quản trị doanh nghiệp NeoTek và các giải pháp kết nối hoạt động kinh doanh, vận hành và quản trị."
+    },
+    "solutions": {
+      "title": "Giải pháp quản trị doanh nghiệp | NeoTek",
+      "description": "Tìm hiểu các nhóm giải pháp NeoTek dành cho kinh doanh, chuỗi cung ứng, vận hành, sản xuất và quản trị doanh nghiệp."
+    },
+    "booking": {
+      "title": "Đặt lịch tư vấn NeoERP | NeoTek",
+      "description": "Chọn lịch tư vấn để tìm hiểu giải pháp NeoERP và trao đổi về nhu cầu quản trị của doanh nghiệp."
+    },
+    "login": {
+      "title": "Đăng nhập | NeoTek",
+      "description": "Đăng nhập vào tài khoản NeoTek."
+    },
+    "register": {
+      "title": "Đăng ký | NeoTek",
+      "description": "Đăng ký tài khoản NeoTek."
+    }
+  },
+  "booking": {
+    "eyebrow": "Tư vấn NeoERP",
+    "title": "Đặt lịch tư vấn NeoERP",
+    "description": "Chọn thời gian để trao đổi về quy trình vận hành và nhu cầu ERP của doanh nghiệp.",
+    "today": "Hôm nay",
+    "previousDay": "Ngày trước",
+    "nextDay": "Ngày sau",
+    "previousWeek": "Tuần trước",
+    "nextWeek": "Tuần sau",
+    "previousMonth": "Tháng trước",
+    "nextMonth": "Tháng sau",
+    "view": "Chế độ xem lịch",
+    "workWeek": "Tuần làm việc",
+    "week": "Tuần",
+    "month": "Tháng",
+    "monthCalendar": "Lịch tư vấn theo tháng",
+    "monthInstructions": "Chọn một ngày để xem các khung giờ tư vấn có thể đặt.",
+    "monthKeyboardHelp": "Bàn phím: dùng các phím mũi tên để chuyển ngày, nhấn Enter để mở lịch ngày đó.",
+    "monthDayInstructions": "{{date}}, {{count}} khoảng không khả dụng. Chọn để xem các giờ có thể đặt.",
+    "moreEvents": "+{{count}} lịch khác",
+    "customDuration": "Khoảng đã chọn: {{count}} phút",
+    "moveSelection": "Đã chọn {{start}} đến {{end}}. Kéo để đổi giờ, dùng phím lên/xuống để điều chỉnh hoặc Enter để đặt lịch.",
+    "chooseDate": "Chọn ngày",
+    "preferences": "Tùy chọn đặt lịch",
+    "duration": "Thời lượng tư vấn",
+    "minutes": "{{count}} phút",
+    "timezone": "Múi giờ",
+    "gmt": "GMT+7",
+    "available": "Có thể đặt lịch",
+    "busy": "Không khả dụng",
+    "selected": "Lịch đã chọn",
+    "mockAvailability": "Lịch trống mô phỏng để trải nghiệm. Đây không phải lịch thực tế của chuyên viên.",
+    "mockNotice": "Chế độ demo: thông tin chỉ lưu trong phiên trang này. Chưa gửi lời mời hoặc đặt lịch với chuyên viên.",
+    "instructions": "Nhấn vùng trống hoặc kéo để chọn khoảng thời gian. Kéo lịch đã chọn để đổi giờ.",
+    "keyboardHelp": "Bàn phím: Tab đến một ngày, dùng ↑ / ↓ chọn giờ, rồi Enter để chọn lịch.",
+    "calendar": "Lịch trống tư vấn",
+    "timeline": "Trục thời gian có thể cuộn, từ 08:00 đến 18:00",
+    "dayInstructions": "{{date}}, {{time}}. Dùng phím lên và xuống để chọn giờ, nhấn Enter để chọn lịch.",
+    "conflict": "Khung giờ này trùng lịch không khả dụng hoặc kết thúc sau 18:00. Vui lòng chọn giờ khác.",
+    "durationConflict": "Thời lượng mới không phù hợp với khung giờ này. Vui lòng chọn lịch khác.",
+    "drawerTitle": "Đặt lịch tư vấn",
+    "close": "Đóng hộp thoại đặt lịch",
+    "fields": {
+      "name": "Họ và tên",
+      "email": "Email công việc",
+      "company": "Công ty",
+      "phone": "Số điện thoại",
+      "message": "Nội dung muốn trao đổi"
+    },
+    "confirm": "Xác nhận lịch tư vấn",
+    "successTitle": "Lịch tư vấn đã được xác nhận",
+    "successDescription": "Đã hoàn tất xác nhận mô phỏng. Khung giờ được giữ trong phiên hiện tại cho đến khi bạn rời trang.",
+    "bookAnother": "Đặt lịch khác",
+    "home": "Về trang chủ"
+  },
+  "nav": {
+    "solutions": "Giải pháp",
+    "solutionsMenu": {
+      "overview": "Tổng quan NeoERP",
+      "overviewDescription": "Nền tảng quản trị tích hợp cho doanh nghiệp.",
+      "modules": "9 phân hệ",
+      "sales": "Bán hàng",
+      "crm": "CRM",
+      "purchasing": "Mua hàng",
+      "warehouse": "Quản lý kho",
+      "logistics": "Kho vận",
+      "projects": "Quản lý dự án",
+      "production": "Sản xuất",
+      "hrPayroll": "Nhân sự tiền lương",
+      "finance": "Tài chính kế toán",
+      "features": "Tính năng nổi bật",
+      "groupsLabel": "Nhóm giải pháp",
+      "groups": {
+        "business": "Kinh doanh",
+        "supplyChain": "Chuỗi cung ứng",
+        "operations": "Vận hành",
+        "management": "Tài chính & Nhân sự"
+      },
+      "salesDescription": "Quản lý báo giá, đơn hàng, khách hàng, chính sách giá và toàn bộ quy trình bán hàng.",
+      "crmDescription": "Quản lý quan hệ khách hàng, tương tác, cơ hội và hoạt động chăm sóc.",
+      "purchasingDescription": "Quản lý yêu cầu mua, đơn mua, nhà cung cấp và quy trình mua hàng.",
+      "warehouseDescription": "Quản lý tồn kho, nhập xuất, điều chuyển và số lượng hàng hóa.",
+      "logisticsDescription": "Điều phối giao hàng, vận chuyển, lịch giao và luồng hàng hóa.",
+      "projectsDescription": "Lập kế hoạch, phân công, theo dõi tiến độ và quản lý thông tin dự án.",
+      "productionDescription": "Lập kế hoạch và kiểm soát sản xuất, nguyên vật liệu, công đoạn và chi phí.",
+      "hrPayrollDescription": "Quản lý nhân sự, nghiệp vụ nhân sự, tiền lương và thông tin liên quan.",
+      "financeDescription": "Quản lý kế toán, dữ liệu tài chính, thu chi và báo cáo quản trị."
+    },
+    "about": "Về NeoTek",
+    "aboutMenu": {
+      "introduction": "Giới thiệu",
+      "capabilities": "Năng lực & kinh nghiệm",
+      "team": "Đội ngũ",
+      "introductionDescription": "Thông tin tổng quan về NeoTek.",
+      "capabilitiesDescription": "Năng lực và kinh nghiệm triển khai giải pháp.",
+      "teamDescription": "Tìm hiểu đội ngũ NeoTek."
+    },
+    "careers": "Tuyển dụng",
+    "support": "Hỗ trợ",
+    "supportMenu": {
+      "supportCenter": "Trung tâm hỗ trợ",
+      "guides": "Hướng dẫn",
+      "documents": "Tài liệu",
+      "faq": "FAQ",
+      "supportCenterDescription": "Kênh hỗ trợ và thông tin dành cho doanh nghiệp.",
+      "guidesDescription": "Hướng dẫn sử dụng và khai thác hệ thống.",
+      "documentsDescription": "Tài liệu và nội dung tham khảo.",
+      "faqDescription": "Giải đáp các câu hỏi thường gặp về NeoERP."
+    },
+    "contact": "Liên hệ",
+    "login": "Đăng nhập",
+    "demo": "Đăng ký Demo",
+    "main": "Điều hướng chính",
+    "mobile": "Điều hướng trên thiết bị di động",
+    "openMenu": "Mở menu điều hướng",
+    "closeMenu": "Đóng menu",
+    "language": "Thay đổi ngôn ngữ",
+    "vietnamese": "Tiếng Việt",
+    "english": "English"
+  },
+  "hero": {
+    "slides": {
+      "neotekGroup": {
+        "eyebrow": "Neotek Group",
+        "title": "Management Art for Enterprise.",
+        "description": "Công nghệ kiến tạo nghệ thuật quản trị doanh nghiệp.",
+        "primary": "Đăng ký Demo",
+        "secondary": "Khám phá nền tảng ngay"
+      },
+      "erpSolutions": {
+        "eyebrow": "NEOERP",
+        "title": "Quản trị doanh nghiệp, kết nối xuyên suốt.",
+        "description": "Kết nối dữ liệu và quy trình từ kinh doanh, chuỗi cung ứng đến sản xuất và tài chính trên một nền tảng thống nhất.",
+        "primary": "Đặt lịch Demo",
+        "secondary": "Xem giải pháp"
+      },
+      "digitalTransformation": {
+        "eyebrow": "CHUYỂN ĐỔI SỐ",
+        "title": "Kết nối doanh nghiệp trên một nền tảng.",
+        "description": "Số hóa dữ liệu, quy trình và hoạt động quản trị để doanh nghiệp vận hành xuyên suốt.",
+        "primary": "Tư vấn nghiệp vụ",
+        "secondary": "Khám phá tính năng"
+      }
+    },
+    "previous": "Slide trước",
+    "next": "Slide tiếp theo",
+    "choose": "Chọn slide hero",
+    "slide": "Chuyển tới slide {{count}}"
+  },
+  "why": {
+    "titleHighlight": "Vì sao doanh nghiệp cần",
+    "titleRest": "Một nền tảng quản trị tích hợp?",
+    "description": "Kết nối dữ liệu và quy trình trên một hệ thống thống nhất, giúp doanh nghiệp quản lý xuyên suốt và ra quyết định nhất quán.",
+    "items": {
+      "centralizedData": {
+        "title": "Dữ liệu tập trung",
+        "description": "Tập trung dữ liệu trên một hệ thống, giúp các bộ phận dễ dàng truy cập và khai thác."
+      },
+      "endToEnd": {
+        "title": "Liên kết xuyên suốt",
+        "description": "Kết nối dữ liệu giữa các nghiệp vụ, hạn chế nhập liệu lặp lại và tăng khả năng phối hợp."
+      },
+      "clearProcess": {
+        "title": "Quy trình rõ ràng",
+        "description": "Thực hiện quy trình và phê duyệt trực tuyến theo điều kiện được thiết lập."
+      },
+      "multiEntity": {
+        "title": "Quản trị đa đơn vị",
+        "description": "Quản lý tập trung và đồng nhất dữ liệu giữa nhiều công ty hoặc chi nhánh."
+      },
+      "timelyInfo": {
+        "title": "Thông tin kịp thời",
+        "description": "Cung cấp báo cáo và thông tin quản trị, giúp nhà quản lý nắm bắt tình hình toàn hệ thống."
+      }
+    }
+  },
+  "solutions": {
+    "title": "Giải pháp quản trị toàn diện cho doanh nghiệp",
+    "aria": "Các nhóm giải pháp",
+    "groups": {
+      "business": {
+        "title": "Kinh doanh",
+        "description": "Xây dựng quy trình bán hàng, chăm sóc khách hàng và theo dõi cơ hội kinh doanh từ đầu đến cuối."
+      },
+      "supplyChain": {
+        "title": "Chuỗi cung ứng",
+        "description": "Kết nối mua hàng, tồn kho, vận chuyển và luồng hàng hóa trên cùng một nền tảng quản lý."
+      },
+      "manufacturing": {
+        "title": "Sản xuất",
+        "description": "Lập kế hoạch, kiểm soát nguyên liệu, quy trình sản xuất và chi phí theo từng công đoạn."
+      },
+      "management": {
+        "title": "Quản trị",
+        "description": "Kết nối nhân sự, dự án, tài chính và thông tin quản trị để hỗ trợ ra quyết định toàn doanh nghiệp."
+      }
+    },
+    "modules": {
+      "sales": "Bán hàng",
+      "crm": "CRM",
+      "procurement": "Mua hàng",
+      "inventory": "Kho vận",
+      "production": "Sản xuất",
+      "maintenance": "Bảo trì",
+      "hr": "Nhân sự",
+      "project": "Dự án",
+      "finance": "Tài chính"
+    }
+  },
+  "metrics": {
+    "title": "Đồng hành cùng doanh nghiệp trên hành trình quản trị",
+    "description": "Kết nối các nghiệp vụ kinh doanh, vận hành và tài chính trên một nền tảng quản trị thống nhất.",
+    "customers": {
+      "title": "Khách hàng tiêu biểu",
+      "subtitle": "Doanh nghiệp thuộc nhiều lĩnh vực"
+    },
+    "efficiency": {
+      "title": "Tiết kiệm thời gian",
+      "subtitle": "Trong quản lý, tra cứu & lưu trữ hợp đồng"
+    },
+    "modules": {
+      "title": "Phân hệ quản trị",
+      "subtitle": "Kết nối nghiệp vụ trên một nền tảng"
+    },
+    "industries": {
+      "title": "Nhóm ngành ứng dụng",
+      "subtitle": "Từ sản xuất, thương mại đến dịch vụ"
+    },
+    "actions": {
+      "trial": "Dùng thử miễn phí",
+      "pricing": "Báo giá",
+      "purchase": "Mua ngay"
+    }
+  },
+  "trustedBy": {
+    "title": "Được tin tưởng bởi các doanh nghiệp trong nhiều lĩnh vực"
+  },
+  "solutionClusters": {
+    "eyebrow": "HỆ SINH THÁI GIẢI PHÁP",
+    "titleBefore": "Một nền tảng cho",
+    "titleHighlight": "toàn bộ doanh nghiệp.",
+    "description": "Kết nối những hoạt động cốt lõi trong một hệ sinh thái quản trị thống nhất, từ kinh doanh đến chuỗi cung ứng, sản xuất và quản trị.",
+    "aria": "Nhóm giải pháp",
+    "cta": "Khám phá giải pháp",
+    "groups": {
+      "business": {
+        "label": "Kinh doanh",
+        "title": "Kết nối toàn bộ hành trình từ khách hàng đến doanh thu.",
+        "description": "Tập trung dữ liệu khách hàng, cơ hội và hoạt động bán hàng trên một nền tảng thống nhất."
+      },
+      "supplyChain": {
+        "label": "Chuỗi cung ứng",
+        "title": "Liên kết dòng chảy hàng hóa từ kế hoạch đến giao nhận.",
+        "description": "Kết nối mua hàng, tồn kho và vận chuyển để doanh nghiệp chủ động hơn trong toàn bộ chuỗi cung ứng."
+      },
+      "manufacturing": {
+        "label": "Sản xuất",
+        "title": "Điều hành sản xuất xuyên suốt từ kế hoạch đến chất lượng.",
+        "description": "Kết nối kế hoạch, nguyên vật liệu và hoạt động sản xuất để nâng cao khả năng kiểm soát vận hành."
+      },
+      "management": {
+        "label": "Quản trị",
+        "title": "Nắm bắt toàn cảnh doanh nghiệp để ra quyết định kịp thời.",
+        "description": "Tập trung thông tin quản trị, tài chính và nguồn lực để lãnh đạo có một góc nhìn thống nhất."
+      }
+    },
+    "modules": {
+      "crm": "CRM",
+      "marketing": "Marketing",
+      "sales": "Bán hàng",
+      "purchasing": "Mua hàng",
+      "warehouse": "Kho",
+      "logistics": "Logistics",
+      "productionPlanning": "Kế hoạch sản xuất",
+      "production": "Sản xuất",
+      "quality": "Chất lượng",
+      "finance": "Tài chính",
+      "hr": "Nhân sự",
+      "management": "Điều hành"
+    }
+  },
+  "testimonials": {
+    "title": "Ý kiến khách hàng & đối tác",
+    "demo": "DEMO",
+    "placeholder": "Nội dung phản hồi khách hàng và đối tác đang chờ dữ liệu được xác thực.",
+    "demoData": "Dữ liệu testimonial: TODO"
+  },
+  "cta": {
+    "eyebrow": "ĐỒNG HÀNH CÙNG DOANH NGHIỆP",
+    "title": "Doanh nghiệp của bạn đang gặp bài toán quản trị?",
+    "titleLine1": "Doanh nghiệp của bạn",
+    "titleLine2": "đang gặp bài toán quản trị?",
+    "description": "Cùng NeoTek tìm giải pháp phù hợp với mô hình và quy trình thực tế của doanh nghiệp.",
+    "descriptionLine1": "Cùng NeoTek tìm giải pháp phù hợp với mô hình và quy trình thực tế",
+    "descriptionLine2": "của doanh nghiệp.",
+    "demo": "Đăng ký Demo",
+    "platform": "Khám phá nền tảng ngay"
+  },
+  "faq": {
+    "eyebrow": "GIẢI ĐÁP VỀ NEOERP",
+    "title": "Câu hỏi thường gặp",
+    "description": "Giải đáp những câu hỏi thường gặp về NeoERP và cách nền tảng hỗ trợ doanh nghiệp quản trị hiệu quả.",
+    "cta": "Liên hệ với chúng tôi",
+    "items": {
+      "whatIs": "NeoERP là gì? Giải pháp phù hợp với những doanh nghiệp nào?",
+      "modules": "NeoERP bao gồm những phân hệ quản trị nào?",
+      "integration": "NeoERP có thể kết nối với các hệ thống khác không?",
+      "multiCompany": "NeoERP hỗ trợ doanh nghiệp có nhiều công ty hoặc chi nhánh như thế nào?",
+      "access": "Tôi có thể truy cập NeoERP trên máy tính và thiết bị di động không?",
+      "sharedData": "Các phòng ban có thể sử dụng chung dữ liệu trên NeoERP như thế nào?",
+      "budget": "NeoERP có hỗ trợ quản lý ngân sách và dự báo không?",
+      "finance": "NeoERP hỗ trợ báo cáo và hợp nhất tài chính cho doanh nghiệp nhiều đơn vị như thế nào?"
+    },
+    "answers": {
+      "whatIs": "NeoERP là giải pháp hoạch định nguồn lực doanh nghiệp, tích hợp các chức năng kinh doanh của nhiều phòng ban vào một hệ thống phần mềm thống nhất. Giải pháp có thể được sử dụng cho doanh nghiệp có nhu cầu quản lý tập trung các hoạt động kinh doanh, vận hành, tài chính và các nghiệp vụ liên quan.",
+      "modules": "Các nhóm chức năng được tài liệu giới thiệu gồm bán hàng, CRM, mua hàng, kho, logistics, quản lý dự án, nhân sự và tiền lương, kế toán và tài chính, ngân sách và dự báo, sản xuất và bảo trì.",
+      "integration": "NeoERP có thể kết nối với các hệ thống khác thông qua Webservice. Phạm vi kết nối cụ thể phụ thuộc vào hệ thống và yêu cầu tích hợp được xác định cho từng doanh nghiệp.",
+      "multiCompany": "NeoERP hỗ trợ quản lý dữ liệu tập trung và nhất quán cho mô hình nhiều công ty hoặc chi nhánh, đồng thời cho phép theo dõi kế toán độc lập theo từng đơn vị và lập báo cáo tài chính hợp nhất.",
+      "access": "NeoERP là hệ thống trên nền tảng web, có thể được truy cập thông qua máy tính và thiết bị di động.",
+      "sharedData": "Dữ liệu khách hàng và dữ liệu kinh doanh có thể được quản lý tập trung trên cùng hệ thống. Các chức năng giữa phòng ban được tích hợp để thông tin được kế thừa giữa các nghiệp vụ, bao gồm cả việc kết nối giao dịch từ mua hàng, bán hàng, kho, giá vốn sản xuất và thu chi với kế toán.",
+      "budget": "Phân hệ Ngân sách & Dự báo sử dụng dữ liệu lịch sử để hỗ trợ lập ngân sách và dự báo doanh thu.",
+      "finance": "Phân hệ Kế toán & Tài chính tổng hợp dữ liệu kế toán và hỗ trợ các báo cáo kế toán, báo cáo tài chính và báo cáo quản trị. Với doanh nghiệp nhiều đơn vị, hệ thống hỗ trợ theo dõi kế toán theo từng đơn vị và báo cáo tài chính hợp nhất."
+    }
+  },
+  "footer": {
+    "tagline": "Management Art for Enterprise.",
+    "description": "NeoTek phát triển giải pháp quản trị doanh nghiệp, kết nối dữ liệu, quy trình và các phòng ban trên một nền tảng thống nhất.",
+    "cta": "Bạn muốn tìm hiểu NeoERP?",
+    "demo": "Đăng ký Demo",
+    "groups": {
+      "solutions": "GIẢI PHÁP",
+      "about": "VỀ NEOTEK",
+      "support": "HỖ TRỢ"
+    },
+    "links": {
+      "neoerp": "NeoERP",
+      "business": "Kinh doanh",
+      "supplyChain": "Chuỗi cung ứng",
+      "manufacturing": "Sản xuất",
+      "management": "Quản trị",
+      "about": "Giới thiệu NeoTek",
+      "careers": "Tuyển dụng",
+      "partners": "Đối tác",
+      "knowledge": "Kiến thức",
+      "faq": "Câu hỏi thường gặp",
+      "contact": "Liên hệ",
+      "support": "Hỗ trợ"
+    },
+    "addressLabel": "Địa chỉ",
+    "company": "CÔNG TY TNHH NEOTEK",
+    "address": "Số 02 Trường Sơn, Quận Tân Bình, TP. Hồ Chí Minh",
+    "copyright": "© NeoTek. All rights reserved.",
+    "privacy": "Chính sách bảo mật",
+    "terms": "Điều khoản sử dụng",
+    "navigation": "Điều hướng chân trang",
+    "legal": "Thông tin pháp lý",
+    "ctaDescription": "Khám phá nền tảng quản trị tích hợp và cách NeoTek kết nối dữ liệu, quy trình và các phòng ban.",
+    "socialLabel": "Kênh mạng xã hội của NeoTek"
+  },
+  "common": {
+    "previous": "Trước",
+    "next": "Tiếp",
+    "close": "Đóng"
+  },
+  "solutionsPage": {
+    "hero": {
+      "eyebrow": "HỆ SINH THÁI GIẢI PHÁP NEOERP",
+      "titleLine1": "Mọi vận hành.",
+      "titleHighlight": "Trên một nền tảng.",
+      "description": "Kết nối các hoạt động kinh doanh, chuỗi cung ứng, dự án, sản xuất và quản trị trên cùng một nền tảng.",
+      "primary": "Khám phá giải pháp",
+      "secondary": "Đăng ký Demo",
+      "moduleNote": "9 phân hệ chính · Một hệ thống quản trị tích hợp",
+      "visualLabel": "Minh họa giao diện tổng quan NeoERP",
+      "dashboardLabel": "Không gian làm việc",
+      "dashboardEyebrow": "TỔNG QUAN NỀN TẢNG",
+      "dashboardTitle": "Các hoạt động được kết nối",
+      "connectionLabel": "Dữ liệu và quy trình liên kết",
+      "noteTop": "Dữ liệu tập trung",
+      "noteBottom": "Theo dõi xuyên suốt quy trình",
+      "scrollLabel": "Cuộn đến nhóm giải pháp",
+      "scrollText": "Khám phá bên dưới"
+    },
+    "intro": {
+      "eyebrow": "KHÁM PHÁ GIẢI PHÁP",
+      "titleLine1": "Từ nghiệp vụ riêng lẻ",
+      "titleHighlight": "đến vận hành kết nối.",
+      "description": "Bắt đầu từ nhu cầu quản lý của từng bộ phận. Các phân hệ NeoERP được tổ chức theo nhóm nghiệp vụ để bạn dễ tìm giải pháp phù hợp."
+    },
+    "groups": {
+      "business": {
+        "eyebrow": "KINH DOANH",
+        "title": "Kết nối khách hàng và hoạt động bán hàng.",
+        "shortTitle": "Kinh doanh",
+        "description": "Quản lý thông tin khách hàng và quy trình bán hàng trên cùng một nền tảng, từ dữ liệu khách hàng đến đơn hàng và chính sách bán hàng.",
+        "visualLabel": "Vị trí hình minh họa nhóm nghiệp vụ kinh doanh"
+      },
+      "supplyChain": {
+        "eyebrow": "CHUỖI CUNG ỨNG",
+        "title": "Theo dõi dòng chảy hàng hóa xuyên suốt.",
+        "shortTitle": "Chuỗi cung ứng",
+        "description": "Liên kết mua hàng, quản lý kho và kho vận để theo dõi hàng hóa qua các hoạt động nhập, xuất, lưu trữ và giao nhận.",
+        "visualLabel": "Vị trí hình minh họa nhóm nghiệp vụ chuỗi cung ứng"
+      },
+      "operations": {
+        "eyebrow": "DỰ ÁN & SẢN XUẤT",
+        "title": "Theo dõi công việc, tiến độ và sản xuất.",
+        "shortTitle": "Dự án & sản xuất",
+        "description": "Hỗ trợ lập kế hoạch, phân công và theo dõi tiến độ dự án; đồng thời quản lý các nghiệp vụ và nguồn lực liên quan đến sản xuất.",
+        "visualLabel": "Vị trí hình minh họa nhóm nghiệp vụ vận hành"
+      },
+      "management": {
+        "eyebrow": "QUẢN TRỊ DOANH NGHIỆP",
+        "title": "Kết nối nhân sự và thông tin tài chính.",
+        "shortTitle": "Quản trị",
+        "description": "Tập hợp nghiệp vụ nhân sự, tiền lương và kế toán tài chính để hỗ trợ theo dõi hoạt động và tổng hợp thông tin quản trị.",
+        "visualLabel": "Vị trí hình minh họa nhóm nghiệp vụ quản trị"
+      }
+    },
+    "modules": {
+      "crm": "CRM",
+      "sales": "Bán hàng",
+      "purchasing": "Mua hàng",
+      "warehouse": "Quản lý kho",
+      "logistics": "Kho vận",
+      "projects": "Quản lý dự án",
+      "production": "Sản xuất",
+      "maintenance": "Bảo trì",
+      "hrPayroll": "Nhân sự & tiền lương",
+      "finance": "Tài chính & kế toán",
+      "forecast": "Ngân sách & dự báo"
+    },
+    "moduleDetails": {
+      "crm": {
+        "description": "Quản lý quan hệ khách hàng từ khâu tiếp nhận thông tin đến chăm sóc và đánh giá."
+      },
+      "sales": {
+        "description": "Theo dõi nghiệp vụ bán hàng, đơn hàng và báo cáo theo chính sách của doanh nghiệp."
+      },
+      "purchasing": {
+        "description": "Quản lý đơn hàng mua và thông tin nhà cung cấp."
+      },
+      "warehouse": {
+        "description": "Theo dõi mặt hàng, vị trí kho và số liệu tồn kho."
+      },
+      "logistics": {
+        "description": "Quản lý hoạt động vận chuyển và giao hàng."
+      },
+      "production": {
+        "description": "Quản lý quy trình, kế hoạch và chi phí sản xuất."
+      },
+      "maintenance": {
+        "description": "Theo dõi nguồn lực, kế hoạch và hoạt động bảo trì."
+      },
+      "projects": {
+        "description": "Lập kế hoạch và theo dõi tiến độ, giai đoạn và kinh phí dự án."
+      },
+      "hrPayroll": {
+        "description": "Quản lý các nghiệp vụ nhân sự, chấm công và tiền lương."
+      },
+      "finance": {
+        "description": "Theo dõi nghiệp vụ kế toán và tổng hợp báo cáo tài chính, quản trị."
+      },
+      "forecast": {
+        "description": "Sử dụng dữ liệu lịch sử để lập dự báo và hỗ trợ kiểm soát ngân sách."
+      }
+    },
+    "capabilities": {
+      "customerRecords": "Lưu trữ hồ sơ khách hàng và cộng tác viên bán hàng.",
+      "customerAssignment": "Phân công danh sách khách hàng cho người phụ trách.",
+      "customerHistory": "Lập lịch giao tiếp và tổng kết đánh giá khách hàng.",
+      "salesPolicies": "Quản lý chính sách bán hàng, khuyến mãi và tính hoa hồng.",
+      "supplierInformation": "Theo dõi thông tin nhà cung cấp trên đơn hàng mua.",
+      "purchaseReports": "Tổng hợp báo cáo mua hàng.",
+      "itemCatalog": "Quản lý danh mục mặt hàng.",
+      "warehouseLocations": "Quản lý kho và vị trí lưu trữ.",
+      "warehouseReports": "Theo dõi báo cáo kho.",
+      "deliveryPlanning": "Quản lý vận chuyển và giao hàng.",
+      "transportTracking": "Theo dõi nghiệp vụ vận chuyển.",
+      "productionProcess": "Quản lý các bước trong quy trình sản xuất.",
+      "materialPlanning": "Tính nhu cầu nguyên vật liệu và lập lịch sản xuất.",
+      "productionCost": "Tính giá thành sản phẩm và chi phí sản xuất.",
+      "maintenanceAssets": "Khai báo nguồn lực, tài sản và phụ tùng bảo trì.",
+      "maintenanceSchedules": "Theo dõi bảo trì theo kế hoạch và ngoài kế hoạch.",
+      "projectPhases": "Chia giai đoạn và lập kế hoạch dự án.",
+      "projectBudget": "Quản lý kinh phí dự án.",
+      "projectProgress": "Theo dõi tiến độ thực hiện dự án.",
+      "recruitmentTraining": "Quản lý quy trình tuyển dụng và đào tạo.",
+      "employeeRecords": "Quản lý hồ sơ nhân viên.",
+      "attendancePayroll": "Theo dõi chấm công và tiền lương.",
+      "receivablesPayables": "Theo dõi công nợ phải thu và phải trả.",
+      "cashAndTax": "Quản lý thu chi, vốn bằng tiền và nghiệp vụ thuế.",
+      "financialReports": "Tổng hợp báo cáo kế toán, tài chính và quản trị.",
+      "historicalForecast": "Dựa trên dữ liệu quá khứ để hỗ trợ dự báo.",
+      "budgetControl": "Lập ngân sách, phê duyệt và theo dõi thực hiện.",
+      "customers": "Quản lý hồ sơ khách hàng, phân công phụ trách và lịch sử giao tiếp.",
+      "salesOrders": "Theo dõi đơn hàng, chính sách bán hàng và nghiệp vụ khuyến mãi.",
+      "salesReports": "Tổng hợp báo cáo bán hàng theo các chiều thông tin quản trị.",
+      "purchaseOrders": "Quản lý đơn hàng mua và thông tin nhà cung cấp.",
+      "inventory": "Theo dõi mặt hàng, kho, vị trí lưu trữ và báo cáo kho.",
+      "delivery": "Quản lý vận chuyển và giao hàng.",
+      "productionPlan": "Lập kế hoạch sản xuất, nhu cầu nguyên vật liệu và lịch thực hiện.",
+      "maintenancePlan": "Theo dõi hoạt động bảo trì theo kế hoạch và phát sinh.",
+      "people": "Quản lý hồ sơ nhân viên, chấm công và tiền lương.",
+      "budgets": "Lập dự báo và ngân sách dựa trên dữ liệu lịch sử."
+    },
+    "details": {
+      "eyebrow": "CÁC NHÓM NGHIỆP VỤ",
+      "title": "Các phân hệ theo cách doanh nghiệp vận hành",
+      "description": "Khám phá những nghiệp vụ được giới thiệu trong tài liệu NeoERP."
+    },
+    "cta": {
+      "eyebrow": "NEOERP",
+      "title": "Cùng tìm hiểu giải pháp phù hợp với doanh nghiệp",
+      "description": "Trao đổi về các nghiệp vụ và phân hệ doanh nghiệp cần quản lý.",
+      "action": "Đăng ký"
+    },
+    "detailUnavailable": "Trang chi tiết phân hệ chưa được triển khai.",
+    "modulesLabel": "Các phân hệ trong nhóm giải pháp",
+    "visualStatus": "Trong hệ thống",
+    "visualConnected": "Nhóm nghiệp vụ được liên kết",
+    "exploreGroup": "Khám phá phân hệ",
+    "connection": {
+      "eyebrow": "MỘT NỀN TẢNG TÍCH HỢP",
+      "titleLine1": "Dữ liệu không đứng riêng lẻ.",
+      "titleHighlight": "Quy trình cùng kết nối.",
+      "description": "Các phân hệ được thiết kế để hỗ trợ thông tin kế thừa giữa những nghiệp vụ liên quan, giúp doanh nghiệp theo dõi hoạt động trên một hệ thống thống nhất.",
+      "diagramLabel": "Sơ đồ minh họa các nhóm giải pháp được kết nối qua NeoERP",
+      "hubLabel": "Nền tảng tích hợp"
+    }
+  }
 }

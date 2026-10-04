@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import {
-   ArrowRight,
+   ChevronRight,
    BarChart3,
    Boxes,
    BriefcaseBusiness,
@@ -13,6 +13,7 @@ import {
    Sparkles,
    Users,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { NeotekContainer } from '../../common/NeotekContainer/NeotekContainer'
 import { NeotekSection } from '../../common/NeotekSection/NeotekSection'
 import './SolutionsSection.css'
@@ -20,80 +21,84 @@ import './SolutionsSection.css'
 const solutionGroups = [
    {
       id: 'business',
-      title: 'Kinh doanh',
-      description: 'Xây dựng quy trình bán hàng, chăm sóc khách hàng và theo dõi cơ hội kinh doanh từ đầu đến cuối.',
-      image: 'https://www.vietnamworks.com/hrinsider/wp-content/uploads/2024/07/salesman-la-gi.png',
+      titleKey: 'solutions.groups.business.title',
+      descriptionKey: 'solutions.groups.business.description',
+      image: 'https://tallemucrm.com/assets/img/live/2023/11/iStock-1049186550.jpg',
       modules: [
          {
             id: 'sales',
-            title: 'Bán hàng',
+            titleKey: 'solutions.modules.sales',
             icon: ShoppingCart,
          },
          {
             id: 'crm',
-            title: 'CRM',
+            titleKey: 'solutions.modules.crm',
             icon: Users,
          },
       ],
+      imagePosition: '72% center',
    },
    {
       id: 'supply-chain',
-      title: 'Chuỗi cung ứng',
-      description: 'Kết nối mua hàng, tồn kho, vận chuyển và luồng hàng hóa trên cùng một nền tảng quản lý.',
-      image: 'https://www.vietnamworks.com/hrinsider/wp-content/uploads/2024/07/salesman-la-gi.png',
+      titleKey: 'solutions.groups.supplyChain.title',
+      descriptionKey: 'solutions.groups.supplyChain.description',
+      image: 'https://www.airistaflow.com/wp-content/uploads/2024/10/AdobeStock_523184404-scaled.jpeg',
       modules: [
          {
             id: 'procurement',
-            title: 'Mua hàng',
+            titleKey: 'solutions.modules.procurement',
             icon: PackageSearch,
          },
          {
             id: 'inventory',
-            title: 'Kho vận',
+            titleKey: 'solutions.modules.inventory',
             icon: Boxes,
          },
       ],
+      imagePosition: '80% center',
    },
    {
       id: 'manufacturing',
-      title: 'Sản xuất',
-      description: 'Lập kế hoạch, kiểm soát nguyên liệu, quy trình sản xuất và chi phí theo từng công đoạn.',
-      image: 'https://www.vietnamworks.com/hrinsider/wp-content/uploads/2024/07/salesman-la-gi.png',
+      titleKey: 'solutions.groups.manufacturing.title',
+      descriptionKey: 'solutions.groups.manufacturing.description',
+      image: 'https://res.cloudinary.com/drslg1shx/image/upload/v1790051630/162_pdpznt.jpg',
       modules: [
          {
             id: 'production',
-            title: 'Sản xuất',
+            titleKey: 'solutions.modules.production',
             icon: Factory,
          },
          {
             id: 'maintenance',
-            title: 'Bảo trì',
+            titleKey: 'solutions.modules.maintenance',
             icon: Sparkles,
          },
       ],
+      imagePosition: '85% center',
    },
    {
       id: 'management',
-      title: 'Quản trị',
-      description: 'Kết nối nhân sự, dự án, tài chính và thông tin quản trị để hỗ trợ ra quyết định toàn doanh nghiệp.',
-      image: 'https://www.vietnamworks.com/hrinsider/wp-content/uploads/2024/07/salesman-la-gi.png',
+      titleKey: 'solutions.groups.management.title',
+      descriptionKey: 'solutions.groups.management.description',
+      image: 'https://res.cloudinary.com/drslg1shx/image/upload/v1790051140/train_qadw6j.png',
       modules: [
          {
             id: 'hr',
-            title: 'Nhân sự',
+            titleKey: 'solutions.modules.hr',
             icon: BriefcaseBusiness,
          },
          {
             id: 'project',
-            title: 'Dự án',
+            titleKey: 'solutions.modules.project',
             icon: LandPlot,
          },
          {
             id: 'finance',
-            title: 'Tài chính',
+            titleKey: 'solutions.modules.finance',
             icon: BarChart3,
          },
       ],
+      imagePosition: '80% center',
    },
 ]
 
@@ -103,7 +108,7 @@ function SolutionModuleLink({ title, icon: Icon, href }) {
          <span className="solution-module-link__label">
             <Icon size={16} aria-hidden="true" />
             <span>{title}</span>
-            <ArrowRight size={18} aria-hidden="true" />
+            <ChevronRight size={18} aria-hidden="true" />
          </span>
       </>
    )
@@ -121,13 +126,13 @@ function SolutionModuleLink({ title, icon: Icon, href }) {
    return <div className="solution-module-link" role="listitem">{content}</div>
 }
 
-function SolutionModuleList({ modules }) {
+function SolutionModuleList({ modules, t }) {
    return (
       <div className="solution-module-list" role="list">
          {modules.map((module) => (
             <SolutionModuleLink
                key={module.id}
-               title={module.title}
+               title={t(module.titleKey)}
                icon={module.icon}
                href={module.href}
             />
@@ -136,11 +141,14 @@ function SolutionModuleList({ modules }) {
    )
 }
 
-function SolutionPanel({ group, isActive, onSelect, prefersReducedMotion }) {
+function SolutionPanel({ group, isActive, onSelect, prefersReducedMotion, t }) {
    return (
       <motion.div
          className={`solution-panel ${isActive ? 'is-active' : 'is-inactive'}`}
-         style={{ '--solution-image': `url(${group.image})` }}
+         style={{
+            '--solution-image': `url(${group.image})`,
+            '--solution-image-position': group.imagePosition,
+         }}
          layout={false}
          role="listitem"
          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.35, ease: 'easeOut' }}
@@ -149,6 +157,7 @@ function SolutionPanel({ group, isActive, onSelect, prefersReducedMotion }) {
          <div className="solution-panel__base-overlay" aria-hidden="true" />
          <div className="solution-panel__active-overlay" aria-hidden="true" />
 
+         <h3 className="solution-panel__heading">
          <button
             type="button"
             className="solution-panel__trigger"
@@ -157,11 +166,12 @@ function SolutionPanel({ group, isActive, onSelect, prefersReducedMotion }) {
             aria-controls={isActive ? `${group.id}-panel` : undefined}
             id={`${group.id}-trigger`}
          >
-            <span className="solution-panel__title">{group.title}</span>
+            <span className="solution-panel__title">{t(group.titleKey)}</span>
             <span className="solution-panel__icon" aria-hidden="true">
                <Plus size={25} strokeWidth={2} />
             </span>
          </button>
+         </h3>
 
          {isActive && (
             <motion.div
@@ -172,8 +182,8 @@ function SolutionPanel({ group, isActive, onSelect, prefersReducedMotion }) {
                transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.25, delay: 0.08, ease: 'easeOut' }}
                aria-labelledby={`${group.id}-trigger`}
             >
-               <p className="solution-panel__description">{group.description}</p>
-               <SolutionModuleList modules={group.modules} />
+               <p className="solution-panel__description">{t(group.descriptionKey)}</p>
+               <SolutionModuleList modules={group.modules} t={t} />
             </motion.div>
          )}
       </motion.div>
@@ -181,7 +191,8 @@ function SolutionPanel({ group, isActive, onSelect, prefersReducedMotion }) {
 }
 
 export function SolutionsSection() {
-   const [activeSolutionId, setActiveSolutionId] = useState('supply-chain')
+   const { t } = useTranslation()
+   const [activeSolutionId, setActiveSolutionId] = useState('business')
    const prefersReducedMotion = useReducedMotion()
 
    const handleSelect = (id) => {
@@ -193,11 +204,11 @@ export function SolutionsSection() {
          <NeotekContainer className="solutions-container">
             <header className="solutions-header">
                <h2 id="solutions-heading" className="solutions-header__title">
-                  Giải pháp quản trị toàn diện cho doanh nghiệp
+                  {t('solutions.title')}
                </h2>
             </header>
 
-            <div className="solutions-grid" role="list" aria-label="Các nhóm giải pháp">
+            <div className="solutions-grid" role="list" aria-label={t('solutions.aria')}>
                {solutionGroups.map((group) => (
                   <SolutionPanel
                      key={group.id}
@@ -205,6 +216,7 @@ export function SolutionsSection() {
                      isActive={group.id === activeSolutionId}
                      onSelect={handleSelect}
                      prefersReducedMotion={prefersReducedMotion}
+                     t={t}
                   />
                ))}
             </div>

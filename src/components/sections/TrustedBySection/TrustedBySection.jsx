@@ -1,34 +1,44 @@
+import { createSkeletonItems } from '../../../utils/skeleton'
 import { useEffect } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import AutoScroll from 'embla-carousel-auto-scroll'
 import { useReducedMotion } from 'motion/react'
+import { useTranslation } from 'react-i18next'
+
 import { NeotekContainer } from '../../common/NeotekContainer/NeotekContainer'
 import { NeotekSection } from '../../common/NeotekSection/NeotekSection'
+
 import './TrustedBySection.css'
 
-const trustedLogos = [
-  { id: 'logo-3', src: '/assets/3.png', alt: 'Logo doanh nghiệp đối tác 3' },
-  { id: 'lam-hiep-hung', src: '/assets/lam hiep hung.png', alt: 'Logo Lâm Hiệp Hưng' },
-  { id: 'daidung', src: '/assets/daidung.jpg', alt: 'Logo Đại Dũng' },
-  { id: 'komtek', src: '/assets/komtek.png', alt: 'Logo Komtek' },
-  { id: 'logo-2', src: '/assets/2.png', alt: 'Logo doanh nghiệp đối tác 2' },
-  { id: 'huy-viet-tay-do', src: '/assets/huy viet tay do.png', alt: 'Logo Huy Việt Tây Đô' },
-  { id: 'logo-5', src: '/assets/5.png', alt: 'Logo doanh nghiệp đối tác 5' },
-  { id: 'logo-1', src: '/assets/1.png', alt: 'Logo doanh nghiệp đối tác 1' },
-  { id: 'bakertilly-ac', src: '/assets/BakerTilly AC.png', alt: 'Logo BakerTilly AC' },
-  { id: 'logo-4', src: '/assets/4.png', alt: 'Logo doanh nghiệp đối tác 4' },
-]
-
-function LogoItem({ logo, ariaHidden = false }) {
+function LogoItem({ logo, loading }) {
   return (
-    <div className="trusted-by-logo-item" data-logo={logo.id} aria-hidden={ariaHidden || undefined}>
-      <img src={logo.src} alt={ariaHidden ? '' : logo.alt} loading="lazy" />
+    <div
+      className="trusted-by-logo-item"
+      style={{
+        '--logo-width': `${logo.width}px`,
+        '--logo-scale': logo.scale ?? 1,
+      }}
+    >
+      <div className="trusted-logo skeleton-target">
+        {!loading && <img
+          src={logo.src}
+          alt={logo.alt}
+          loading="lazy" decoding="async"
+        />}
+      </div>
     </div>
   )
 }
 
-export function TrustedBySection() {
+export function TrustedBySection({
+  logos = [],
+  loading = false,
+  error = null,
+}) {
+  const { t } = useTranslation()
   const prefersReducedMotion = useReducedMotion()
+  const visibleLogos = loading ? createSkeletonItems(8, 'logo').map((logo) => ({ ...logo, width: 160 })) : logos
+
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
       loop: true,
@@ -39,7 +49,7 @@ export function TrustedBySection() {
     [
       AutoScroll({
         speed: 0.9,
-        playOnInit: !prefersReducedMotion,
+        playOnInit: !loading && !prefersReducedMotion,
         stopOnInteraction: false,
         stopOnMouseEnter: false,
       }),
@@ -47,41 +57,66 @@ export function TrustedBySection() {
   )
 
   useEffect(() => {
-    if (!emblaApi) {
-      return undefined
-    }
+    if (!emblaApi) return
 
     const autoScroll = emblaApi.plugins().autoScroll
-    if (!autoScroll) {
-      return undefined
-    }
+    if (!autoScroll) return
 
-    if (prefersReducedMotion) {
+    if (loading || prefersReducedMotion) {
       autoScroll.stop()
     } else {
       autoScroll.play()
     }
+  }, [emblaApi, loading, prefersReducedMotion])
 
-    return undefined
-  }, [emblaApi, prefersReducedMotion])
+  useEffect(() => {
+    if (!emblaApi || loading || error || logos.length === 0) return
+
+    emblaApi.reInit()
+
+    if (!prefersReducedMotion) {
+      emblaApi.plugins().autoScroll?.play()
+    }
+  }, [
+    emblaApi,
+    loading,
+    error,
+    logos.length,
+    prefersReducedMotion,
+  ])
 
   return (
-    <NeotekSection className="trusted-by-section" aria-labelledby="trusted-by-heading">
+    <NeotekSection
+      className={`trusted-by-section${loading ? ' is-loading' : ''}`}
+      aria-busy={loading}
+      aria-labelledby="trusted-by-heading"
+    >
       <NeotekContainer className="trusted-by-container">
-        <h2 id="trusted-by-heading" className="trusted-by-title">
-          Được tin tưởng bởi các doanh nghiệp trong nhiều lĩnh vực
+        <h2
+          id="trusted-by-heading"
+          className="trusted-by-title"
+        >
+          {t('trustedBy.title')}
         </h2>
 
-        <div className="trusted-by-viewport" ref={emblaRef}>
-          <div className="trusted-by-track">
-            {trustedLogos.map((logo) => (
-              <LogoItem key={logo.id} logo={logo} />
-            ))}
-            {trustedLogos.map((logo) => (
-              <LogoItem key={`${logo.id}-duplicate`} logo={logo} ariaHidden />
-            ))}
+        {(loading || !error) && visibleLogos.length > 0 ? (
+          <div
+            className="trusted-by-viewport"
+                aria-hidden={loading || undefined}
+                inert={loading ? '' : undefined}
+            ref={emblaRef}
+          >
+            <div className="trusted-by-track">
+              {visibleLogos.map((logo) => (
+                <LogoItem
+                  key={logo.id}
+                  logo={logo}
+                  loading={loading}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
       </NeotekContainer>
     </NeotekSection>
   )

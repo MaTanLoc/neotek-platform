@@ -1,18 +1,29 @@
 .proof-metrics-section {
   position: relative;
   overflow: hidden;
-  padding-block: var(--neotek-space-12);
-  background: var(--neotek-color-primary);
+  --neotek-section-padding: var(--neotek-space-12);
+  background: var(--neotek-gradient-dark);
   color: var(--neotek-color-text-inverse);
 }
+
+/* ================================
+   Layout
+================================ */
 
 .proof-metrics-container {
   position: relative;
   z-index: 1;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  column-gap: clamp(var(--neotek-space-8), 7vw, var(--neotek-space-20));
-  width: min(100% - (var(--neotek-container-padding-desktop) * 2), var(--neotek-container-wide-max-width));
+  column-gap: clamp(
+    var(--neotek-space-8),
+    7vw,
+    var(--neotek-space-20)
+  );
+  width: min(
+    100% - (var(--neotek-container-padding-desktop) * 2),
+    var(--neotek-container-wide-max-width)
+  );
   max-width: var(--neotek-container-wide-max-width);
 }
 
@@ -21,16 +32,26 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: start;
-  gap: clamp(var(--neotek-space-8), 7vw, var(--neotek-space-20));
 }
 
-.proof-visual-reserved {
+.proof-visual {
   min-width: 0;
+}
+
+.proof-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
 }
 
 .proof-metrics-content {
   min-width: 0;
 }
+
+/* ================================
+   Intro
+================================ */
 
 .proof-metrics-intro {
   max-width: 560px;
@@ -43,10 +64,18 @@
 .proof-metrics-intro__description {
   max-width: 540px;
   margin-top: var(--neotek-space-3);
-  color: color-mix(in srgb, var(--neotek-white) 78%, transparent);
+  color: color-mix(
+    in srgb,
+    var(--neotek-white) 78%,
+    transparent
+  );
   font-size: var(--neotek-font-size-sm);
   line-height: var(--neotek-line-height-relaxed);
 }
+
+/* ================================
+   Metrics
+================================ */
 
 .proof-metrics-grid {
   display: grid;
@@ -62,79 +91,161 @@
   align-items: start;
   gap: var(--neotek-space-4);
   min-width: 0;
-  opacity: 0;
   padding-block: var(--neotek-space-2);
-  transition: opacity var(--neotek-duration-normal) var(--neotek-ease-standard);
+  opacity: 0;
+  transition: opacity var(--neotek-duration-normal)
+    var(--neotek-ease-standard);
 }
 
 .proof-metric-item.is-visible {
   opacity: 1;
 }
 
-.proof-metric-card__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid color-mix(in srgb, var(--neotek-white) 50%, transparent);
-  border-radius: var(--neotek-radius-full);
-  color: var(--neotek-white);
-}
-
 .proof-metric-item__content {
   min-width: 0;
 }
 
-.proof-metric-card__value {
+.proof-metric-card__icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--neotek-radius-xl);
+  background: color-mix(
+    in srgb,
+    var(--neotek-white) 25%,
+    transparent
+  );
   color: var(--neotek-white);
-  font-size: clamp(var(--neotek-font-size-2xl), 3vw, var(--neotek-font-size-4xl));
-  font-weight: var(--neotek-font-weight-extrabold);
-  line-height: 1;
 }
 
-.proof-metric-card__label {
+.proof-metric-card__value {
+  color: var(--neotek-white);
+  font-size: clamp(
+    var(--neotek-font-size-2xl),
+    3vw,
+    var(--neotek-font-size-4xl)
+  );
+  font-weight: var(--neotek-font-weight-extrabold);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.proof-metric-card__title {
   margin-top: var(--neotek-space-2);
-  color: color-mix(in srgb, var(--neotek-white) 76%, transparent);
+  color: var(--neotek-white);
   font-size: var(--neotek-font-size-sm);
-  font-weight: var(--neotek-font-weight-regular);
+  font-weight: var(--neotek-font-weight-semibold);
   line-height: var(--neotek-line-height-snug);
 }
 
+.proof-metric-card__subtitle {
+  max-width: 260px;
+  margin-top: 4px;
+  color: color-mix(
+    in srgb,
+    var(--neotek-white) 62%,
+    transparent
+  );
+  font-size: var(--neotek-font-size-xs);
+  font-weight: var(--neotek-font-weight-regular);
+  line-height: var(--neotek-line-height-relaxed);
+}
+
+/* ================================
+   Actions
+================================ */
+
 .proof-metrics-actions {
-  grid-column: 2;
   display: flex;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
   gap: var(--neotek-space-3);
-  margin-top: var(--neotek-space-8);
 }
 
-.proof-metrics-action:disabled {
-  cursor: not-allowed;
-  opacity: 0.62;
+.proof-metrics-action {
+  min-height: 44px;
+  border-radius: var(--neotek-radius-md);
+  font-weight: var(--neotek-font-weight-semibold);
+  transition:
+    background-color var(--neotek-duration-fast)
+      var(--neotek-ease-standard),
+    border-color var(--neotek-duration-fast)
+      var(--neotek-ease-standard),
+    color var(--neotek-duration-fast)
+      var(--neotek-ease-standard),
+    transform var(--neotek-duration-fast)
+      var(--neotek-ease-standard);
 }
 
-.proof-metrics-action--purchase::after {
-  transition: transform var(--neotek-duration-fast) var(--neotek-ease-standard);
+/* Primary */
+
+.proof-metrics-actions .proof-metrics-action--trial {
+  background: var(--neotek-white);
+  border-color: var(--neotek-white);
+  color: var(--neotek-color-primary);
 }
 
-.proof-metrics-action--purchase:hover::after {
-  transform: translateX(3px);
+.proof-metrics-actions .proof-metrics-action--trial:hover {
+  background: var(--neotek-red-50);
+  border-color: var(--neotek-red-50);
+  color: var(--neotek-color-primary-hover);
 }
+
+/* Secondary */
+
+.proof-metrics-actions .proof-metrics-action--pricing {
+  background: transparent;
+  border: 1px solid color-mix(
+    in srgb,
+    var(--neotek-white) 70%,
+    transparent
+  );
+  color: var(--neotek-white);
+}
+
+.proof-metrics-actions .proof-metrics-action--pricing:hover {
+  background: color-mix(
+    in srgb,
+    var(--neotek-white) 12%,
+    transparent
+  );
+  border-color: var(--neotek-white);
+}
+
+/* Text action */
+
+.proof-metrics-actions .proof-metrics-action--purchase {
+  padding-inline: var(--neotek-space-2);
+  background: transparent;
+  border-color: transparent;
+  color: var(--neotek-white);
+}
+
+.proof-metrics-actions .proof-metrics-action--purchase:hover {
+  background: none;
+  color: var(--neotek-red-50);
+  transform: translateX(2px);
+}
+
+/* ================================
+   Tablet
+================================ */
 
 @media (max-width: 1100px) {
   .proof-metrics-container {
-    width: calc(100% - (var(--neotek-container-padding-tablet) * 2));
+    display: block;
+    width: calc(
+      100% - (var(--neotek-container-padding-tablet) * 2)
+    );
     column-gap: var(--neotek-space-8);
   }
 
   .proof-metrics-row {
     gap: var(--neotek-space-8);
-  }
-
-  .proof-metrics-container {
-    display: block;
   }
 
   .proof-metrics-grid {
@@ -145,14 +256,20 @@
     gap: var(--neotek-space-3);
   }
 
-  .proof-metrics-actions {
-    grid-column: 2;
+  .proof-metric-card__subtitle {
+    max-width: 220px;
   }
 }
 
+/* ================================
+   Mobile
+================================ */
+
 @media (max-width: 767px) {
   .proof-metrics-container {
-    width: calc(100% - (var(--neotek-container-padding-mobile) * 2));
+    width: calc(
+      100% - (var(--neotek-container-padding-mobile) * 2)
+    );
   }
 
   .proof-metrics-row {
@@ -162,22 +279,73 @@
     gap: var(--neotek-space-8);
   }
 
-  .proof-visual-reserved {
-    min-height: var(--neotek-space-12);
+  .proof-visual {
+    width: 100%;
   }
 
   .proof-metrics-grid {
-    grid-template-columns: 1fr;
-    gap: var(--neotek-space-2);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--neotek-space-4);
+    row-gap: var(--neotek-space-6);
+  }
+
+  .proof-metric-item {
+    gap: var(--neotek-space-3);
+    padding-block: 0;
+  }
+
+  .proof-metric-card__icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .proof-metric-card__icon svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .proof-metric-card__value {
+    font-size: clamp(
+      var(--neotek-font-size-2xl),
+      8vw,
+      var(--neotek-font-size-3xl)
+    );
+  }
+
+  .proof-metric-card__title {
+    margin-top: 6px;
+    font-size: var(--neotek-font-size-xs);
+  }
+
+  .proof-metric-card__subtitle {
+    max-width: 170px;
+    margin-top: 3px;
+    font-size: 11px;
+    line-height: 1.45;
   }
 
   .proof-metrics-actions {
-    grid-column: 1;
     flex-direction: column;
-    align-items: stretch;
-    margin-top: var(--neotek-space-10);
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: var(--neotek-space-8);
+  }
+
+  .proof-metrics-actions .proof-metrics-action--trial,
+  .proof-metrics-actions .proof-metrics-action--pricing {
+    width: min(100%, 280px);
+    justify-content: center;
+  }
+
+  .proof-metrics-actions .proof-metrics-action--purchase {
+    width: auto;
   }
 }
+
+/* ================================
+   Reduced motion
+================================ */
 
 @media (prefers-reduced-motion: reduce) {
   .proof-metric-item,

@@ -1,0 +1,34 @@
+.neotek-not-found {
+  min-height: 100svh;
+  display: grid;
+  align-items: center;
+  padding-block: var(--neotek-space-16);
+  background: var(--neotek-color-background-subtle);
+  text-align: center;
+}
+
+.neotek-not-found__code {
+  margin: 0 0 var(--neotek-space-4);
+  color: var(--neotek-color-primary);
+  font-size: var(--neotek-font-size-7xl);
+  font-weight: var(--neotek-font-weight-extrabold);
+  line-height: var(--neotek-line-height-tight);
+}
+
+.neotek-not-found h1 {
+  margin: 0 0 var(--neotek-space-4);
+  font-size: var(--neotek-font-size-4xl);
+  line-height: var(--neotek-line-height-snug);
+}
+
+.neotek-not-found__description {
+  margin: 0 0 var(--neotek-space-8);
+  color: var(--neotek-color-text-secondary);
+  line-height: var(--neotek-line-height-relaxed);
+}
+
+@media (max-width: 600px) {
+  .neotek-not-found h1 {
+    font-size: var(--neotek-font-size-3xl);
+  }
+}

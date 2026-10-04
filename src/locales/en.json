@@ -1,13 +1,553 @@
 {
-  "nav": {"solutions":"Solutions","about":"About NeoTek","careers":"Careers","support":"Support","knowledge":"Knowledge","login":"Log in","demo":"Book a Demo","main":"Main navigation","mobile":"Mobile navigation","openMenu":"Open navigation menu","closeMenu":"Close menu","language":"Change language","vietnamese":"Tiếng Việt","english":"English"},
-  "hero": {"slides": {"neotekGroup":{"eyebrow":"Neotek Group","title":"Management Art for Enterprise.","description":"Technology that shapes the art of enterprise management.","primary":"Book a Demo","secondary":"Explore the platform"},"erpSolutions":{"eyebrow":"NeoERP","title":"[TODO: NeoERP solution]","description":"[TODO: Solution description based on NeoERP documentation and Figma.]","primary":"Book a Demo","secondary":"View solutions"},"digitalTransformation":{"eyebrow":"Digital transformation","title":"[TODO: Enterprise digital transformation]","description":"[TODO: Description based on official NeoTek content.]","primary":"Get business advice","secondary":"Explore features"}},"previous":"Previous slide","next":"Next slide","choose":"Choose hero slide","slide":"Go to slide {{count}}"},
-  "why": {"title":"Why do businesses need an integrated management platform?","description":"When data and processes are connected, businesses have a stronger basis for consistent management and decision-making.","items":{"centralizedData":{"title":"Centralized data","description":"Information is managed centrally, helping departments and entities access, find, and use data in one system."},"endToEnd":{"title":"Connected end to end","description":"Data is carried between business processes, reducing duplicate entry and helping teams work from a shared source of information."},"clearProcess":{"title":"Clear processes","description":"Approval workflows can be carried out online according to configured conditions and approval levels."},"multiEntity":{"title":"Multi-entity management","description":"For companies with multiple entities or branches, data can be managed centrally and consistently while supporting system-wide oversight."},"timelyInfo":{"title":"Timely information","description":"The system provides management reports and information to help managers understand the situation across the organization."}}},
-  "solutions": {"title":"Comprehensive management solutions for enterprises","aria":"Solution groups","groups":{"business":{"title":"Business","description":"Build sales, customer care, and opportunity management processes from start to finish."},"supplyChain":{"title":"Supply Chain","description":"Connect purchasing, inventory, transportation, and goods flows on one management platform."},"manufacturing":{"title":"Manufacturing","description":"Plan and control materials, production processes, and costs across each stage."},"management":{"title":"Management","description":"Connect HR, projects, finance, and management information to support enterprise decisions."}},"modules":{"sales":"Sales","crm":"CRM","procurement":"Purchasing","inventory":"Warehouse & logistics","production":"Production","maintenance":"Maintenance","hr":"HR","project":"Projects","finance":"Finance"}},
-  "metrics":{"articles":"Articles","ebook":"Ebooks & Templates","webinar":"Videos & Webinars","courses":"Courses","title":"Notable numbers","description":"Selected figures that help illustrate the scale and ecosystem of content and solutions NeoTek is building.","actions":{"trial":"Try for free","pricing":"Pricing","purchase":"Buy now"}},
-  "trustedBy":{"title":"Trusted by businesses across industries"},
-  "testimonials":{"title":"Customer & partner feedback","demo":"DEMO","placeholder":"Customer and partner feedback is awaiting verified data.","demoData":"Testimonial data: TODO"},
-  "cta":{"eyebrow":"PARTNERING WITH BUSINESSES","title":"Is your business facing management challenges?","titleLine1":"Is your business facing","titleLine2":"management challenges?","description":"Work with NeoTek to find a solution suited to your business model and real-world processes.","descriptionLine1":"Work with NeoTek to find a solution suited to your business model and","descriptionLine2":"real-world processes.","demo":"Book a Demo","platform":"Explore the platform"},
-  "faq":{"eyebrow":"NEOERP ANSWERS","title":"Frequently asked questions","items":{"whatIs":"What is NeoERP and which businesses is it suitable for?","modules":"Which management modules are included in NeoERP?","integration":"Can NeoERP connect with other systems?","multiCompany":"How does NeoERP support businesses with multiple companies or branches?","access":"Can I access NeoERP on computers and mobile devices?","sharedData":"How can departments share data in NeoERP?","budget":"Does NeoERP support budget management and forecasting?","finance":"How does NeoERP support reporting and financial consolidation for multi-entity businesses?"},"answers":{"whatIs":"NeoERP is an enterprise resource planning solution that integrates business functions from multiple departments into one software system. It can be used by businesses that need centralized management of business, operations, finance, and related processes.","modules":"The documented functional areas include sales, CRM, purchasing, warehouse, logistics, project management, HR and payroll, accounting and finance, budget and forecast, production, and maintenance.","integration":"NeoERP can connect with other systems through Webservice. The specific scope depends on the systems and integration requirements defined for each business.","multiCompany":"NeoERP supports centralized and consistent data management for multiple companies or branches, while enabling independent accounting by entity and consolidated financial reporting.","access":"NeoERP is web-based and can be accessed through computers and mobile devices.","sharedData":"Customer and business data can be managed centrally in one system. Integrated functions allow information to carry between processes, including connecting purchasing, sales, warehouse, production costing, and receipts and payments with accounting.","budget":"The Budget & Forecast module uses historical data to support budgeting and revenue forecasting.","finance":"Accounting & Finance aggregates accounting data and supports accounting, financial, and management reports. For multi-entity businesses, the system supports accounting by entity and consolidated financial reporting."}},
-  "footer":{"tagline":"Management Art for Enterprise.","description":"NeoTek develops enterprise management solutions that connect data, processes, and departments on one unified platform.","cta":"Want to learn about NeoERP?","demo":"Book a Demo","groups":{"solutions":"SOLUTIONS","about":"ABOUT NEOTEK","resources":"RESOURCES","support":"SUPPORT"},"links":{"neoerp":"NeoERP","business":"Business","supplyChain":"Supply Chain","manufacturing":"Manufacturing","management":"Management","about":"About NeoTek","careers":"Careers","partners":"Partners","knowledge":"Knowledge","faq":"Frequently asked questions","contact":"Contact","support":"Support"},"addressLabel":"Address","company":"CÔNG TY TNHH NEOTEK","address":"02 Truong Son Street, Tan Binh District, Ho Chi Minh City","copyright":"© NeoTek. All rights reserved.","privacy":"Privacy policy","terms":"Terms of use","navigation":"Footer navigation","legal":"Legal information"},
-  "common":{"previous":"Previous","next":"Next","close":"Close"}
+  "seo": {
+    "home": {
+      "title": "Neotek | Enterprise management platform",
+      "description": "Explore the Neotek enterprise management platform and solutions that connect business operations."
+    },
+    "solutions": {
+      "title": "Enterprise management solutions | Neotek",
+      "description": "Explore Neotek solutions for business, supply chain, operations and enterprise management."
+    },
+    "booking": {
+      "title": "Book a demo | Neotek",
+      "description": "Choose a demo appointment to explore Neotek enterprise management solutions."
+    },
+    "login": {
+      "title": "Sign in | Neotek",
+      "description": "Sign in to your Neotek account."
+    },
+    "register": {
+      "title": "Register | Neotek",
+      "description": "Register your Neotek account."
+    }
+  },
+  "booking": {
+    "eyebrow": "NeoERP consultation",
+    "title": "Book a NeoERP consultation",
+    "description": "Choose a time to discuss your business processes and ERP needs.",
+    "today": "Today",
+    "previousDay": "Previous day",
+    "nextDay": "Next day",
+    "previousWeek": "Previous week",
+    "nextWeek": "Next week",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "view": "Calendar view",
+    "workWeek": "Work week",
+    "week": "Week",
+    "month": "Month",
+    "monthCalendar": "Monthly consultation calendar",
+    "monthInstructions": "Select a date to see its available consultation times.",
+    "monthKeyboardHelp": "Keyboard: use arrow keys to move between dates, then Enter to open the day.",
+    "monthDayInstructions": "{{date}}, {{count}} unavailable periods. Select to see available times.",
+    "moreEvents": "+{{count}} more",
+    "customDuration": "Selected range: {{count}} minutes",
+    "moveSelection": "Selected {{start}} to {{end}}. Drag to move, use up/down arrows to adjust, or press Enter to book.",
+    "chooseDate": "Choose a date",
+    "preferences": "Booking preferences",
+    "duration": "Meeting duration",
+    "minutes": "{{count}} minutes",
+    "timezone": "Time zone",
+    "gmt": "GMT+7",
+    "available": "Available",
+    "busy": "Unavailable",
+    "selected": "Your selection",
+    "mockAvailability": "Sample availability for demonstration. This is not a live consultant calendar.",
+    "mockNotice": "Demo only: information stays in this page session. No meeting is sent or booked with a consultant.",
+    "instructions": "Click an open time or drag to select a range. Drag your selected block to change its time.",
+    "keyboardHelp": "Keyboard: Tab to a day, use ↑ / ↓ to change time, then Enter to select.",
+    "calendar": "Consultation availability calendar",
+    "timeline": "Scrollable calendar timeline, 08:00 to 18:00",
+    "dayInstructions": "{{date}}, {{time}}. Use up and down arrows to choose a time, and Enter to select.",
+    "conflict": "This time overlaps an unavailable period or ends after 18:00. Please choose another time.",
+    "durationConflict": "The new duration does not fit this time. Please choose another slot.",
+    "drawerTitle": "Book a consultation",
+    "close": "Close booking dialog",
+    "fields": {
+      "name": "Full name",
+      "email": "Work email",
+      "company": "Company",
+      "phone": "Phone number",
+      "message": "What would you like to discuss?"
+    },
+    "confirm": "Confirm consultation",
+    "successTitle": "Your consultation is confirmed",
+    "successDescription": "The demo confirmation is complete. Your selected time is reserved locally until you leave this page.",
+    "bookAnother": "Book another time",
+    "home": "Back to home"
+  },
+  "nav": {
+    "solutions": "Solutions",
+    "solutionsMenu": {
+      "overview": "NeoERP overview",
+      "overviewDescription": "An integrated management platform for enterprises.",
+      "modules": "9 modules",
+      "sales": "Sales",
+      "crm": "CRM",
+      "purchasing": "Purchasing",
+      "warehouse": "Warehouse management",
+      "logistics": "Logistics",
+      "projects": "Project management",
+      "production": "Production",
+      "hrPayroll": "HR & Payroll",
+      "finance": "Finance & Accounting",
+      "features": "Key features",
+      "groupsLabel": "Solution groups",
+      "groups": {
+        "business": "Business",
+        "supplyChain": "Supply Chain",
+        "operations": "Operations",
+        "management": "Finance & People"
+      },
+      "salesDescription": "Manage quotations, orders, customers, pricing, and the sales process.",
+      "crmDescription": "Manage customer relationships, interactions, opportunities, and follow-up.",
+      "purchasingDescription": "Manage purchasing requests, orders, suppliers, and procurement workflows.",
+      "warehouseDescription": "Control inventory, receipts, issues, transfers, and stock levels.",
+      "logisticsDescription": "Coordinate delivery, transportation, schedules, and goods movement.",
+      "projectsDescription": "Plan projects, assign work, monitor progress, and control project information.",
+      "productionDescription": "Plan and control production, materials, stages, and production costs.",
+      "hrPayrollDescription": "Manage employees, HR processes, payroll, and related information.",
+      "financeDescription": "Manage accounting, financial data, payments, and management reporting."
+    },
+    "about": "About NeoTek",
+    "aboutMenu": {
+      "introduction": "Introduction",
+      "capabilities": "Capabilities & experience",
+      "team": "Team",
+      "introductionDescription": "An overview of NeoTek.",
+      "capabilitiesDescription": "Capabilities and solution implementation experience.",
+      "teamDescription": "Learn more about the NeoTek team."
+    },
+    "careers": "Careers",
+    "support": "Support",
+    "supportMenu": {
+      "supportCenter": "Support center",
+      "guides": "Guides",
+      "documents": "Documentation",
+      "faq": "FAQ",
+      "supportCenterDescription": "Support information and resources for businesses.",
+      "guidesDescription": "Guides for using and working with the system.",
+      "documentsDescription": "Documentation and reference materials.",
+      "faqDescription": "Answers to frequently asked questions about NeoERP."
+    },
+    "contact": "Contact",
+    "login": "Log in",
+    "demo": "Book a Demo",
+    "main": "Main navigation",
+    "mobile": "Mobile navigation",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close menu",
+    "language": "Change language",
+    "vietnamese": "Tiếng Việt",
+    "english": "English"
+  },
+  "hero": {
+    "slides": {
+      "neotekGroup": {
+        "eyebrow": "Neotek Group",
+        "title": "Management Art for Enterprise.",
+        "description": "Technology that shapes the art of enterprise management.",
+        "primary": "Book a Demo",
+        "secondary": "Explore the platform"
+      },
+      "erpSolutions": {
+        "eyebrow": "NEOERP",
+        "title": "Connected management for your entire enterprise.",
+        "description": "Connect data and processes across business, supply chain, production, and finance on one unified platform.",
+        "primary": "Book a Demo",
+        "secondary": "Explore Solutions"
+      },
+      "digitalTransformation": {
+        "eyebrow": "DIGITAL TRANSFORMATION",
+        "title": "Connect your business on one platform.",
+        "description": "Digitize data, processes, and management operations for a more connected enterprise.",
+        "primary": "Get Business Advice",
+        "secondary": "Explore Features"
+      }
+    },
+    "previous": "Previous slide",
+    "next": "Next slide",
+    "choose": "Choose hero slide",
+    "slide": "Go to slide {{count}}"
+  },
+  "why": {
+    "titleHighlight": "Why do businesses need",
+    "titleRest": "an integrated management platform?",
+    "description": "Connect data and processes in one unified system for consistent management and decision-making.",
+    "items": {
+      "centralizedData": {
+        "title": "Centralized data",
+        "description": "Manage data in one system for easier access and use across departments."
+      },
+      "endToEnd": {
+        "title": "Connected processes",
+        "description": "Connect data across business processes, reducing duplicate entry and improving collaboration."
+      },
+      "clearProcess": {
+        "title": "Clear processes",
+        "description": "Run workflows and approvals online based on configured conditions."
+      },
+      "multiEntity": {
+        "title": "Multi-entity management",
+        "description": "Manage data centrally and consistently across multiple companies or branches."
+      },
+      "timelyInfo": {
+        "title": "Timely information",
+        "description": "Access management reports and information to understand the organization at a glance."
+      }
+    }
+  },
+  "solutions": {
+    "title": "Comprehensive management solutions for enterprises",
+    "aria": "Solution groups",
+    "groups": {
+      "business": {
+        "title": "Business",
+        "description": "Build sales, customer care, and opportunity management processes from start to finish."
+      },
+      "supplyChain": {
+        "title": "Supply Chain",
+        "description": "Connect purchasing, inventory, transportation, and goods flows on one management platform."
+      },
+      "manufacturing": {
+        "title": "Manufacturing",
+        "description": "Plan and control materials, production processes, and costs across each stage."
+      },
+      "management": {
+        "title": "Management",
+        "description": "Connect HR, projects, finance, and management information to support enterprise decisions."
+      }
+    },
+    "modules": {
+      "sales": "Sales",
+      "crm": "CRM",
+      "procurement": "Purchasing",
+      "inventory": "Warehouse & logistics",
+      "production": "Production",
+      "maintenance": "Maintenance",
+      "hr": "HR",
+      "project": "Projects",
+      "finance": "Finance"
+    }
+  },
+  "metrics": {
+    "title": "Partnering with businesses on their management journey",
+    "description": "Connect business, operations, and finance on one unified management platform.",
+    "customers": {
+      "title": "Featured customers",
+      "subtitle": "Businesses across multiple industries"
+    },
+    "efficiency": {
+      "title": "Time saved",
+      "subtitle": "For contract management, lookup & storage"
+    },
+    "modules": {
+      "title": "Management modules",
+      "subtitle": "Connected business processes on one platform"
+    },
+    "industries": {
+      "title": "Industry groups",
+      "subtitle": "From manufacturing and trade to services"
+    },
+    "actions": {
+      "trial": "Try for free",
+      "pricing": "Pricing",
+      "purchase": "Buy now"
+    }
+  },
+  "trustedBy": {
+    "title": "Trusted by businesses across industries"
+  },
+  "solutionClusters": {
+    "eyebrow": "SOLUTION ECOSYSTEM",
+    "titleBefore": "One platform for",
+    "titleHighlight": "your entire enterprise.",
+    "description": "Connect core business activities in one unified management ecosystem, from business and supply chain to manufacturing and enterprise management.",
+    "aria": "Solution groups",
+    "cta": "Explore solutions",
+    "groups": {
+      "business": {
+        "label": "Business",
+        "title": "Connect the entire journey from customer to revenue.",
+        "description": "Bring customer data, opportunities, and sales activities together on one unified platform."
+      },
+      "supplyChain": {
+        "label": "Supply Chain",
+        "title": "Connect the flow of goods from planning to delivery.",
+        "description": "Connect purchasing, inventory, and transportation to give businesses greater control across the supply chain."
+      },
+      "manufacturing": {
+        "label": "Manufacturing",
+        "title": "Manage production from planning through quality.",
+        "description": "Connect planning, materials, and production activities to improve operational control."
+      },
+      "management": {
+        "label": "Management",
+        "title": "See the full enterprise picture and make timely decisions.",
+        "description": "Bring management information, finance, and resources together for a unified view of the enterprise."
+      }
+    },
+    "modules": {
+      "crm": "CRM",
+      "marketing": "Marketing",
+      "sales": "Sales",
+      "purchasing": "Purchasing",
+      "warehouse": "Warehouse",
+      "logistics": "Logistics",
+      "productionPlanning": "Production planning",
+      "production": "Production",
+      "quality": "Quality",
+      "finance": "Finance",
+      "hr": "HR",
+      "management": "Operations"
+    }
+  },
+  "testimonials": {
+    "title": "Customer & partner feedback",
+    "demo": "DEMO",
+    "placeholder": "Customer and partner feedback is awaiting verified data.",
+    "demoData": "Testimonial data: TODO"
+  },
+  "cta": {
+    "eyebrow": "PARTNERING WITH BUSINESSES",
+    "title": "Is your business facing management challenges?",
+    "titleLine1": "Is your business facing",
+    "titleLine2": "management challenges?",
+    "description": "Work with NeoTek to find a solution suited to your business model and real-world processes.",
+    "descriptionLine1": "Work with NeoTek to find a solution suited to your business model and",
+    "descriptionLine2": "real-world processes.",
+    "demo": "Book a Demo",
+    "platform": "Explore the platform"
+  },
+  "faq": {
+    "eyebrow": "NEOERP FAQ",
+    "title": "Your questions, answered",
+    "description": "Get quick answers to common questions about NeoERP and how it helps businesses manage their operations effectively.",
+    "cta": "Contact us",
+    "items": {
+      "whatIs": "What is NeoERP and which businesses is it suitable for?",
+      "modules": "Which management modules are included in NeoERP?",
+      "integration": "Can NeoERP connect with other systems?",
+      "multiCompany": "How does NeoERP support businesses with multiple companies or branches?",
+      "access": "Can I access NeoERP on computers and mobile devices?",
+      "sharedData": "How can departments share data in NeoERP?",
+      "budget": "Does NeoERP support budget management and forecasting?",
+      "finance": "How does NeoERP support reporting and financial consolidation for multi-entity businesses?"
+    },
+    "answers": {
+      "whatIs": "NeoERP is an enterprise resource planning solution that integrates business functions from multiple departments into one software system. It can be used by businesses that need centralized management of business, operations, finance, and related processes.",
+      "modules": "The documented functional areas include sales, CRM, purchasing, warehouse, logistics, project management, HR and payroll, accounting and finance, budget and forecast, production, and maintenance.",
+      "integration": "NeoERP can connect with other systems through Webservice. The specific scope depends on the systems and integration requirements defined for each business.",
+      "multiCompany": "NeoERP supports centralized and consistent data management for multiple companies or branches, while enabling independent accounting by entity and consolidated financial reporting.",
+      "access": "NeoERP is web-based and can be accessed through computers and mobile devices.",
+      "sharedData": "Customer and business data can be managed centrally in one system. Integrated functions allow information to carry between processes, including connecting purchasing, sales, warehouse, production costing, and receipts and payments with accounting.",
+      "budget": "The Budget & Forecast module uses historical data to support budgeting and revenue forecasting.",
+      "finance": "Accounting & Finance aggregates accounting data and supports accounting, financial, and management reports. For multi-entity businesses, the system supports accounting by entity and consolidated financial reporting."
+    }
+  },
+  "footer": {
+    "tagline": "Management Art for Enterprise.",
+    "description": "NeoTek develops enterprise management solutions that connect data, processes, and departments on one unified platform.",
+    "cta": "Want to learn about NeoERP?",
+    "demo": "Book a Demo",
+    "groups": {
+      "solutions": "SOLUTIONS",
+      "about": "ABOUT NEOTEK",
+      "support": "SUPPORT"
+    },
+    "links": {
+      "neoerp": "NeoERP",
+      "business": "Business",
+      "supplyChain": "Supply Chain",
+      "manufacturing": "Manufacturing",
+      "management": "Management",
+      "about": "About NeoTek",
+      "careers": "Careers",
+      "partners": "Partners",
+      "knowledge": "Knowledge",
+      "faq": "Frequently asked questions",
+      "contact": "Contact",
+      "support": "Support"
+    },
+    "addressLabel": "Address",
+    "company": "CÔNG TY TNHH NEOTEK",
+    "address": "02 Truong Son Street, Tan Binh District, Ho Chi Minh City",
+    "copyright": "© NeoTek. All rights reserved.",
+    "privacy": "Privacy policy",
+    "terms": "Terms of use",
+    "navigation": "Footer navigation",
+    "legal": "Legal information",
+    "ctaDescription": "Explore the integrated management platform and how NeoTek connects data, processes, and departments.",
+    "socialLabel": "NeoTek social channels"
+  },
+  "common": {
+    "previous": "Previous",
+    "next": "Next",
+    "close": "Close"
+  },
+  "solutionsPage": {
+    "hero": {
+      "eyebrow": "NEOERP SOLUTION ECOSYSTEM",
+      "titleLine1": "Every operation.",
+      "titleHighlight": "On one platform.",
+      "description": "Connect business, supply chain, projects, production, and management activities on one platform.",
+      "primary": "Explore solutions",
+      "secondary": "Book a Demo",
+      "moduleNote": "9 core modules · One integrated management system",
+      "visualLabel": "Illustration of the NeoERP overview interface",
+      "dashboardLabel": "Workspace",
+      "dashboardEyebrow": "PLATFORM OVERVIEW",
+      "dashboardTitle": "Connected business activities",
+      "connectionLabel": "Connected data and workflows",
+      "noteTop": "Centralized data",
+      "noteBottom": "Follow workflows end to end",
+      "scrollLabel": "Scroll to solution groups",
+      "scrollText": "Explore below"
+    },
+    "intro": {
+      "eyebrow": "EXPLORE SOLUTIONS",
+      "titleLine1": "From individual tasks",
+      "titleHighlight": "to connected operations.",
+      "description": "Start with the management needs of each department. NeoERP modules are organized by business area to help you find a relevant solution."
+    },
+    "groups": {
+      "business": {
+        "eyebrow": "BUSINESS",
+        "title": "Connect customers and sales activities.",
+        "shortTitle": "Business",
+        "description": "Manage customer information and sales processes on one platform, from customer records to orders and sales policies.",
+        "visualLabel": "Placeholder for the business solution visual"
+      },
+      "supplyChain": {
+        "eyebrow": "SUPPLY CHAIN",
+        "title": "Track the flow of goods end to end.",
+        "shortTitle": "Supply chain",
+        "description": "Connect purchasing, warehouse management, and logistics to track goods across receiving, dispatch, storage, and delivery.",
+        "visualLabel": "Placeholder for the supply chain solution visual"
+      },
+      "operations": {
+        "eyebrow": "PROJECTS & PRODUCTION",
+        "title": "Track work, progress, and production.",
+        "shortTitle": "Projects & production",
+        "description": "Plan, assign, and track project progress while managing processes and resources related to production.",
+        "visualLabel": "Placeholder for the operations solution visual"
+      },
+      "management": {
+        "eyebrow": "BUSINESS MANAGEMENT",
+        "title": "Connect people and financial information.",
+        "shortTitle": "Management",
+        "description": "Bring together HR, payroll, accounting, and financial processes to support operational tracking and management reporting.",
+        "visualLabel": "Placeholder for the enterprise management solution visual"
+      }
+    },
+    "modules": {
+      "crm": "CRM",
+      "sales": "Sales",
+      "purchasing": "Purchasing",
+      "warehouse": "Warehouse management",
+      "logistics": "Logistics",
+      "projects": "Project management",
+      "production": "Production",
+      "maintenance": "Maintenance",
+      "hrPayroll": "HR & payroll",
+      "finance": "Finance & accounting",
+      "forecast": "Budget & forecast"
+    },
+    "moduleDetails": {
+      "crm": {
+        "description": "Manage customer relationships from capturing information through follow-up and review."
+      },
+      "sales": {
+        "description": "Track sales activities, orders, and reports using the business's sales policies."
+      },
+      "purchasing": {
+        "description": "Manage purchase orders and supplier information."
+      },
+      "warehouse": {
+        "description": "Track items, warehouse locations, and inventory."
+      },
+      "logistics": {
+        "description": "Manage transportation and delivery activities."
+      },
+      "production": {
+        "description": "Manage production processes, plans, and costs."
+      },
+      "maintenance": {
+        "description": "Track resources, schedules, and maintenance activities."
+      },
+      "projects": {
+        "description": "Plan and track project phases, budgets, and progress."
+      },
+      "hrPayroll": {
+        "description": "Manage HR processes, attendance, and payroll."
+      },
+      "finance": {
+        "description": "Track accounting activities and compile financial and management reports."
+      },
+      "forecast": {
+        "description": "Use historical data to prepare forecasts and support budget control."
+      }
+    },
+    "capabilities": {
+      "customerRecords": "Maintain customer and sales collaborator records.",
+      "customerAssignment": "Assign customer lists to responsible team members.",
+      "customerHistory": "Schedule customer communication and review interactions.",
+      "salesPolicies": "Manage sales policies, promotions, and commissions.",
+      "supplierInformation": "Track supplier information on purchase orders.",
+      "purchaseReports": "Compile purchasing reports.",
+      "itemCatalog": "Manage the item catalog.",
+      "warehouseLocations": "Manage warehouses and storage locations.",
+      "warehouseReports": "Review warehouse reports.",
+      "deliveryPlanning": "Manage transportation and delivery.",
+      "transportTracking": "Track transportation activities.",
+      "productionProcess": "Manage production process steps.",
+      "materialPlanning": "Calculate material requirements and schedule production.",
+      "productionCost": "Calculate product and production costs.",
+      "maintenanceAssets": "Register maintenance resources, assets, and spare parts.",
+      "maintenanceSchedules": "Track planned and unplanned maintenance.",
+      "projectPhases": "Structure projects into phases and plans.",
+      "projectBudget": "Manage project budgets.",
+      "recruitmentTraining": "Manage recruitment and training processes.",
+      "employeeRecords": "Manage employee records.",
+      "attendancePayroll": "Track attendance and payroll.",
+      "receivablesPayables": "Track accounts receivable and payable.",
+      "cashAndTax": "Manage cash transactions and tax accounting.",
+      "historicalForecast": "Use historical data to support forecasting.",
+      "budgetControl": "Prepare budgets, approvals, and execution tracking.",
+      "customers": "Manage customer records, assigned owners, and communication schedules.",
+      "salesOrders": "Track sales orders, sales policies, and promotion processes.",
+      "salesReports": "Review sales reports across management dimensions.",
+      "purchaseOrders": "Manage purchase orders and supplier information.",
+      "inventory": "Track items, warehouses, storage locations, and inventory reports.",
+      "delivery": "Manage transportation and delivery operations.",
+      "productionPlan": "Plan production, material requirements, and schedules.",
+      "maintenancePlan": "Track planned and unplanned maintenance activities.",
+      "people": "Manage employee records, attendance, and payroll.",
+      "budgets": "Prepare forecasts and budgets using historical data."
+    },
+    "details": {
+      "eyebrow": "BUSINESS AREAS",
+      "title": "Modules organized around business operations",
+      "description": "Explore the business functions documented for NeoERP."
+    },
+    "cta": {
+      "eyebrow": "NEOERP",
+      "title": "Explore a solution for your business",
+      "description": "Discuss the business functions and modules your organization needs to manage.",
+      "action": "Register"
+    },
+    "detailUnavailable": "The module detail page is not implemented yet.",
+    "modulesLabel": "Modules in this solution group",
+    "visualStatus": "In the system",
+    "visualConnected": "Connected business areas",
+    "exploreGroup": "Explore module",
+    "connection": {
+      "eyebrow": "ONE INTEGRATED PLATFORM",
+      "titleLine1": "Data does not stand alone.",
+      "titleHighlight": "Workflows connect.",
+      "description": "Modules are designed to carry information across related business processes, helping teams follow operations in one unified system.",
+      "diagramLabel": "Illustration of solution groups connected through NeoERP",
+      "hubLabel": "Integrated platform"
+    }
+  }
 }

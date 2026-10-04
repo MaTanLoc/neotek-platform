@@ -1,28 +1,38 @@
-import { useState } from 'react'
-import { Minus, Plus } from 'lucide-react'
+import { createSkeletonItems } from '../../../utils/skeleton'
+import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
+
 import { NeotekContainer } from '../../common/NeotekContainer/NeotekContainer'
 import { NeotekSection } from '../../common/NeotekSection/NeotekSection'
+
 import './FAQSection.css'
 
-const faqItems = [
-  { id: 'what-is-neoerp', questionKey: 'faq.items.whatIs', answerKey: 'faq.answers.whatIs' },
-  { id: 'neoerp-modules', questionKey: 'faq.items.modules', answerKey: 'faq.answers.modules' },
-  { id: 'system-integration', questionKey: 'faq.items.integration', answerKey: 'faq.answers.integration' },
-  { id: 'multi-company-branch', questionKey: 'faq.items.multiCompany', answerKey: 'faq.answers.multiCompany' },
-  { id: 'web-mobile-access', questionKey: 'faq.items.access', answerKey: 'faq.answers.access' },
-  { id: 'shared-data', questionKey: 'faq.items.sharedData', answerKey: 'faq.answers.sharedData' },
-  { id: 'budget-forecast', questionKey: 'faq.items.budget', answerKey: 'faq.answers.budget' },
-  { id: 'consolidated-finance', questionKey: 'faq.items.finance', answerKey: 'faq.answers.finance' },
-]
+function FAQIcon({ isOpen }) {
+  return (
+    <span
+      className={`faq-item__icon ${isOpen ? 'is-open' : ''}`}
+      aria-hidden="true"
+    >
+      <span className="faq-item__icon-line faq-item__icon-line--horizontal" />
+      <span className="faq-item__icon-line faq-item__icon-line--vertical" />
+    </span>
+  )
+}
 
-function FAQItem({ item, isOpen, onToggle, prefersReducedMotion, t }) {
-  const answerId = `${item.id}-answer`
-  const triggerId = `${item.id}-trigger`
+function FAQItem({
+  item,
+  isOpen,
+  onToggle,
+  prefersReducedMotion,
+  loading,
+}) {
+  const answerId = `faq-${item.id}-answer`
+  const triggerId = `faq-${item.id}-trigger`
 
   return (
     <div className={`faq-item ${isOpen ? 'is-open' : ''}`}>
+      <h3 className="faq-item__heading">
       <button
         type="button"
         className="faq-item__trigger"
@@ -30,51 +40,139 @@ function FAQItem({ item, isOpen, onToggle, prefersReducedMotion, t }) {
         aria-expanded={isOpen}
         aria-controls={answerId}
         onClick={() => onToggle(item.id)}
+        disabled={loading}
       >
-        <span>{t(item.questionKey)}</span>
-        {isOpen ? <Minus className="faq-item__icon" size={20} aria-hidden="true" /> : <Plus className="faq-item__icon" size={20} aria-hidden="true" />}
+        <span className="faq-item__question skeleton-target">
+          {item.question}
+        </span>
+
+        <FAQIcon isOpen={isOpen} />
       </button>
+      </h3>
+
       <motion.div
         id={answerId}
         className="faq-item__answer-wrap"
         role="region"
         aria-labelledby={triggerId}
-        initial={false}
-        animate={isOpen ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
-        transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.25, ease: 'easeOut' }}
         aria-hidden={!isOpen}
+        initial={false}
+        animate={
+          isOpen
+            ? { height: 'auto', opacity: 1 }
+            : { height: 0, opacity: 0 }
+        }
+        transition={
+          prefersReducedMotion
+            ? { duration: 0 }
+            : {
+                height: {
+                  duration: 0.38,
+                  ease: [0.22, 1, 0.36, 1],
+                },
+                opacity: {
+                  duration: 0.22,
+                  ease: 'easeOut',
+                },
+              }
+        }
       >
-        <p className="faq-item__answer">{t(item.answerKey)}</p>
+        <div
+          className="faq-item__answer"
+          dangerouslySetInnerHTML={{
+            __html: item.answerHtml,
+          }}
+        />
       </motion.div>
     </div>
   )
 }
 
-export function FAQSection() {
+export function FAQSection({
+  faqs = [],
+  loading = false,
+  error = null,
+}) {
   const { t } = useTranslation()
-  const [openFaqId, setOpenFaqId] = useState(faqItems[0].id)
   const prefersReducedMotion = useReducedMotion()
+  const [openFaqId, setOpenFaqId] = useState(null)
+  const visibleFaqs = loading ? createSkeletonItems(6, 'faq').map((item) => ({ ...item, question: '████████ ████████ ████████ ████████', answerHtml: '' })) : faqs
+
+  useEffect(() => {
+    setOpenFaqId(
+      faqs.length > 0
+        ? faqs[0].id
+        : null,
+    )
+  }, [faqs])
 
   const handleToggle = (id) => {
-    setOpenFaqId((current) => (current === id ? null : id))
+    setOpenFaqId((current) => (
+      current === id ? null : id
+    ))
   }
 
   return (
-    <NeotekSection className="faq-section" aria-labelledby="faq-heading">
+    <NeotekSection
+      className={`faq-section${loading ? ' is-loading' : ''}`}
+      aria-busy={loading}
+      aria-labelledby="faq-heading"
+    >
       <NeotekContainer className="faq-container">
         <header className="faq-heading">
-          <p className="faq-heading__eyebrow">{t('faq.eyebrow')}</p>
-          <h2 id="faq-heading" className="faq-heading__title">{t('faq.title')}</h2>
+          <p className="faq-heading__eyebrow">
+            {t('faq.eyebrow')}
+          </p>
+
+          <h2
+            id="faq-heading"
+            className="faq-heading__title"
+          >
+            {t('faq.title')}
+          </h2>
+
+          <p className="faq-heading__description">
+            {t('faq.description')}
+          </p>
+
+          <a
+            href="#contact"
+            className="faq-heading__cta"
+          >
+            {t('faq.cta')}
+            <span aria-hidden="true">→</span>
+          </a>
         </header>
-        <div className="faq-list">
-          {faqItems.map((item) => (
+
+        <div className="faq-list" aria-hidden={loading || undefined} inert={loading ? '' : undefined}>
+
+          {!loading && error ? (
+            <p
+              className="faq-section__status faq-section__status--error"
+              role="alert"
+            >
+              {t('faq.loadError', {
+                defaultValue: 'Không thể tải câu hỏi thường gặp.',
+              })}
+            </p>
+          ) : null}
+
+          {!loading && !error && faqs.length === 0 ? (
+            <p className="faq-section__status">
+              {t('faq.empty', {
+                defaultValue: 'Hiện chưa có câu hỏi thường gặp.',
+              })}
+            </p>
+          ) : null}
+
+          {(loading || !error) && visibleFaqs.map((item) => (
             <FAQItem
               key={item.id}
               item={item}
-              isOpen={item.id === openFaqId}
+              isOpen={!loading && item.id === openFaqId}
               onToggle={handleToggle}
-              prefersReducedMotion={prefersReducedMotion}
-              t={t}
+              prefersReducedMotion={loading || prefersReducedMotion}
+              loading={loading}
             />
           ))}
         </div>

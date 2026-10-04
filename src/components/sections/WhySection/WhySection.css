@@ -1,7 +1,3 @@
-.why-section {
-  background: var(--neotek-color-background);
-}
-
 .why-section__intro {
   max-width: 880px;
   margin: 0 auto var(--neotek-space-12);
@@ -12,13 +8,17 @@
   display: grid;
   gap: var(--neotek-space-1);
   color: var(--neotek-color-text-primary);
-  font-size: clamp(var(--neotek-font-size-3xl), 3vw, var(--neotek-font-size-5xl));
+  font-size: clamp(var(--neotek-font-size-2xl), 4vw, var(--neotek-font-size-5xl));
   line-height: var(--neotek-line-height-tight);
   letter-spacing: -0.05em;
 }
 
-.why-section__title span#why-neotek-title-text {
+.why-section__title-highlight {
   color: var(--neotek-color-primary);
+}
+
+.why-section__title-rest {
+  color: var(--neotek-color-text-primary);
 }
 
 .why-section__description {
@@ -32,7 +32,7 @@
 .why-proof-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: var(--neotek-space-5);
+  gap: var(--neotek-space-8);
   align-items: start;
 }
 
@@ -49,24 +49,31 @@
   margin-bottom: var(--neotek-space-4);
 }
 
+.why-proof-item__content {
+  min-width: 0;
+}
+
 .why-proof-item__icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 72px;
-  height: 72px;
-  border: 2px solid var(--neotek-color-primary);
-  border-radius: 50%;
-  background: var(--neotek-color-background);
+  width: 64px;
+  height: 64px;
+  border-radius: 35%;
+  background: var(--neotek-color-primary-soft);
   color: var(--neotek-color-primary);
 }
 
+.why-proof-item__icon-image {
+  display: block;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
 .why-proof-item__title {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 42px;
-  padding: var(--neotek-space-2) var(--neotek-space-4);
+  letter-spacing: normal;
+  margin: 0;
   color: var(--neotek-color-text-primary);
   font-size: var(--neotek-font-size-sm);
   font-weight: var(--neotek-font-weight-semibold);
@@ -75,16 +82,28 @@
 
 .why-proof-item__description {
   width: 100%;
-  margin-top: var(--neotek-space-3);
-  padding: var(--neotek-space-4);
+  margin: var(--neotek-space-2) 0 0;
+  padding: 0;
   color: var(--neotek-color-text-secondary);
   font-size: var(--neotek-font-size-sm);
-  line-height: 1.7;
+  line-height: 1.6;
 }
 
 @media (max-width: 1100px) {
   .why-proof-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .why-proof-item {
+    grid-column: span 2;
+  }
+
+  .why-proof-item:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+
+  .why-proof-item:nth-child(5) {
+    grid-column: 4 / span 2;
   }
 }
 
@@ -94,28 +113,71 @@
   }
 
   .why-section__title {
-    font-size: clamp(var(--neotek-font-size-2xl), 7vw, var(--neotek-font-size-4xl));
+    font-size: clamp(var(--neotek-font-size-2xl), 4vw, var(--neotek-font-size-4xl));
   }
 
   .why-section__description {
-    font-size: var(--neotek-font-size-md);
+    font-size: var(--neotek-font-size-sm);
   }
 
   .why-proof-grid {
-    grid-template-columns: 1fr;
-    gap: var(--neotek-space-4);
+    display: grid;
+    grid-auto-flow: row;
+    gap: var(--neotek-space-6);
+  }
+
+  .why-proof-item,
+  .why-proof-item:nth-child(4),
+  .why-proof-item:nth-child(5) {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-row: auto;
+    grid-template-columns: 48px minmax(0, 1fr);
+    column-gap: var(--neotek-space-3);
+    align-items: start;
+    text-align: left;
+  }
+
+  .why-proof-item__icon-wrap {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .why-proof-item__icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .why-proof-item__content {
+    min-width: 0;
   }
 
   .why-proof-item__title {
-    width: 100%;
+    width: auto;
+    min-height: 0;
+    padding: 0;
+    justify-content: flex-start;
   }
 
   .why-proof-item__description {
-    padding: var(--neotek-space-3) var(--neotek-space-4);
+    width: 100%;
+    margin-top: var(--neotek-space-2);
+    padding: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .why-proof-item,
   .why-section__intro {
     transition: none;

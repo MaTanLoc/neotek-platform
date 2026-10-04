@@ -42,6 +42,7 @@
    --neotek-color-error: #dc2626;
    --neotek-color-info: #2563eb;
    --neotek-font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+   --neotek-font-size-xxs: 10px;
    --neotek-font-size-xs: 12px;
    --neotek-font-size-sm: 14px;
    --neotek-font-size-md: 16px;
@@ -92,12 +93,33 @@
    --neotek-container-padding-desktop: 24px;
    --neotek-container-padding-tablet: 24px;
    --neotek-container-padding-mobile: 20px;
-   --neotek-section-spacing-desktop: 128px;
-   --neotek-section-spacing-tablet: 96px;
-   --neotek-section-spacing-mobile: 72px;
+   --neotek-section-spacing-desktop: 72px;
+   --neotek-section-spacing-tablet: 56px;
+   --neotek-section-spacing-mobile: 32px;
    --neotek-duration-fast: 150ms;
    --neotek-duration-normal: 250ms;
    --neotek-duration-slow: 400ms;
    --neotek-ease-standard: cubic-bezier(.2, .8, .2, 1);
-   --neotek-ease-emphasized: cubic-bezier(.16, 1, .3, 1)
+   --neotek-ease-emphasized: cubic-bezier(.16, 1, .3, 1);
+   --neotek-gradient-primary: linear-gradient(135deg,
+         #ec1c24 0%,
+         #d91820 45%,
+         #991b1b 100%);
+
+   /* Premium / Hero / CTA */
+   --neotek-gradient-dark: linear-gradient(135deg,
+         #ec1c24 0%,
+         #b91c1c 38%,
+         #18181b 100%);
+
+   /* Light sections */
+   --neotek-gradient-soft: linear-gradient(135deg,
+         #fff1f2 0%,
+         #ffffff 55%,
+         #f4f4f5 100%);
+
+   /* Cards */
+   --neotek-gradient-card: linear-gradient(145deg,
+         #ffffff 0%,
+         #fff1f2 100%);
 }

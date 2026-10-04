@@ -1,26 +1,77 @@
-import { ArrowRight } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
-import { useTranslation } from 'react-i18next'
+
 import { NeotekButton } from '../../common/NeotekButton/NeotekButton'
 import { NeotekContainer } from '../../common/NeotekContainer/NeotekContainer'
 import { NeotekSection } from '../../common/NeotekSection/NeotekSection'
+
 import './CTASection.css'
 
-const ctaActions = [
-  { id: 'demo', labelKey: 'cta.demo', href: '/demo', variant: 'primary' },
-  { id: 'platform', labelKey: 'cta.platform', href: '/solutions', variant: 'outline' },
-]
-
-export function CTASection() {
-  const { t } = useTranslation()
+export function CTASection({
+  cta = null,
+  loading = false,
+  error = null,
+  variant = 'default',
+  primaryHref,
+  secondaryHref,
+  showSecondary = true,
+}) {
   const prefersReducedMotion = useReducedMotion()
+  const isSolutionsVariant = variant === 'solutions'
+
+  if (!loading && (error || !cta)) {
+    return null
+  }
+
+  const content = loading ? { eyebrow: '████████', title: '████████ ████████ ████████ ████████', description: '████████ ████████ ████████ ████████ ████████ ████████', primaryLabel: '████████ ████████', secondaryLabel: '████████ ████████' } : cta
+
+  const actions = [
+    {
+      id: 'demo',
+      label: content.primaryLabel,
+      href: primaryHref ?? content.primaryUrl,
+      variant: 'primary',
+    },
+    {
+      id: 'platform',
+      label: content.secondaryLabel,
+      href: secondaryHref ?? content.secondaryUrl,
+      variant: 'outline',
+    },
+  ].filter((action) => (
+    action.id === 'demo' || showSecondary
+  ))
 
   return (
-    <NeotekSection className="cta-section" aria-labelledby="cta-heading">
-      <NeotekContainer className="cta-container">
+    <NeotekSection
+      aria-busy={loading}
+      className={`cta-section${loading ? ' is-loading' : ''}${
+        isSolutionsVariant
+          ? ' cta-section--solutions'
+          : ''
+      }`}
+      aria-labelledby="cta-heading"
+    >
+      <NeotekContainer
+        className={`cta-container${
+          isSolutionsVariant
+            ? ' cta-container--solutions'
+            : ''
+        }`}
+      >
         <motion.div
-          className="cta-content"
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
+          aria-hidden={loading || undefined}
+          inert={loading ? '' : undefined}
+          className={`cta-content${
+            isSolutionsVariant
+              ? ' cta-content--solutions'
+              : ''
+          }`}
+          initial={
+            loading || prefersReducedMotion
+              ? false
+              : { opacity: 0, y: 16 }
+          }
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={
@@ -29,34 +80,46 @@ export function CTASection() {
               : { duration: 0.45, ease: 'easeOut' }
           }
         >
-          <p className="cta-content__eyebrow">
-            {t('cta.eyebrow')}
-          </p>
+          {content.eyebrow ? (
+            <p className="cta-content__eyebrow skeleton-target">
+              {content.eyebrow}
+            </p>
+          ) : null}
 
-          <h2 id="cta-heading" className="cta-content__title">
-            <span>{t('cta.titleLine1')}</span>
-            <span>{t('cta.titleLine2')}</span>
-          </h2>
+          {content.title ? (
+            <h2
+              id="cta-heading"
+              className="cta-content__title skeleton-target"
+            >
+              {content.title}
+            </h2>
+          ) : null}
 
-          <p className="cta-content__description">
-            <span>
-              {t('cta.descriptionLine1')}
-            </span>{' '}
-            <span>{t('cta.descriptionLine2')}</span>
-          </p>
+          {content.description ? (
+            <p className="cta-content__description skeleton-target">
+              {content.description}
+            </p>
+          ) : null}
 
-          <div className="cta-actions" aria-label={t('cta.title')}>
-            {ctaActions.map((action) => (
+          <div
+            className="cta-actions"
+            aria-label={content.title}
+          >
+            {actions.map((action) => (
               <NeotekButton
                 key={action.id}
-                href={action.href || undefined}
+                href={loading ? undefined : action.href || undefined}
                 variant={action.variant}
-                disabled={!action.href}
-                className={`cta-action cta-action--${action.id}`}
+                disabled={loading || !action.href}
+                className={`cta-action cta-action--${action.id} skeleton-target`}
               >
-                {t(action.labelKey)}
+                {action.label}
+
                 {action.id === 'demo' ? (
-                  <ArrowRight size={16} aria-hidden="true" />
+                  <ChevronRight
+                    size={16}
+                    aria-hidden="true"
+                  />
                 ) : null}
               </NeotekButton>
             ))}

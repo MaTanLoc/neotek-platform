@@ -6,4 +6,5 @@ import './styles/neotek-tokens.css'
 import './styles/neotek-typography.css'
 import './styles/neotek-global.css'
 import './styles/neotek-utilities.css'
+import './styles/neotek-loading.css'
 createRoot(document.getElementById('root')).render(<StrictMode><App /></StrictMode>)

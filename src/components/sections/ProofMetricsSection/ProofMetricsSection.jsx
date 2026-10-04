@@ -1,35 +1,60 @@
+import { createSkeletonItems } from '../../../utils/skeleton'
 import { useEffect, useRef, useState } from 'react'
-import { BarChart3, Building2, GitBranch, Users } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import {
+  City01Icon,
+  CircleGaugeIcon,
+  UserGroup02Icon,
+  WorkflowSquare10Icon,
+} from '@hugeicons/core-free-icons'
 import { useReducedMotion } from 'motion/react'
+import { useTranslation } from 'react-i18next'
+
 import { NeotekButton } from '../../common/NeotekButton/NeotekButton'
 import { NeotekContainer } from '../../common/NeotekContainer/NeotekContainer'
 import { NeotekSection } from '../../common/NeotekSection/NeotekSection'
+
 import './ProofMetricsSection.css'
 
-const proofMetrics = [
-  { id: 'articles', value: 4000, suffix: '+', label: 'Bài viết', status: 'PLACEHOLDER', icon: Building2 },
-  { id: 'ebook', value: 360, suffix: '+', label: 'Ebook & Template', status: 'PLACEHOLDER', icon: Users },
-  { id: 'webinar', value: 100, suffix: '+', label: 'Video & Webinar', status: 'PLACEHOLDER', icon: GitBranch },
-  { id: 'courses', value: 100, suffix: '+', label: 'Khóa học', status: 'PLACEHOLDER', icon: BarChart3 },
-]
+const metricIcons = {
+  customers: UserGroup02Icon,
+  efficiency: CircleGaugeIcon,
+  modules: WorkflowSquare10Icon,
+  industries: City01Icon,
+}
 
 const sectionActions = [
-  { id: 'trial', label: 'Dùng thử miễn phí', href: '/demo', variant: 'primary', status: 'APPROVED_ROUTE' },
-  { id: 'pricing', label: 'Báo giá', href: null, variant: 'secondary', status: 'TODO_ROUTE' },
-  { id: 'purchase', label: 'Mua ngay', href: null, variant: 'ghost', status: 'TODO_ROUTE' },
+  {
+    id: 'trial',
+    labelKey: 'metrics.actions.trial',
+    href: '/demo',
+    variant: 'primary',
+  },
+  {
+    id: 'pricing',
+    labelKey: 'metrics.actions.pricing',
+    href: null,
+    variant: 'secondary',
+  },
+  {
+    id: 'purchase',
+    labelKey: 'metrics.actions.purchase',
+    href: null,
+    variant: 'ghost',
+  },
 ]
 
-function formatMetricValue(value) {
-  return new Intl.NumberFormat('vi-VN').format(value)
+function formatMetricValue(value, language) {
+  return new Intl.NumberFormat(
+    language === 'en' ? 'en-US' : 'vi-VN',
+  ).format(value)
 }
 
 function useMetricCounter(targetValue, shouldAnimate, duration = 1200) {
   const [displayValue, setDisplayValue] = useState(0)
 
   useEffect(() => {
-    if (!shouldAnimate) {
-      return undefined
-    }
+    if (!shouldAnimate) return undefined
 
     if (targetValue === 0) {
       setDisplayValue(0)
@@ -38,9 +63,11 @@ function useMetricCounter(targetValue, shouldAnimate, duration = 1200) {
 
     let animationFrame
     const startTime = performance.now()
+
     const updateValue = (currentTime) => {
       const progress = Math.min((currentTime - startTime) / duration, 1)
       const easedProgress = 1 - ((1 - progress) ** 3)
+
       setDisplayValue(Math.round(targetValue * easedProgress))
 
       if (progress < 1) {
@@ -49,93 +76,178 @@ function useMetricCounter(targetValue, shouldAnimate, duration = 1200) {
     }
 
     animationFrame = requestAnimationFrame(updateValue)
+
     return () => cancelAnimationFrame(animationFrame)
   }, [duration, shouldAnimate, targetValue])
 
   return displayValue
 }
 
-function MetricCard({ metric, hasAnimated, prefersReducedMotion }) {
-  const Icon = metric.icon
-  const animatedValue = useMetricCounter(metric.value, hasAnimated && !prefersReducedMotion)
-  const visibleValue = prefersReducedMotion && hasAnimated ? metric.value : animatedValue
-  const displayValue = `${formatMetricValue(visibleValue)}${metric.suffix}`
+function MetricCard({ metric, hasAnimated, prefersReducedMotion, language, loading }) {
+  const animatedValue = useMetricCounter(
+    metric.value,
+    !loading && hasAnimated && !prefersReducedMotion,
+  )
+
+  const visibleValue =
+    prefersReducedMotion && hasAnimated
+      ? metric.value
+      : animatedValue
+
+  const displayValue =
+    loading ? '████' : `${formatMetricValue(visibleValue, language)}${metric.suffix}`
+
+  const icon = metricIcons[metric.metricKey] ?? null
 
   return (
-    <article className={`proof-metric-item ${hasAnimated ? 'is-visible' : ''}`} data-status={metric.status}>
-      <div className="proof-metric-card__icon" aria-hidden="true">
-        <Icon size={22} strokeWidth={1.7} />
+    <article className={`proof-metric-item ${loading || hasAnimated ? 'is-visible' : ''}`}>
+      <div className="proof-metric-card__icon skeleton-target" aria-hidden="true">
+        {icon ? (
+          <HugeiconsIcon
+            icon={icon}
+            size={21}
+            color="currentColor"
+            strokeWidth={1.5}
+            aria-hidden="true"
+          />
+        ) : null}
       </div>
+
       <div className="proof-metric-item__content">
-        <p className="proof-metric-card__value" aria-label={`${metric.label}: ${displayValue}`}>
+        <p
+          className="proof-metric-card__value skeleton-target"
+          aria-label={`${metric.title}: ${displayValue}`}
+        >
           {displayValue}
         </p>
-        <p className="proof-metric-card__label">{metric.label}</p>
+
+        <p className="proof-metric-card__title skeleton-target">
+          {metric.title}
+        </p>
+
+        <p className="proof-metric-card__subtitle skeleton-target">
+          {metric.subtitle}
+        </p>
       </div>
     </article>
   )
 }
 
-export function ProofMetricsSection() {
+export function ProofMetricsSection({
+  metrics = [],
+  loading = false,
+  error = null,
+}) {
+  const { t, i18n } = useTranslation()
   const sectionRef = useRef(null)
   const hasAnimatedRef = useRef(false)
   const [hasAnimated, setHasAnimated] = useState(false)
   const prefersReducedMotion = useReducedMotion()
 
+  const visibleMetrics = loading ? createSkeletonItems(4, 'metric').map((item) => ({ ...item, value: 0, suffix: '', title: '████████ ████████', subtitle: '████████ ████████ ████████' })) : metrics
+
+  const language = i18n.language === 'en' ? 'en' : 'vi'
+
   useEffect(() => {
     const section = sectionRef.current
-    if (!section || hasAnimatedRef.current) {
+
+    if (
+      !section ||
+      hasAnimatedRef.current ||
+      loading ||
+      error ||
+      metrics.length === 0
+    ) {
       return undefined
     }
 
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !hasAnimatedRef.current) {
-        hasAnimatedRef.current = true
-        setHasAnimated(true)
-        observer.disconnect()
-      }
-    }, { threshold: 0.25 })
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimatedRef.current) {
+          hasAnimatedRef.current = true
+          setHasAnimated(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.25 },
+    )
 
     observer.observe(section)
+
     return () => observer.disconnect()
-  }, [])
+  }, [loading, error, metrics.length])
 
   return (
-    <NeotekSection ref={sectionRef} className="proof-metrics-section" aria-label="Minh chứng nền tảng NeoERP">
+    <NeotekSection
+      ref={sectionRef}
+      className={`proof-metrics-section${loading ? ' is-loading' : ''}`}
+      aria-busy={loading}
+      aria-label={t('metrics.title')}
+    >
       <NeotekContainer className="proof-metrics-container">
         <div className="proof-metrics-row">
-          <div className="proof-visual-reserved" aria-hidden="true" />
+          <div className="proof-visual">
+            <img
+              src="https://res.cloudinary.com/drslg1shx/image/upload/v1790052447/proof_clg82j.webp"
+              alt=""
+              loading="lazy" decoding="async"
+            />
+          </div>
+
           <div className="proof-metrics-content">
             <div className="proof-metrics-intro">
-              <h2 className="proof-metrics-intro__title">Những con số đáng chú ý</h2>
+              <h2 className="proof-metrics-intro__title">
+                {t('metrics.title')}
+              </h2>
+
               <p className="proof-metrics-intro__description">
-                Những con số tiêu biểu giúp hình dung quy mô và hệ sinh thái nội dung, giải pháp mà NeoTek đang xây dựng.
+                {t('metrics.description')}
               </p>
             </div>
-            <div className="proof-metrics-grid" role="list" aria-label="Các chỉ số nền tảng">
-              {proofMetrics.map((metric) => (
-                <div key={metric.id} role="listitem">
-                  <MetricCard metric={metric} hasAnimated={hasAnimated} prefersReducedMotion={prefersReducedMotion} />
-                </div>
-              ))}
-            </div>
+
+            {(loading || !error) && visibleMetrics.length > 0 ? (
+              <div
+                className="proof-metrics-grid"
+                aria-hidden={loading || undefined}
+                inert={loading ? '' : undefined}
+                role="list"
+                aria-label={t('metrics.title')}
+              >
+                {visibleMetrics.map((metric) => (
+                  <div key={metric.id} role="listitem">
+                    <MetricCard
+                      metric={metric}
+                      loading={loading}
+                      hasAnimated={hasAnimated}
+                      prefersReducedMotion={prefersReducedMotion}
+                      language={language}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
         </div>
-        <div className="proof-metrics-actions" aria-label="Hành động">
-          {sectionActions.map((action) => (
-            <NeotekButton
-              key={action.id}
-              href={action.href || undefined}
-              variant={action.variant}
-              className={`proof-metrics-action proof-metrics-action--${action.id}`}
-              disabled={!action.href}
-              aria-label={`${action.label}${action.status === 'TODO_ROUTE' ? ' - đang cập nhật' : ''}`}
-            >
-              {action.label}{action.id === 'purchase' ? ' →' : ''}
-            </NeotekButton>
-          ))}
-        </div>
       </NeotekContainer>
+
+      <div
+        className="proof-metrics-actions"
+        aria-label={t('metrics.title')}
+      >
+        {sectionActions.map((action) => (
+          <NeotekButton
+            key={action.id}
+            href={action.href || undefined}
+            variant={action.variant}
+            className={`proof-metrics-action proof-metrics-action--${action.id}`}
+            disabled={!action.href}
+            aria-label={t(action.labelKey)}
+          >
+            {t(action.labelKey)}
+            {action.id === 'purchase' ? ' →' : ''}
+          </NeotekButton>
+        ))}
+      </div>
     </NeotekSection>
   )
 }

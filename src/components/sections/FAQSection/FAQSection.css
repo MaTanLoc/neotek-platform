@@ -1,119 +1,612 @@
+.faq-item__heading {
+  margin: 0;
+  font: inherit;
+  letter-spacing: normal;
+}
+
+/* =========================================================
+   FAQ SECTION
+   NeoTek / NeoERP
+   ========================================================= */
+
 .faq-section {
   background: var(--neotek-color-background-subtle);
 }
 
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
 .faq-container {
-  width: min(100% - (var(--neotek-container-padding-desktop) * 2), var(--neotek-container-wide-max-width));
+  width: min(
+    100% - (var(--neotek-container-padding-desktop) * 2),
+    var(--neotek-container-wide-max-width)
+  );
+
   max-width: var(--neotek-container-wide-max-width);
+
+  display: grid;
+
+  /*
+   * Cho FAQ bên phải rộng hơn một chút.
+   * Đây là thay đổi quan trọng để các câu hỏi dài
+   * ít bị xuống dòng.
+   */
+  grid-template-columns:
+    minmax(260px, 0.6fr)
+    minmax(0, 1.5fr);
+
+  gap: clamp(40px, 6vw, 88px);
+
+  align-items: start;
 }
 
+
+/* =========================================================
+   LEFT CONTENT
+   ========================================================= */
+
 .faq-heading {
-  max-width: 800px;
-  margin: 0 auto var(--neotek-space-10);
-  text-align: center;
+  max-width: 360px;
+
+  margin: 0;
+
+  text-align: left;
+
+  position: sticky;
+  top: 120px;
+
+  align-self: start;
+}
+
+.faq-heading__eyebrow {
+  margin: 0 0 8px;
+
+  color: var(--neotek-color-text-primary);
+
+  font-size: var(--neotek-font-size-sm);
+  font-weight: var(--neotek-font-weight-medium);
+
+  line-height: var(--neotek-line-height-snug);
+
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .faq-heading__title {
+  margin: 0;
+
   color: var(--neotek-color-text-primary);
-  font-size: clamp(var(--neotek-font-size-3xl), 4vw, var(--neotek-font-size-5xl));
-  line-height: var(--neotek-line-height-tight);
+
+  /*
+   * Giữ heading lớn nhưng không quá khổng lồ.
+   */
+  font-size: clamp(
+    38px,
+    4vw,
+    56px
+  );
+
+  font-weight: var(--neotek-font-weight-semibold);
+
+  line-height: 0.98;
+
+  letter-spacing: -0.045em;
 }
+
+.faq-heading__description {
+  max-width: 340px;
+
+  margin: 22px 0 0;
+
+  color: var(--neotek-color-text-secondary);
+
+  font-size: var(--neotek-font-size-md);
+
+  line-height: var(--neotek-line-height-relaxed);
+}
+
+.faq-heading__cta {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 24px;
+
+  color: var(--neotek-color-text-primary);
+
+  font-size: var(--neotek-font-size-md);
+  font-weight: var(--neotek-font-weight-semibold);
+
+  line-height: 1;
+
+  text-decoration: none;
+
+  transition:
+    color 220ms ease,
+    gap 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.faq-heading__cta:hover {
+  color: var(--neotek-color-primary);
+  gap: 12px;
+}
+
+.faq-heading__cta:focus-visible {
+  outline: 2px solid var(--neotek-color-border-focus);
+  outline-offset: 4px;
+
+  border-radius: 4px;
+}
+
+
+/* =========================================================
+   FAQ LIST
+   ========================================================= */
 
 .faq-list {
-  max-width: 1120px;
-  margin-inline: auto;
-  overflow: hidden;
-  border: 1px solid var(--neotek-color-border);
-  border-radius: var(--neotek-radius-xl);
-  background: var(--neotek-color-background);
+  width: 100%;
+  max-width: none;
+
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+
+  overflow: visible;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
 }
+
+
+/* =========================================================
+   FAQ CARD
+   ========================================================= */
 
 .faq-item {
-  border-top: 1px solid var(--neotek-color-border);
+  width: 100%;
+
+  overflow: hidden;
+
+  border: 0;
+  border-radius: 22px;
+
+  background: var(--neotek-color-background);
+
+  box-shadow:
+    0 4px 20px rgba(20, 24, 32, 0.035);
+
+  transition:
+    box-shadow 300ms ease,
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.faq-item:first-child {
-  border-top: 0;
+.faq-item:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 8px 28px rgba(20, 24, 32, 0.055);
 }
+
+.faq-item.is-open {
+  box-shadow:
+    0 10px 32px rgba(20, 24, 32, 0.065);
+}
+
+
+/* =========================================================
+   QUESTION BUTTON
+   ========================================================= */
 
 .faq-item__trigger {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   width: 100%;
-  min-height: 80px;
-  gap: var(--neotek-space-6);
-  padding: var(--neotek-space-5) var(--neotek-space-8);
+
+  min-height: 76px;
+
+  gap: 20px;
+
+  padding: 20px 28px;
+
   border: 0;
+
   background: transparent;
+
   color: var(--neotek-color-text-primary);
+
   font: inherit;
-  font-size: var(--neotek-font-size-lg);
+
+  /*
+   * Giảm từ lg xuống 17px.
+   * Đây là thay đổi quan trọng để câu hỏi dài
+   * ít bị xuống dòng.
+   */
+  font-size: 17px;
+
   font-weight: var(--neotek-font-weight-semibold);
-  line-height: var(--neotek-line-height-snug);
+
+  line-height: 1.4;
+
   text-align: left;
+
   cursor: pointer;
+
+  transition: color 220ms ease;
+}
+
+.faq-item__trigger:hover {
+  color: var(--neotek-color-primary);
 }
 
 .faq-item__trigger:focus-visible {
   outline: 2px solid var(--neotek-color-border-focus);
-  outline-offset: 4px;
+
+  outline-offset: -3px;
+
+  border-radius: 22px;
 }
 
-.faq-item__icon {
-  flex: 0 0 auto;
-  color: var(--neotek-color-text-secondary);
+
+/* =========================================================
+   QUESTION TEXT
+   ========================================================= */
+
+.faq-item__question {
+  flex: 1 1 auto;
+
+  min-width: 0;
+
+  padding: 0;
+
+  /*
+   * Không cho browser ngắt từ kỳ lạ.
+   * Tiếng Việt chỉ xuống dòng tại khoảng trắng.
+   */
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+
+  text-wrap: pretty;
 }
+
+
+/* =========================================================
+   CUSTOM PLUS / MINUS ICON
+   ========================================================= */
+
+.faq-item__icon {
+  position: relative;
+
+  flex: 0 0 20px;
+
+  width: 20px;
+  height: 20px;
+
+  color: var(--neotek-color-text-secondary);
+
+  transform: rotate(0deg);
+
+  transition:
+    color 240ms ease;
+
+  pointer-events: none;
+}
+
+.faq-item__trigger:hover .faq-item__icon,
+.faq-item.is-open .faq-item__icon {
+  color: var(--neotek-color-primary);
+}
+
+
+/* Common line */
+
+.faq-item__icon-line {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  display: block;
+
+  width: 14px;
+  height: 1.5px;
+
+  border-radius: 999px;
+
+  background: currentColor;
+
+  transform-origin: center;
+
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 240ms ease;
+}
+
+
+/* Horizontal line */
+
+.faq-item__icon-line--horizontal {
+  transform:
+    translate(-50%, -50%)
+    rotate(0deg);
+}
+
+
+/*
+ * Closed:
+ *
+ *       |
+ *       |
+ *
+ * Open transition:
+ *
+ *   \   /
+ *    \ /
+ *     —
+ *
+ * Sau đó vertical line biến mất.
+ */
+
+.faq-item__icon-line--vertical {
+  transform:
+    translate(-50%, -50%)
+    rotate(90deg)
+    scaleX(1);
+}
+
+
+/* =========================================================
+   OPEN STATE
+   ========================================================= */
+
+.faq-item__icon.is-open
+  .faq-item__icon-line--vertical {
+  /*
+   * Vertical line xoay về ngang rồi co lại.
+   * Nhìn như + đang morph thành -.
+   */
+  transform:
+    translate(-50%, -50%)
+    rotate(0deg)
+    scaleX(0);
+
+  opacity: 0;
+}
+
+
+/* =========================================================
+   ANSWER
+   ========================================================= */
 
 .faq-item__answer-wrap {
   overflow: hidden;
 }
 
 .faq-item__answer {
-  max-width: 860px;
-  padding: 0 var(--neotek-space-8) var(--neotek-space-6);
+  max-width: 720px;
+
   margin: 0;
+
+  padding:
+    0
+    28px
+    28px;
+
   color: var(--neotek-color-text-secondary);
+
   font-size: var(--neotek-font-size-md);
+  font-weight: var(--neotek-font-weight-regular);
+
   line-height: var(--neotek-line-height-relaxed);
 }
 
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
 @media (max-width: 1023px) {
   .faq-container {
-    width: calc(100% - (var(--neotek-container-padding-tablet) * 2));
-  }
-}
+    grid-template-columns: 1fr;
 
-@media (max-width: 767px) {
-  .faq-container {
-    width: calc(100% - (var(--neotek-container-padding-mobile) * 2));
+    gap: 40px;
   }
 
   .faq-heading {
-    margin-bottom: var(--neotek-space-8);
+    max-width: 680px;
+
+    position: static;
+  }
+
+  .faq-heading__description {
+    max-width: 600px;
   }
 
   .faq-list {
-    border-radius: var(--neotek-radius-lg);
-  }
-
-  .faq-item__trigger {
-    min-height: 72px;
-    gap: var(--neotek-space-4);
-    padding: var(--neotek-space-4) var(--neotek-space-5);
-    font-size: var(--neotek-font-size-md);
-  }
-
-  .faq-item__answer {
-    padding-right: var(--neotek-space-5);
-    padding-left: var(--neotek-space-5);
-    padding-bottom: var(--neotek-space-5);
-    font-size: var(--neotek-font-size-sm);
+    gap: 12px;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .faq-container {
+    gap: 28px;
+  }
+
+  .faq-heading {
+    max-width: 100%;
+  }
+
+  .faq-heading__eyebrow {
+    margin-bottom: 6px;
+
+    font-size: var(--neotek-font-size-xs);
+  }
+
+  .faq-heading__title {
+    font-size: clamp(
+      34px,
+      9vw,
+      44px
+    );
+
+    line-height: 1;
+
+    letter-spacing: -0.04em;
+  }
+
+  .faq-heading__description {
+    max-width: 100%;
+
+    margin-top: 16px;
+
+    font-size: var(--neotek-font-size-sm);
+
+    line-height: var(--neotek-line-height-relaxed);
+  }
+
+  .faq-heading__cta {
+    margin-top: 20px;
+
+    font-size: var(--neotek-font-size-sm);
+  }
+
+
+  /* FAQ list */
+
+  .faq-list {
+    gap: 10px;
+  }
+
+
+  /* Card */
+
+  .faq-item {
+    border-radius: 18px;
+  }
+
+  .faq-item:hover {
+    transform: none;
+
+    box-shadow:
+      0 4px 20px rgba(20, 24, 32, 0.04);
+  }
+
+  .faq-item.is-open {
+    box-shadow:
+      0 8px 26px rgba(20, 24, 32, 0.06);
+  }
+
+
+  /* Question */
+
+  .faq-item__trigger {
+    min-height: 68px;
+
+    gap: 14px;
+
+    padding:
+      18px
+      18px;
+
+    font-size: 16px;
+
+    line-height: 1.45;
+  }
+
+  .faq-item__question {
+    padding-right: 0;
+  }
+
   .faq-item__icon {
+    flex-basis: 18px;
+
+    width: 18px;
+    height: 18px;
+  }
+
+  .faq-item__icon-line {
+    width: 13px;
+  }
+
+
+  /* Answer */
+
+  .faq-item__answer {
+    padding:
+      0
+      18px
+      22px;
+
+    font-size: var(--neotek-font-size-sm);
+
+    line-height: var(--neotek-line-height-relaxed);
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+  .faq-item__trigger {
+    padding:
+      17px
+      16px;
+
+    font-size: 15.5px;
+  }
+
+  .faq-item__answer {
+    padding:
+      0
+      16px
+      20px;
+  }
+
+  .faq-item__icon {
+    flex-basis: 17px;
+
+    width: 17px;
+    height: 17px;
+  }
+
+  .faq-item__icon-line {
+    width: 12px;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-item,
+  .faq-item__trigger,
+  .faq-item__icon,
+  .faq-item__icon-line,
+  .faq-heading__cta {
     transition: none;
+  }
+
+  .faq-item:hover {
+    transform: none;
   }
 }

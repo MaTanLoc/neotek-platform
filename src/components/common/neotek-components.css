@@ -5,7 +5,8 @@
 }
 
 .neotek-section {
-   padding-block: var(--neotek-section-spacing-desktop)
+   padding-block: var(--neotek-section-padding,
+         var(--neotek-section-spacing-desktop));
 }
 
 .neotek-section--subtle {
@@ -83,8 +84,10 @@
 }
 
 .neotek-button--outline:hover {
-   border-color: var(--neotek-color-primary);
-   color: var(--neotek-color-primary)
+   background: color-mix(in srgb,
+         var(--neotek-white) 12%,
+         transparent);
+   border-color: var(--neotek-white);
 }
 
 .neotek-button--ghost {
@@ -118,6 +121,7 @@
    }
 
    .neotek-section {
-      padding-block: var(--neotek-section-spacing-mobile)
+      padding-block: var(--neotek-section-padding,
+            var(--neotek-section-spacing-mobile));
    }
 }

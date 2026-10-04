@@ -1,0 +1,75 @@
+:root {
+  --neotek-skeleton-radius: 12px;
+}
+
+@keyframes neotek-shimmer {
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.is-loading .skeleton-target,
+.is-loading .skeleton-block {
+  color: transparent !important;
+  border-color: transparent !important;
+  background: linear-gradient(90deg,
+      #eceff1 25%,
+      #f7f8f9 50%,
+      #eceff1 75%) !important;
+  background-size: 200% 100% !important;
+  animation: neotek-shimmer 1.4s infinite linear !important;
+  border-radius: var(--neotek-skeleton-radius);
+  user-select: none;
+  pointer-events: none;
+}
+
+.is-loading img.skeleton-target,
+.is-loading video.skeleton-target {
+  opacity: 0;
+}
+
+/* Hero full block: giữ radius của hero nếu muốn bo góc,
+   hoặc dùng 0 nếu Hero chạy full-width. */
+.is-loading .hero-slide.skeleton-block {
+  background: var(--neotek-gray-300) !important;
+  animation: none !important;
+  border-radius: 0;
+}
+
+/* Không để content thật bên trong placeholder bị lộ */
+.is-loading .skeleton-target *,
+.is-loading .skeleton-target::before,
+.is-loading .skeleton-target::after {
+  visibility: hidden;
+}
+
+.is-loading .hero-slide__actions,
+.is-loading .solution-clusters__panel,
+.is-loading .testimonials-track {
+  animation: none !important;
+}
+
+.is-loading button.skeleton-target {
+  opacity: 1;
+  border-radius: 10px;
+}
+
+.is-loading .solution-clusters__visual-glow {
+  visibility: hidden;
+}
+
+.is-loading .testimonial-card {
+  pointer-events: none;
+}
+
+.is-loading .testimonial-card__logo {
+  width: 112px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .is-loading .skeleton-target,
+  .is-loading .skeleton-block {
+    animation: none !important;
+  }
+}

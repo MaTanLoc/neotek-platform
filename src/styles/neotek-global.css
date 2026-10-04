@@ -1,9 +1,14 @@
 *, *::before, *::after {
-   box-sizing: border-box
+   box-sizing: border-box;
 }
 
-html {
-   scroll-behavior: smooth
+#smooth-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
+#smooth-content {
+  width: 100%;
 }
 
 body {
@@ -28,11 +33,6 @@ button, input, textarea, select {
 a {
    color: inherit;
    text-decoration: none
-}
-
-:focus-visible {
-   outline: 3px solid var(--neotek-color-border-focus);
-   outline-offset: 3px
 }
 
 ::selection {

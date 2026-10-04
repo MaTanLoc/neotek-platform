@@ -1,6 +1,7 @@
-.solutions-section {
-  width: 100%;
-  background: var(--neotek-color-background-subtle);
+.solution-panel__heading {
+  display: contents;
+  font: inherit;
+  letter-spacing: normal;
 }
 
 .solutions-container {
@@ -9,7 +10,6 @@
 }
 
 .solutions-header {
-  max-width: 860px;
   margin: 0 auto var(--neotek-space-10);
   text-align: center;
 }
@@ -139,9 +139,12 @@
   z-index: -3;
   background-color: var(--neotek-gray-800);
   background-image: var(--solution-image);
-  background-position: center;
+  background-position: var(--solution-image-position, center center);
   background-size: cover;
-  transition: transform var(--neotek-duration-slow) var(--neotek-ease-standard);
+  background-repeat: no-repeat;
+  transition:
+    transform var(--neotek-duration-slow) var(--neotek-ease-standard),
+    background-position var(--neotek-duration-slow) var(--neotek-ease-standard);
 }
 
 .solution-panel__base-overlay {
@@ -248,15 +251,15 @@
   color: var(--neotek-white);
 }
 
-.solution-module-link > svg,
-.solution-module-link__anchor > svg {
+.solution-module-link>svg,
+.solution-module-link__anchor>svg {
   transition: transform var(--neotek-duration-fast) var(--neotek-ease-standard);
 }
 
-.solution-module-link:hover > svg,
-.solution-module-link:focus-visible > svg,
-.solution-module-link:hover .solution-module-link__anchor > svg,
-.solution-module-link:focus-visible .solution-module-link__anchor > svg {
+.solution-module-link:hover>svg,
+.solution-module-link:focus-visible>svg,
+.solution-module-link:hover .solution-module-link__anchor>svg,
+.solution-module-link:focus-visible .solution-module-link__anchor>svg {
   transform: translateX(3px);
 }
 
@@ -310,9 +313,14 @@
   .solution-panel.is-inactive .solution-panel__title {
     white-space: normal;
   }
+
+  .solution-panel.is-inactive .solution-panel__icon {
+    left: 90%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .solution-panel,
   .solution-panel__icon,
   .solution-panel__content {

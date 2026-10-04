@@ -1,7 +1,6 @@
 .trusted-by-section {
-  min-height: 350px;
-  padding-block: var(--neotek-space-12);
-  background: var(--neotek-color-background);
+  --neotek-section-padding: var(--neotek-space-12);
+  background: var(--neotek-color-background-subtle);
 }
 
 .trusted-by-container {
@@ -22,41 +21,75 @@
 .trusted-by-viewport {
   width: 100%;
   margin-top: var(--neotek-space-12);
+
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, var(--neotek-black) 8%, var(--neotek-black) 92%, transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0%, var(--neotek-black) 8%, var(--neotek-black) 92%, transparent 100%);
+
+  -webkit-mask-image:
+    linear-gradient(90deg,
+      transparent 0%,
+      var(--neotek-black) 8%,
+      var(--neotek-black) 92%,
+      transparent 100%);
+
+  mask-image:
+    linear-gradient(90deg,
+      transparent 0%,
+      var(--neotek-black) 8%,
+      var(--neotek-black) 92%,
+      transparent 100%);
 }
 
 .trusted-by-track {
   display: flex;
   align-items: center;
-  gap: 64px;
-  width: max-content;
+
+  /*
+   * Embla container
+   */
   touch-action: pan-y pinch-zoom;
 }
 
 .trusted-by-logo-item {
+  flex: 0 0 var(--logo-width);
+
+  min-width: 0;
+
   display: flex;
-  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  flex-basis: 196px;
-  width: 196px;
+
   height: 100px;
+
+  /*
+   * Gap thuộc về slide.
+   */
+  padding-right: 60px;
+
+  box-sizing: content-box;
 }
 
-.trusted-by-logo-item img {
-  display: block;
+.trusted-logo {
+  display: flex;
+
   width: 100%;
   height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+
+  align-items: center;
+  justify-content: center;
 }
 
-.trusted-by-logo-item[data-logo='daidung'] img,
-.trusted-by-logo-item[data-logo='komtek'] img {
+.trusted-logo img {
+  display: block;
+
+  width: 100%;
   height: 72px;
+
+  max-width: 100%;
+
+  object-fit: contain;
+
+  transform: scale(var(--logo-scale, 1));
+  transform-origin: center;
 }
 
 @media (max-width: 1023px) {
@@ -64,20 +97,18 @@
     width: calc(100% - (var(--neotek-container-padding-tablet) * 2));
   }
 
-  .trusted-by-track {
-    gap: 48px;
+  .trusted-by-logo-item {
+    height: 72px;
+    margin-right: 16px;
   }
 
-  .trusted-by-logo-item {
-    flex-basis: 164px;
-    width: 164px;
-    height: 72px;
+  .trusted-logo img {
+    height: 60px;
   }
 }
 
 @media (max-width: 767px) {
   .trusted-by-section {
-    min-height: 300px;
     padding-block: var(--neotek-space-10);
   }
 
@@ -93,19 +124,13 @@
     margin-top: var(--neotek-space-8);
   }
 
-  .trusted-by-track {
-    gap: 28px;
-  }
-
   .trusted-by-logo-item {
-    flex-basis: 110px;
-    width: 110px;
     height: 64px;
+    margin-right: 12px;
   }
 
-  .trusted-by-logo-item[data-logo='daidung'] img,
-  .trusted-by-logo-item[data-logo='komtek'] img {
-    height: 60px;
+  .trusted-logo img {
+    height: 52px;
   }
 
   .trusted-by-viewport {
