@@ -1,5 +1,7 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { AuthProvider } from "./admin/auth/AuthContext";
+import { AdminApp } from "./admin/AdminApp";
 import { useTranslation } from "react-i18next";
 import SEO from "./components/common/SEO/SEO";
 
@@ -27,14 +29,16 @@ function RouteSEO() {
 
 export default function App() {
   return (
-    <SmoothScroll>
-      <div id="smooth-wrapper">
-        <div id="smooth-content">
-          <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
+        <SmoothScroll>
+          <div id="smooth-wrapper">
+            <div id="smooth-content">
             <RouteSEO />
             <Suspense fallback={null}>
               <SmoothScrollRouteSync />
               <Routes>
+                <Route path="/admin/*" element={<AdminApp />} />
                 {/* WEBSITE */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/en" element={<HomePage />} />
@@ -58,9 +62,10 @@ export default function App() {
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Suspense>
-          </BrowserRouter>
-        </div>
-      </div>
-    </SmoothScroll>
+            </div>
+          </div>
+        </SmoothScroll>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
