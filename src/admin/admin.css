@@ -58,4 +58,31 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
 .admin-login__card label { margin-top: 18px; }
 .admin-login__card > button { width: 100%; margin-top: 24px; }
 .admin-loading { padding: 48px; text-align: center; }
+.admin-editor-layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .85fr); gap: 20px; align-items: start; }
+.admin-editor-column { min-width: 0; }
+.admin-preview-panel { position: sticky; top: 20px; min-width: 0; padding: 18px; background: var(--neotek-white); border: 1px solid var(--neotek-color-border); border-radius: 12px; box-shadow: var(--neotek-shadow-sm); }
+.admin-preview-header { display: flex; justify-content: space-between; align-items: start; gap: 12px; margin-bottom: 14px; }
+.admin-preview-header h2 { margin: 0 0 4px; font-size: 18px; }
+.admin-preview-actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.admin-preview-actions .admin-button { min-height: 34px; padding: 7px 10px; font-size: 12px; text-decoration: none; }
+.admin-preview-frame { display: block; width: 100%; height: min(72vh, 760px); border: 1px solid var(--neotek-color-border); border-radius: 8px; background: var(--neotek-color-background-subtle); }
+.admin-preview-empty { min-height: 240px; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--neotek-color-text-tertiary); background: var(--neotek-color-background-subtle); border-radius: 8px; }
+.admin-locale-tabs { display: flex; gap: 8px; margin: 0 0 20px; border-bottom: 1px solid var(--neotek-color-border); }
+.admin-locale-tab { padding: 10px 16px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: var(--neotek-color-text-secondary); font: inherit; font-weight: 700; cursor: pointer; }
+.admin-locale-tab.is-active { border-bottom-color: var(--neotek-red-600); color: var(--neotek-red-700); }
+.admin-section-navigator ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; margin: 0; padding-left: 24px; }
+.admin-section-navigator button { padding: 2px 0; border: 0; background: transparent; color: var(--neotek-red-600); font: inherit; font-weight: 600; text-align: left; cursor: pointer; }
+.admin-section-navigator button:hover { text-decoration: underline; }
+.admin-section-heading { align-items: start; }
+.admin-section-heading h3 { margin-bottom: 4px; }
+.admin-section-heading p { margin: 0 0 5px; }
+.admin-technical-details { margin-top: 14px; color: var(--neotek-color-text-tertiary); font-size: 12px; }
+.admin-technical-details summary { cursor: pointer; font-weight: 700; }
+.admin-technical-details div { display: flex; flex-wrap: wrap; gap: 6px 16px; padding-top: 8px; }
+.admin-save-state { display: inline-block; width: fit-content; padding: 4px 8px; border-radius: 999px; background: #ecfdf5; color: #166534; font-size: 12px; font-weight: 700; }
+.admin-save-state.is-dirty { background: #fff7ed; color: #9a3412; }
+.admin-advanced-warning { display: grid; gap: 4px; padding: 12px; margin-bottom: 10px; border-left: 3px solid var(--neotek-red-400); background: var(--neotek-color-background-subtle); color: var(--neotek-color-text-secondary); font-size: 13px; }
+.admin-inline-form label { min-width: 180px; }
+.admin-inline-form small { color: var(--neotek-color-text-tertiary); font-weight: 400; }
 @media (max-width: 760px) { .admin-header, .admin-page-heading { align-items: flex-start; flex-direction: column; } .admin-user { flex-wrap: wrap; } .admin-body { display: block; } .admin-sidebar { width: auto; padding: 12px 18px; border-right: 0; border-bottom: 1px solid var(--neotek-color-border); } .admin-main { padding: 24px 16px; } .admin-form-grid, .admin-form-grid--two { grid-template-columns: 1fr; } .admin-inline-form { align-items: stretch; flex-direction: column; } .admin-inline-form input, .admin-inline-form select, .admin-inline-form button { width: 100%; } }
+@media (max-width: 980px) { .admin-editor-layout { grid-template-columns: 1fr; } .admin-preview-panel { position: static; } }
