@@ -1,4 +1,4 @@
-import { wordpressAdapter } from './adapters/wordpressAdapter.js'
+import { backendApiAdapter } from './adapters/backendApiAdapter.js'
 
 /**
  * @typedef {Object} HeroSlide
@@ -49,16 +49,16 @@ import { wordpressAdapter } from './adapters/wordpressAdapter.js'
 export const contentService = {
   /** @param {string} [language='vi'] @returns {Promise<HomePageContent>} */
   getHomePage(language = 'vi') {
-    return wordpressAdapter.getHomePage(language)
+    return backendApiAdapter.getHomePage(language)
   },
 
   /** @param {string} [language='vi'] @returns {HomePageContent|null} */
   getCachedHomePage(language = 'vi') {
-    return wordpressAdapter.getCachedHomePage(language)
+    return backendApiAdapter.getCachedHomePage(language)
   },
 
   /** @param {string} [language='vi'] @returns {Promise<SolutionsPageContent>} */
   getSolutionsPage(language = 'vi') {
-    return wordpressAdapter.getSolutionsPage(language)
+    return backendApiAdapter.getSolutionsPage(language)
   },
 }
