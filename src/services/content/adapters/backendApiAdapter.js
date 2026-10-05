@@ -35,6 +35,8 @@ function normalizeHero(content) {
     eyebrow: item.eyebrow || '',
     headline: item.headline || '',
     description: item.description || '',
+    titleLine1: item.titleLine1 || '',
+    titleHighlight: item.titleHighlight || '',
     showPrimaryCta: item.primaryCta?.enabled !== false,
     primaryLabel: item.primaryCta?.label || '',
     primaryUrl: item.primaryCta?.url || '',
@@ -42,6 +44,32 @@ function normalizeHero(content) {
     secondaryLabel: item.secondaryCta?.label || '',
     secondaryUrl: item.secondaryCta?.url || '',
   }))
+}
+
+function normalizeSolutionGroups(content) {
+  return (content.items || []).map((item, index) => ({
+    id: itemId(item, index),
+    key: item.key || '',
+    icon: item.icon || null,
+    modules: item.modules || [],
+    eyebrow: item.eyebrow || '',
+    title: item.title || '',
+    description: htmlToText(item.description),
+    visualLabel: item.visualLabel || '',
+  }))
+}
+
+function normalizeSolutionModules(content) {
+  return Object.fromEntries((content.items || []).map((item, index) => [
+    item.key || itemId(item, index),
+    {
+      icon: item.icon || '',
+      visualSrc: item.visualSrc || null,
+      title: item.title || '',
+      description: item.description || '',
+      bullets: item.bullets || [],
+    },
+  ]))
 }
 
 function normalizeHome(response) {
@@ -145,8 +173,14 @@ export const backendApiAdapter = {
     const response = await getPage('solutions', language)
     const faq = section(response, 'faq')
     const cta = section(response, 'cta')
+    const hero = section(response, 'hero')
+    const groups = section(response, 'groups')
+    const modules = section(response, 'modules')
     return {
       trustedLogos: [],
+      hero: normalizeHero(hero),
+      solutionGroups: normalizeSolutionGroups(groups),
+      solutionModules: normalizeSolutionModules(modules),
       ctaSection: normalizeCta(cta.items?.[0]),
       faqs: (faq.items || []).map((item, index) => ({
         id: itemId(item, index),

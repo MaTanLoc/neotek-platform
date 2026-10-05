@@ -41,6 +41,9 @@ import { backendApiAdapter } from './adapters/backendApiAdapter.js'
  * @property {Faq[]} faqs
  *
  * @typedef {Object} SolutionsPageContent
+ * @property {Array} hero
+ * @property {Array} solutionGroups
+ * @property {Object} solutionModules
  * @property {TrustedLogo[]} trustedLogos
  * @property {CtaSection|null} ctaSection
  * @property {Faq[]} faqs

@@ -20,47 +20,12 @@ import { getLocalizedPath } from '../../i18n'
 import './SolutionsPage.css'
 import { contentService } from '../../services/content/contentService'
 
-const EMPTY_SOLUTIONS_DATA = { trustedLogos: [], ctaSection: null, faqs: [] }
-
-// No module detail routes are registered in App.jsx yet. Keep these destinations
-// empty until an implemented route can be verified.
-const solutionGroups = [
-  {
-    id: 'business',
-    icon: Briefcase04Icon,
-    modules: ['crm', 'sales'],
-  },
-  {
-    id: 'supplyChain',
-    icon: Blockchain04Icon,
-    modules: ['purchasing', 'warehouse', 'logistics'],
-  },
-  {
-    id: 'operations',
-    icon: Settings01Icon,
-    modules: ['production', 'maintenance', 'projects'],
-  },
-  {
-    id: 'management',
-    icon: FolderManagementIcon,
-    modules: ['hrPayroll', 'finance', 'forecast'],
-  },
-]
-
-// Each module has its own icon and image slot. Add an asset path to visualSrc
-// when the approved square artwork for that module is ready.
-const moduleDetails = {
-  crm: { icon: 'neotek-user-group-02-stroke-rounded.svg', visualSrc: null, bullets: ['customerRecords', 'customerAssignment', 'customerHistory'] },
-  sales: { icon: 'neotek-shopping-cart-01-stroke-rounded.svg', visualSrc: null, bullets: ['salesOrders', 'salesPolicies', 'salesReports'] },
-  purchasing: { icon: 'neotek-shopping-basket-03-stroke-rounded.svg', visualSrc: null, bullets: ['purchaseOrders', 'supplierInformation', 'purchaseReports'] },
-  warehouse: { icon: 'neotek-package-search-01-stroke-rounded.svg', visualSrc: null, bullets: ['itemCatalog', 'warehouseLocations', 'warehouseReports'] },
-  logistics: { icon: 'neotek-container-truck-01-stroke-rounded.svg', visualSrc: null, bullets: ['deliveryPlanning', 'transportTracking'] },
-  production: { icon: 'neotek-factory-02-stroke-rounded.svg', visualSrc: null, bullets: ['productionProcess', 'materialPlanning', 'productionCost'] },
-  maintenance: { icon: 'neotek-system-update-02-stroke-rounded.svg', visualSrc: null, bullets: ['maintenanceAssets', 'maintenanceSchedules'] },
-  projects: { icon: 'neotek-folder-cog-stroke-rounded.svg', visualSrc: null, bullets: ['projectPhases', 'projectBudget', 'projectProgress'] },
-  hrPayroll: { icon: 'neotek-user-account-stroke-rounded.svg', visualSrc: null, bullets: ['recruitmentTraining', 'employeeRecords', 'attendancePayroll'] },
-  finance: { icon: 'neotek-wallet-01-stroke-rounded.svg', visualSrc: null, bullets: ['receivablesPayables', 'cashAndTax', 'financialReports'] },
-  forecast: { icon: 'neotek-apple-stocks-stroke-rounded.svg', visualSrc: null, bullets: ['historicalForecast', 'budgetControl'] },
+const EMPTY_SOLUTIONS_DATA = { hero: [], solutionGroups: [], solutionModules: {}, trustedLogos: [], ctaSection: null, faqs: [] }
+const GROUP_ICONS = {
+  business: Briefcase04Icon,
+  supplyChain: Blockchain04Icon,
+  operations: Settings01Icon,
+  management: FolderManagementIcon,
 }
 
 function ModuleIcon({ name, size = 20 }) {
@@ -77,16 +42,14 @@ function ModuleIcon({ name, size = 20 }) {
   )
 }
 
-function ModuleAccordion({ group, t, prefersReducedMotion, activeModule, onToggleModule }) {
+function ModuleAccordion({ group, modules, prefersReducedMotion, activeModule, onToggleModule }) {
   return (
-    <div className="solutions-accordion" aria-label={t('solutionsPage.modulesLabel')}>
+    <div className="solutions-accordion" aria-label="Modules in this solution group">
       {group.modules.map((moduleId) => {
-        const module = moduleDetails[moduleId]
+        const module = modules[moduleId] || {}
         const isOpen = activeModule === moduleId
         const triggerId = `solutions-${group.id}-${moduleId}-trigger`
         const panelId = `solutions-${group.id}-${moduleId}-panel`
-        const detail = t(`solutionsPage.moduleDetails.${moduleId}`, { returnObjects: true })
-
         return (
           <div className={`solutions-accordion__item${isOpen ? ' is-open' : ''}`} key={moduleId}>
             <h4 className="solutions-accordion__heading">
@@ -101,7 +64,7 @@ function ModuleAccordion({ group, t, prefersReducedMotion, activeModule, onToggl
                 <span className="solutions-accordion__module-icon" aria-hidden="true">
                   <ModuleIcon name={module.icon} size={20} />
                 </span>
-                <span className="solutions-accordion__module-name">{t(`solutionsPage.modules.${moduleId}`)}</span>
+                <span className="solutions-accordion__module-name">{module.title || moduleId}</span>
                 <span
                   className={`solutions-accordion__toggle${isOpen ? ' is-open' : ''}`}
                   aria-hidden="true"
@@ -122,10 +85,10 @@ function ModuleAccordion({ group, t, prefersReducedMotion, activeModule, onToggl
               transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
             >
               <div className="solutions-accordion__panel">
-                <p className="solutions-accordion__description">{detail.description}</p>
+                <p className="solutions-accordion__description">{module.description}</p>
                 <ul>
                   {module.bullets.map((bullet) => (
-                    <li key={bullet}>{t(`solutionsPage.capabilities.${bullet}`)}</li>
+                    <li key={bullet}>{bullet}</li>
                   ))}
                 </ul>
               </div>
@@ -137,14 +100,14 @@ function ModuleAccordion({ group, t, prefersReducedMotion, activeModule, onToggl
   )
 }
 
-function SolutionCluster({ group, index, t, prefersReducedMotion }) {
+function SolutionCluster({ group, modules, index, prefersReducedMotion }) {
   // Open the first module on initial render so the visual always has a clear context.
   const [activeModule, setActiveModule] = useState(group.modules[0])
   const [visualModule, setVisualModule] = useState(group.modules[0])
   const reverse = index % 2 === 1
   const selectedModule = visualModule || group.modules[0]
-  const selectedDetails = moduleDetails[selectedModule]
-  const selectedLabel = t(`solutionsPage.modules.${selectedModule}`)
+  const selectedDetails = modules[selectedModule] || {}
+  const selectedLabel = selectedDetails.title || selectedModule
 
   const toggleModule = (moduleId) => {
     // Keep one module open at all times: clicking the current module is a no-op.
@@ -171,15 +134,15 @@ function SolutionCluster({ group, index, t, prefersReducedMotion }) {
           <span className="solutions-cluster__icon" aria-hidden="true">
             <HugeiconsIcon icon={group.icon} size={20} strokeWidth={1.6} />
           </span>
-          <span>{t(`solutionsPage.groups.${group.id}.eyebrow`)}</span>
+          <span>{group.eyebrow}</span>
         </div>
-        <h3>{t(`solutionsPage.groups.${group.id}.title`)}</h3>
+        <h3>{group.title}</h3>
         <p className="solutions-cluster__description">
-          {t(`solutionsPage.groups.${group.id}.description`)}
+          {group.description}
         </p>
         <ModuleAccordion
           group={group}
-          t={t}
+          modules={modules}
           prefersReducedMotion={prefersReducedMotion}
           activeModule={activeModule}
           onToggleModule={toggleModule}
@@ -188,7 +151,7 @@ function SolutionCluster({ group, index, t, prefersReducedMotion }) {
       <div
         className="solutions-cluster__visual-frame"
         role="img"
-        aria-label={`${t(`solutionsPage.groups.${group.id}.visualLabel`)} — ${selectedLabel}`}
+        aria-label={`${group.visualLabel || group.title} — ${selectedLabel}`}
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
@@ -244,6 +207,8 @@ export default function SolutionsPage() {
   }, [language])
   const prefersReducedMotion = useReducedMotion()
   const registerPath = getLocalizedPath('/register', i18n.language)
+  const hero = cmsData.hero[0] || {}
+  const groups = cmsData.solutionGroups.map(group => ({ ...group, id: group.key, icon: GROUP_ICONS[group.key] })).filter(group => group.icon)
 
   return (
     <div className="neotek-site-shell solutions-page">
@@ -253,27 +218,27 @@ export default function SolutionsPage() {
         <section className="solutions-hero" aria-labelledby="solutions-hero-title">
           <NeotekContainer className="solutions-hero__inner">
             <div className="solutions-hero__copy">
-              <p className="neotek-eyebrow">{t('solutionsPage.hero.eyebrow')}</p>
+              <p className="neotek-eyebrow">{hero.eyebrow}</p>
               <h1 id="solutions-hero-title" className="solutions-hero__title">
                 <span className="solutions-hero__title-line">
-                  {t('solutionsPage.hero.titleLine1')}
+                  {hero.titleLine1 || hero.headline}
                 </span>
 
                 <span className="solutions-hero__title-line solutions-hero__title-line--highlight">
-                  {t('solutionsPage.hero.titleHighlight')}
+                  {hero.titleHighlight}
                 </span>
               </h1>
-              <p className="neotek-lead">{t('solutionsPage.hero.description')}</p>
+              <p className="neotek-lead">{hero.description}</p>
               <div className="solutions-hero__actions">
                 <NeotekButton
                   href="#solution-clusters"
                   className="solutions-hero__button solutions-hero__button--primary"
                 >
-                  {t('solutionsPage.hero.primary')}
+                  {hero.primaryLabel}
                 </NeotekButton>
 
                 <a className="solutions-hero__link" href={registerPath}>
-                  {t('solutionsPage.hero.secondary')}
+                  {hero.secondaryLabel}
                   <ChevronRight size={14} aria-hidden="true" />
                 </a>
               </div>
@@ -281,12 +246,12 @@ export default function SolutionsPage() {
             <div
               className="solutions-hero__visual"
               role="img"
-              aria-label={t('solutionsPage.hero.visualLabel')}
+              aria-label={hero.visualLabel || hero.headline}
             >
               <div className="solutions-hero__visual-surface">
                 <img
                   className="solutions-hero__dashboard"
-                  src="https://res.cloudinary.com/drslg1shx/image/upload/v1790869050/SolutionHero_saf7lm.png"
+                  src={hero.image || undefined}
                   alt=""
                   aria-hidden="true"
                   loading="eager"
@@ -309,12 +274,12 @@ export default function SolutionsPage() {
               <p>{t('solutionsPage.intro.description')}</p>
             </header>
             <div className="solutions-clusters__list">
-              {solutionGroups.map((group, index) => (
+              {groups.map((group, index) => (
                 <SolutionCluster
                   key={group.id}
                   group={group}
                   index={index}
-                  t={t}
+                  modules={cmsData.solutionModules}
                   prefersReducedMotion={prefersReducedMotion}
                 />
               ))}
