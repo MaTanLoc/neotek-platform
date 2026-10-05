@@ -2,9 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
 import { adminApi } from '../../services/admin/adminApi'
+import { JsonFallbackEditor } from '../components/section-editors/JsonFallbackEditor'
+import { sectionEditors } from '../components/section-editors/registry'
 
 const SECTION_TYPES = ['hero', 'why', 'solutionOverview', 'proofMetrics', 'trustedLogos', 'solutionClusters', 'testimonials', 'cta', 'faq', 'solutionGroups', 'solutionModules']
-const EMPTY = { loading: true, error: '', success: '' }
+const EMPTY = { loading: true, pending: false, error: '', success: '' }
 
 export function PageEditor() {
   const { slug } = useParams()
@@ -33,9 +35,10 @@ export function PageEditor() {
   useEffect(() => { load() }, [load])
 
   const save = async (operation, success = 'Saved.') => {
-    setState(previous => ({ ...previous, error: '', success: '' }))
+    setState(previous => ({ ...previous, pending: true, error: '', success: '' }))
     try { const result = await operation(); setState(previous => ({ ...previous, success })); return result }
     catch (error) { if (error.status === 401) clearAuth(); setState(previous => ({ ...previous, error: error.message, success: '' })); return null }
+    finally { setState(previous => ({ ...previous, pending: false })) }
   }
 
   const saveMetadata = async (event) => {
@@ -51,10 +54,10 @@ export function PageEditor() {
     return result
   })
 
-  const saveSection = (section, locale) => save(async () => {
+  const saveSection = (section, locale, draftValue) => save(async () => {
     const key = `${section.id}:${locale}`
     let content
-    try { content = JSON.parse(sectionDrafts[key]) } catch { throw new Error('Invalid JSON. Fix the content before saving.') }
+    try { content = draftValue ?? JSON.parse(sectionDrafts[key]) } catch { throw new Error('Invalid JSON. Fix the content before saving.') }
     const result = await adminApi.updateSectionTranslation(section.id, locale, { content }, csrfToken)
     setSectionDrafts(previous => ({ ...previous, [key]: JSON.stringify(result.content ?? content, null, 2) }))
     return result
@@ -102,14 +105,15 @@ export function PageEditor() {
       <label>SEO description<textarea rows="3" value={translationDrafts[translation.locale]?.seoDescription || ''} onChange={e => setTranslationDrafts({ ...translationDrafts, [translation.locale]: { ...translationDrafts[translation.locale], seoDescription: e.target.value } })} /></label>
       <button className="admin-button admin-button--secondary">Save translation</button>
     </form>)}</div>
-    <div className="admin-page-heading"><h2>Sections</h2>{canManage && <form className="admin-inline-form" onSubmit={createSection}><input aria-label="Section key" placeholder="key" required value={newSection.key} onChange={e => setNewSection({ ...newSection, key: e.target.value })} /><select aria-label="Section type" value={newSection.type} onChange={e => setNewSection({ ...newSection, type: e.target.value })}>{SECTION_TYPES.map(type => <option key={type}>{type}</option>)}</select><button className="admin-button admin-button--primary">Add section</button></form>}</div>
-    {sections.length === 0 ? <div className="admin-card">No sections found.</div> : sections.map((section, index) => <SectionCard key={section.id} section={section} index={index} total={sections.length} drafts={sectionDrafts} setDrafts={setSectionDrafts} onSave={saveSection} onUpdate={updateSection} onMove={move} />)}
+    <div className="admin-page-heading"><h2>Sections</h2>{canManage && <form className="admin-inline-form" onSubmit={createSection}><input aria-label="Section key" placeholder="Section key (e.g. hero)" required value={newSection.key} onChange={e => setNewSection({ ...newSection, key: e.target.value })} /><select aria-label="Section type" value={newSection.type} onChange={e => setNewSection({ ...newSection, type: e.target.value })}>{SECTION_TYPES.map(type => <option key={type}>{type}</option>)}</select><button className="admin-button admin-button--primary">Add section</button></form>}</div>
+    {sections.length === 0 ? <div className="admin-card">No sections found.</div> : sections.map((section, index) => <SectionCard key={section.id} section={section} index={index} total={sections.length} drafts={sectionDrafts} setDrafts={setSectionDrafts} onSave={saveSection} onUpdate={updateSection} onMove={move} pending={state.pending} />)}
   </section>
 }
 
-function SectionCard({ section, index, total, drafts, setDrafts, onSave, onUpdate, onMove }) {
-  return <article className="admin-card admin-section-card"><div className="admin-section-heading"><div><h3>{section.key}</h3><span className="admin-muted">{section.type} · order {section.sortOrder}</span></div><label className="admin-checkbox"><input type="checkbox" checked={section.enabled} onChange={e => onUpdate(section, { enabled: e.target.checked })} /> Enabled</label></div>
-    <div className="admin-order-controls"><button className="admin-button admin-button--ghost" disabled={index === 0} onClick={() => onMove(index, -1)}>Move up</button><button className="admin-button admin-button--ghost" disabled={index === total - 1} onClick={() => onMove(index, 1)}>Move down</button></div>
-    {(section.translations || []).map(translation => { const key = `${section.id}:${translation.locale}`; return <form className="admin-editor-block" key={key} onSubmit={e => { e.preventDefault(); onSave(section, translation.locale) }}><h4>{translation.locale} content</h4><textarea className="admin-json-editor" rows="10" value={drafts[key] || JSON.stringify(translation.content ?? {}, null, 2)} onChange={e => setDrafts(previous => ({ ...previous, [key]: e.target.value }))} /><button className="admin-button admin-button--secondary">Save JSON</button></form> })}
+function SectionCard({ section, index, total, drafts, setDrafts, onSave, onUpdate, onMove, pending }) {
+  const TypedEditor = sectionEditors[section.type]
+  return <article className="admin-card admin-section-card"><div className="admin-section-heading"><div><h3>{section.key}</h3><span className="admin-muted">Section type: {section.type} · Display order: {section.sortOrder}</span><p className="admin-muted">Section key is an internal identifier and normally should not be changed.</p></div><label className="admin-checkbox"><input type="checkbox" checked={section.enabled} onChange={e => onUpdate(section, { enabled: e.target.checked })} /> Visible</label></div>
+    <div className="admin-order-controls"><button type="button" className="admin-button admin-button--ghost" disabled={index === 0} onClick={() => onMove(index, -1)}>Move up</button><button type="button" className="admin-button admin-button--ghost" disabled={index === total - 1} onClick={() => onMove(index, 1)}>Move down</button></div>
+    {(section.translations || []).map(translation => { const key = `${section.id}:${translation.locale}`; const raw = drafts[key] || JSON.stringify(translation.content ?? {}, null, 2); let value; try { value = JSON.parse(raw) } catch { value = null } return <form className="admin-editor-block" key={key} onSubmit={e => { e.preventDefault(); onSave(section, translation.locale) }}><h4>{translation.locale} content</h4>{TypedEditor && value !== null ? <TypedEditor value={value} pending={pending} onChange={next => setDrafts(previous => ({ ...previous, [key]: JSON.stringify(next, null, 2) }))} /> : <JsonFallbackEditor value={raw} onChange={e => setDrafts(previous => ({ ...previous, [key]: e.target.value }))} pending={pending} />}</form> })}
   </article>
 }

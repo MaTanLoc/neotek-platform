@@ -37,6 +37,12 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
 .admin-editor-block { display: grid; gap: 10px; padding-top: 18px; margin-top: 18px; border-top: 1px solid var(--neotek-color-border); }
 .admin-editor-block h3, .admin-editor-block h4 { margin: 0; }
 .admin-editor-block .admin-button { width: fit-content; }
+.admin-form-grid--two { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 12px; }
+.admin-editor-items { display: grid; gap: 16px; }
+.admin-editor-item, .admin-editor-subitem { display: grid; gap: 14px; padding: 16px; border: 1px solid var(--neotek-color-border); border-radius: 8px; }
+.admin-editor-item legend, .admin-editor-subitem legend { padding: 0 6px; color: var(--neotek-color-text-secondary); font-weight: 700; }
+.admin-editor-subitem { padding: 12px; }
+.admin-item-controls { display: flex; flex-wrap: wrap; gap: 8px; }
 .admin-json-editor { min-height: 130px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 13px; }
 .admin-section-heading { display: flex; justify-content: space-between; align-items: start; gap: 16px; }
 .admin-section-heading h3 { margin: 0 0 4px; }
@@ -52,4 +58,4 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
 .admin-login__card label { margin-top: 18px; }
 .admin-login__card > button { width: 100%; margin-top: 24px; }
 .admin-loading { padding: 48px; text-align: center; }
-@media (max-width: 760px) { .admin-header, .admin-page-heading { align-items: flex-start; flex-direction: column; } .admin-user { flex-wrap: wrap; } .admin-body { display: block; } .admin-sidebar { width: auto; padding: 12px 18px; border-right: 0; border-bottom: 1px solid var(--neotek-color-border); } .admin-main { padding: 24px 16px; } .admin-form-grid { grid-template-columns: 1fr; } .admin-inline-form { align-items: stretch; flex-direction: column; } .admin-inline-form input, .admin-inline-form select, .admin-inline-form button { width: 100%; } }
+@media (max-width: 760px) { .admin-header, .admin-page-heading { align-items: flex-start; flex-direction: column; } .admin-user { flex-wrap: wrap; } .admin-body { display: block; } .admin-sidebar { width: auto; padding: 12px 18px; border-right: 0; border-bottom: 1px solid var(--neotek-color-border); } .admin-main { padding: 24px 16px; } .admin-form-grid, .admin-form-grid--two { grid-template-columns: 1fr; } .admin-inline-form { align-items: stretch; flex-direction: column; } .admin-inline-form input, .admin-inline-form select, .admin-inline-form button { width: 100%; } }
