@@ -86,32 +86,42 @@ export default function HomePage() {
             />
 
             <WhySection
+               copy={homepageData.sectionCopy?.why}
+
                items={homepageData.whyItems}
                loading={loading}
                error={error}
             />
 
-            <SolutionsSection />
+            <SolutionsSection content={homepageData.solutionOverview} loading={loading} />
 
             <ProofMetricsSection
+               copy={homepageData.sectionCopy?.proofMetrics}
+
                metrics={homepageData.proofMetrics}
                loading={loading}
                error={error}
             />
 
             <TrustedBySection
+               copy={homepageData.sectionCopy?.trustedBy}
+
                logos={homepageData.trustedLogos}
                loading={loading}
                error={error}
             />
 
             <SolutionClustersSection
+               copy={homepageData.sectionCopy?.solutionClusters}
+
                clusters={homepageData.solutionClusters}
                loading={loading}
                error={error}
             />
 
             <TestimonialsSection
+               copy={homepageData.sectionCopy?.testimonials}
+
                testimonials={homepageData.testimonials}
                loading={loading}
                error={error}
@@ -124,13 +134,15 @@ export default function HomePage() {
             />
 
             <FAQSection
+               copy={homepageData.sectionCopy?.faq}
+
                faqs={homepageData.faqs}
                loading={loading}
                error={error}
             />
          </main>
 
-         <NeotekFooter />
+         <NeotekFooter cta={homepageData.footerCta} cmsManaged />
       </div>
    )
 }

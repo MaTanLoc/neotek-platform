@@ -1,0 +1,148 @@
+﻿{
+  "mode": "--dry-run",
+  "plans": [
+    {
+      "source": "shared.cta",
+      "create": true,
+      "sections": [
+        {
+          "id": "cmuu7lccu001cdrskmelnj7vv",
+          "page": "home",
+          "key": "cta",
+          "translations": [
+            {
+              "id": "cmuu7lcd2001edrskupwmhvuj",
+              "locale": "vi",
+              "sha256": "c6cdb2998c1b3b9a5dc3f537b99680ea440a9d9f556a870c7f23aaf3bb2f05b7"
+            },
+            {
+              "id": "cmuu7lcd9001gdrsk2pi5trg2",
+              "locale": "en",
+              "sha256": "8bb0e56da8650accdbe1882683719d2752d63a4bf5263a8e3ca3f564332e3842"
+            }
+          ]
+        },
+        {
+          "id": "cmuu7lcgs002bdrskglbrm55d",
+          "page": "solutions",
+          "key": "cta",
+          "translations": [
+            {
+              "id": "cmuu7lch7002fdrsk1gzx5581",
+              "locale": "en",
+              "sha256": "8bb0e56da8650accdbe1882683719d2752d63a4bf5263a8e3ca3f564332e3842"
+            },
+            {
+              "id": "cmuu7lch0002ddrskr240exmb",
+              "locale": "vi",
+              "sha256": "c6cdb2998c1b3b9a5dc3f537b99680ea440a9d9f556a870c7f23aaf3bb2f05b7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "shared.footerCta",
+      "create": true,
+      "sections": [
+        {
+          "id": "cmuwym9dv0001dra0b9jddypc",
+          "page": "home",
+          "key": "footerCta",
+          "translations": [
+            {
+              "id": "cmuwym9dv0002dra0dj4b1vg5",
+              "locale": "vi",
+              "sha256": "e637e52c82bac0192a3ffb1a81f1938caa95c2c0646d708036dc9c49f28659a1"
+            },
+            {
+              "id": "cmuwym9dv0003dra0j9b51a9g",
+              "locale": "en",
+              "sha256": "1d38b5b4b32ce1ef40604fa5b667931ce9663951e105043537be060ed23b3181"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "shared.faq",
+      "create": true,
+      "sections": [
+        {
+          "id": "cmuu7lcdg001idrsk7isxysto",
+          "page": "home",
+          "key": "faq",
+          "translations": [
+            {
+              "id": "cmuu7lcdn001kdrskjc15s24f",
+              "locale": "vi",
+              "sha256": "6cd30c6045706710d8d8abab990d4d1697c9b96f108354f1fbf5be3f4890c575"
+            },
+            {
+              "id": "cmuu7lce1001mdrskvnemthje",
+              "locale": "en",
+              "sha256": "18c20a275838630e0545d33fc7e913f294b87ebbdf561f67a2593688e8ea9166"
+            }
+          ]
+        },
+        {
+          "id": "cmuu7lche002hdrskfs087ffz",
+          "page": "solutions",
+          "key": "faq",
+          "translations": [
+            {
+              "id": "cmuu7lchn002jdrskvai9klsm",
+              "locale": "vi",
+              "sha256": "6cd30c6045706710d8d8abab990d4d1697c9b96f108354f1fbf5be3f4890c575"
+            },
+            {
+              "id": "cmuu7lchu002ldrskaa6sa86j",
+              "locale": "en",
+              "sha256": "18c20a275838630e0545d33fc7e913f294b87ebbdf561f67a2593688e8ea9166"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "shared.trustedLogos",
+      "create": true,
+      "sections": [
+        {
+          "id": "cmuu7lcax000udrskqm6hdh8q",
+          "page": "home",
+          "key": "trustedBy",
+          "translations": [
+            {
+              "id": "cmuu7lcb7000wdrskc9usurzq",
+              "locale": "vi",
+              "sha256": "98785c840ca3bca4a8009b042b872adfaa916f8801c0eb1428a0b17697a5a0e0"
+            },
+            {
+              "id": "cmuu7lcbd000ydrsk0qi89pzf",
+              "locale": "en",
+              "sha256": "9e13e000a00af54d95e08834019a8c64624fac5f6c638a7de32a474ed50611f0"
+            }
+          ]
+        },
+        {
+          "id": "cmuwzewz40001drts6u6eh6p0",
+          "page": "solutions",
+          "key": "trustedBy",
+          "translations": [
+            {
+              "id": "cmuwzewz50002drtsiuos8yd9",
+              "locale": "vi",
+              "sha256": "8fa101a8341ccaf3c754c6c73dd2d4adf5a4d048e329ab23a3b418645ff91248"
+            },
+            {
+              "id": "cmuwzewz50003drts7x8zljcx",
+              "locale": "en",
+              "sha256": "68f246d172fd5eb680cceefa59343b93f9680c5d52c482d39364abfa76078bfd"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import * as Accordion from '@radix-ui/react-accordion'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
 import { ChevronRight, ChevronDown, Globe, Menu, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { getLocalizedPath, setLanguage } from '../../../i18n'
@@ -217,7 +218,6 @@ export function NeotekNavbar({
   const location = useLocation()
   const normalizedPath = location.pathname.replace(/\/+$/, '') || '/'
   const isHomePage = normalizedPath === '/' || normalizedPath === '/en' || normalizedPath === '/vi'
-  const isSolutionsPage = normalizedPath === '/solutions'
 
   const language = i18n.language === 'en' ? 'en' : 'vi'
 
@@ -321,7 +321,7 @@ export function NeotekNavbar({
         className={`neotek-navbar ${isHeroNavbar
           ? 'neotek-navbar--hero'
           : `neotek-navbar--scrolled${(showScrolledNavbar || !isHomePage) ? ' is-visible' : ''
-          }${isSolutionsPage ? ' neotek-navbar--sticky' : ''}`
+          }`
           }`}
         aria-hidden={isScrolledNavbar ? !showScrolledNavbar : undefined}
       >
@@ -638,10 +638,10 @@ export function NeotekNavbar({
       {isHomePage ? (
         <>
           {renderNavbar('hero')}
-          {renderNavbar('scrolled')}
+          {createPortal(renderNavbar('scrolled'), document.body)}
         </>
       ) : (
-        renderNavbar('scrolled')
+        createPortal(renderNavbar('scrolled'), document.body)
       )}
     </>
   )

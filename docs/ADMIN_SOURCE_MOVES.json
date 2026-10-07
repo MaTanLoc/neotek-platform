@@ -1,0 +1,44 @@
+{
+  "moved": {
+    "src/admin/AdminApp.jsx": "src/admin/app/AdminApp.jsx",
+    "src/admin/CmsProvider.jsx": "src/admin/app/CmsProvider.jsx",
+    "src/admin/cmsContext.js": "src/admin/app/cmsContext.js",
+    "src/admin/components/ConfirmProvider.jsx": "src/admin/app/ConfirmProvider.jsx",
+    "src/admin/components/AdminSelect.jsx": "src/admin/editors/shared/SelectField.jsx",
+    "src/admin/admin.css": "src/admin/styles/admin.css",
+    "src/admin/sectionMetadata.js": "src/admin/config/sectionMetadata.js",
+    "src/admin/previewRoutes.js": "src/admin/config/previewRoutes.js",
+    "src/admin/components/section-editors/registry.js": "src/admin/config/sectionRegistry.js",
+    "src/admin/components/section-editors/HeroEditor.jsx": "src/admin/editors/home/HeroEditor.jsx",
+    "src/admin/components/section-editors/SolutionOverviewEditor.jsx": "src/admin/editors/home/SolutionOverviewEditor.jsx",
+    "src/admin/components/section-editors/SolutionsHeroEditor.jsx": "src/admin/editors/solutions/SolutionsHeroEditor.jsx",
+    "src/admin/components/section-editors/SolutionDraftPreview.jsx": "src/admin/editors/solutions/SolutionPreviewView.jsx",
+    "src/admin/components/section-editors/CtaEditor.jsx": "src/admin/editors/shared-sections/SharedCtaEditor.jsx",
+    "src/admin/components/section-editors/BilingualCollectionEditor.jsx": "src/admin/editors/shared-sections/CollectionSectionEditor.jsx",
+    "src/admin/components/section-editors/SectionActionsEditor.jsx": "src/admin/editors/home/ProofMetricActionsPanel.jsx",
+    "src/admin/components/section-editors/EditorControls.jsx": "src/admin/editors/shared/ItemActionRow.jsx",
+    "src/admin/components/section-editors/EditorPrimitives.jsx": "src/admin/editors/shared/EditorPrimitives.jsx",
+    "src/admin/components/section-editors/ImageField.jsx": "src/admin/editors/shared/MediaField.jsx",
+    "src/admin/components/section-editors/ImagePositionField.jsx": "src/admin/editors/shared/ImagePositionField.jsx",
+    "src/admin/components/section-editors/MediaEditDialog.jsx": "src/admin/editors/shared/PortraitEditorDialog.jsx",
+    "src/admin/components/section-editors/RichTextField.jsx": "src/admin/editors/shared/RichTextField.jsx",
+    "src/admin/components/section-editors/ListInput.jsx": "src/admin/editors/shared/ListInput.jsx",
+    "src/admin/components/section-editors/DraftPreview.jsx": "src/admin/editors/shared/DraftPreviewPanel.jsx",
+    "src/admin/components/section-editors/PreviewViews.jsx": "src/admin/editors/shared/PublicPreviewViews.jsx",
+    "src/admin/components/section-editors/SectionCopyFields.jsx": "src/admin/editors/shared/SectionCopyPanel.jsx",
+    "src/admin/components/section-editors/editorUtils.js": "src/admin/utils/itemOperations.js",
+    "src/admin/components/section-editors/pairBilingualItems.js": "src/admin/utils/bilingualItems.js",
+    "src/admin/components/section-editors/draftViewData.js": "src/admin/utils/content.js"
+  },
+  "removed": [
+    "src/admin/components/section-editors/CollectionEditors.jsx",
+    "src/admin/components/section-editors/FaqEditor.jsx",
+    "src/admin/components/section-editors/ProofMetricsEditor.jsx",
+    "src/admin/components/section-editors/TestimonialsEditor.jsx",
+    "src/admin/components/section-editors/SolutionClustersEditor.jsx",
+    "scripts/check-cms-phase3.mjs"
+  ],
+  "merged": {
+    "src/admin/components/section-editors/AvatarField.jsx": "src/admin/editors/shared/PortraitEditorDialog.jsx"
+  }
+}

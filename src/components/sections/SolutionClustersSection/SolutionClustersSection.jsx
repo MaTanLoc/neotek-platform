@@ -1,5 +1,5 @@
 import { createSkeletonItems } from '../../../utils/skeleton'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
@@ -21,6 +21,8 @@ import './SolutionClustersSection.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
+const CLUSTER_KEYS = ['business', 'supplyChain', 'manufacturing', 'management']
+
 const clusterIcons = {
   business: Briefcase04Icon,
   supplyChain: Blockchain04Icon,
@@ -28,30 +30,124 @@ const clusterIcons = {
   management: FolderManagementIcon,
 }
 
+function plainText(value) {
+  if (typeof value !== 'string') return value ?? ''
+
+  return value
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<\/p>\s*<p[^>]*>/gi, ' ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+/**
+ * The CMS stores Solution Clusters as one flat `items` array:
+ *
+ * 4 cluster records:
+ *   business / supplyChain / manufacturing / management
+ *
+ * plus module records:
+ *   crm / marketing / mua-hang / kho / ...
+ *   each linked by `clusterKey`.
+ *
+ * The public component needs a grouped presentation model. Keep the DB/API
+ * contract flat and normalize only at this rendering boundary.
+ */
+function normalizeClusters(source) {
+  if (!Array.isArray(source) || source.length === 0) return []
+
+
+  // Already-grouped data remains supported for skeletons/older adapters.
+  const alreadyGrouped = source.some(
+    item => CLUSTER_KEYS.includes(item?.clusterKey) && Array.isArray(item?.modules),
+  )
+
+  if (alreadyGrouped) {
+    return source
+      .filter(item => CLUSTER_KEYS.includes(item?.clusterKey))
+      .map(item => ({
+        ...item,
+        id: item.id || item.clusterKey,
+        label: item.label || item.title || '',
+        description: plainText(item.description),
+        media: item.media || item.image || '',
+        modules: (item.modules || []).map(module => ({
+          ...module,
+          id: module.id || module.key || module.title,
+        })),
+      }))
+  }
+
+  const clustersByKey = new Map()
+  const modulesByCluster = new Map(CLUSTER_KEYS.map(key => [key, []]))
+
+  source.forEach((item, index) => {
+    if (!item) return
+
+    const key = String(item.key || '')
+    const owner = String(item.clusterKey || '')
+
+    if (CLUSTER_KEYS.includes(key)) {
+      clustersByKey.set(key, {
+        ...item,
+        id: item.id || key,
+        clusterKey: key,
+        label: item.label || item.title || '',
+        description: plainText(item.description),
+        media: item.media || item.image || '',
+        modules: [],
+      })
+      return
+    }
+
+    if (CLUSTER_KEYS.includes(owner)) {
+      modulesByCluster.get(owner).push({
+        ...item,
+        id: item.id || item.key || `${owner}-module-${index}`,
+        title: item.title || item.label || item.key || '',
+      })
+    }
+  })
+
+  return CLUSTER_KEYS
+    .map(key => {
+      const cluster = clustersByKey.get(key)
+      if (!cluster) return null
+
+      return {
+        ...cluster,
+        modules: modulesByCluster.get(key) || [],
+      }
+    })
+    .filter(Boolean)
+}
+
 function ClusterVisual({ cluster }) {
   if (!cluster?.media) {
     return (
       <div className="solution-clusters__visual skeleton-block">
-        <div
-          className="solution-clusters__visual-glow"
-          aria-hidden="true"
-        />
+        <div className="solution-clusters__visual-glow" aria-hidden="true" />
       </div>
     )
   }
 
   return (
     <div className="solution-clusters__visual skeleton-block">
-      <div
-        className="solution-clusters__visual-glow"
-        aria-hidden="true"
-      />
+      <div className="solution-clusters__visual-glow" aria-hidden="true" />
 
       <div className="solution-clusters__media">
         <img
           src={cluster.media}
           alt=""
-          loading="lazy" decoding="async"
+          loading="lazy"
+          decoding="async"
         />
       </div>
     </div>
@@ -59,37 +155,65 @@ function ClusterVisual({ cluster }) {
 }
 
 export function SolutionClustersSection({
+  copy = {},
   clusters = [],
   loading = false,
   error = null,
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const sectionRef = useRef(null)
   const prefersReducedMotion = useReducedMotion()
-  const visibleClusters = loading ? createSkeletonItems(4, 'cluster').map((item) => ({ ...item, clusterKey: item.id, label: '████████ ████████', title: '████████ ████████ ████████', description: '████████ ████████ ████████ ████████ ████████ ████████', modules: createSkeletonItems(4, item.id).map((module) => ({ ...module, title: '████████' })) })) : clusters
+
+  const normalizedClusters = useMemo(
+    () => normalizeClusters(clusters, i18n.resolvedLanguage || i18n.language),
+    [clusters, i18n.resolvedLanguage, i18n.language],
+  )
+
+  const visibleClusters = loading
+    ? createSkeletonItems(4, 'cluster').map((item, index) => {
+      const clusterKey = CLUSTER_KEYS[index] || item.id
+      return {
+        ...item,
+        clusterKey,
+        label: '████████ ████████',
+        title: '████████ ████████ ████████',
+        description: '████████ ████████ ████████ ████████ ████████ ████████',
+        modules: createSkeletonItems(4, item.id).map(module => ({
+          ...module,
+          title: '████████',
+        })),
+      }
+    })
+    : normalizedClusters
+
   const [activeId, setActiveId] = useState(null)
 
   useEffect(() => {
-    if (clusters.length === 0) {
+    if (normalizedClusters.length === 0) {
       setActiveId(null)
       return
     }
 
-    setActiveId((current) => {
-      const exists = clusters.some(
-        (cluster) => cluster.clusterKey === current,
+    setActiveId(current => {
+      const exists = normalizedClusters.some(
+        cluster => cluster.clusterKey === current,
       )
 
-      return exists ? current : clusters[0].clusterKey
+      return exists ? current : normalizedClusters[0].clusterKey
     })
-  }, [clusters])
+  }, [normalizedClusters])
 
   const active =
-    visibleClusters.find((cluster) => cluster.clusterKey === activeId) ??
+    visibleClusters.find(cluster => cluster.clusterKey === activeId) ??
     visibleClusters[0]
 
   useLayoutEffect(() => {
-    if (loading || prefersReducedMotion || error || clusters.length === 0) {
+    if (
+      loading ||
+      prefersReducedMotion ||
+      error ||
+      normalizedClusters.length === 0
+    ) {
       return undefined
     }
 
@@ -151,7 +275,12 @@ export function SolutionClustersSection({
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [loading, prefersReducedMotion, error, clusters.length])
+  }, [
+    loading,
+    prefersReducedMotion,
+    error,
+    normalizedClusters.length,
+  ])
 
   return (
     <NeotekSection
@@ -163,19 +292,19 @@ export function SolutionClustersSection({
       <NeotekContainer>
         <div className="solution-clusters__intro">
           <p className="solution-clusters__eyebrow">
-            {t('solutionClusters.eyebrow')}
+            {(copy.eyebrow || '')}
           </p>
 
           <h2
             id="solution-clusters-title"
             className="solution-clusters__title"
           >
-            {t('solutionClusters.titleBefore')}{' '}
-            <span>{t('solutionClusters.titleHighlight')}</span>
+            {(copy.title || '')}{' '}
+            <span>{(copy.titleHighlight || '')}</span>
           </h2>
 
           <p className="solution-clusters__description">
-            {t('solutionClusters.description')}
+            {(copy.description || '')}
           </p>
         </div>
 
@@ -183,18 +312,18 @@ export function SolutionClustersSection({
           <>
             <div
               className="solution-clusters__tabs"
-                aria-hidden={loading || undefined}
-                inert={loading ? '' : undefined}
+              aria-hidden={loading || undefined}
+              inert={loading ? '' : undefined}
               role="tablist"
               aria-label={t('solutionClusters.aria')}
             >
-              {visibleClusters.map((cluster) => {
-                const isActive = cluster.clusterKey === active.clusterKey
+              {visibleClusters.map(cluster => {
+                const isActive = cluster.clusterKey === active?.clusterKey
                 const icon = clusterIcons[cluster.clusterKey] ?? null
 
                 return (
                   <button
-                    key={cluster.id}
+                    key={cluster.id || cluster.clusterKey}
                     type="button"
                     role="tab"
                     disabled={loading}
@@ -232,20 +361,30 @@ export function SolutionClustersSection({
                   <p className="skeleton-target">{active.description}</p>
 
                   {active.modules?.length > 0 ? (
-                    <div className="solution-clusters__modules">
-                      {active.modules.map((module) => (
-                        <span className="skeleton-target" key={module.id}>{module.title}</span>
+                    <div
+                      className="solution-clusters__modules"
+                      aria-label={t('solutionClusters.modulesAria', {
+                        defaultValue: 'Phân hệ',
+                      })}
+                    >
+                      {active.modules.map(module => (
+                        <span
+                          className="skeleton-target"
+                          key={module.id || module.key}
+                        >
+                          {module.title}
+                        </span>
                       ))}
                     </div>
                   ) : null}
 
                   <NeotekButton
-                    href={loading ? undefined : "/solutions"}
+                    href={loading ? undefined : copy.ctaUrl || undefined}
                     disabled={loading}
                     className="solution-clusters__cta skeleton-target"
                   >
                     <span className="solution-clusters__cta-text">
-                      {t('solutionClusters.cta')}
+                      {(copy.ctaLabel || '')}
                     </span>
 
                     <HugeiconsIcon

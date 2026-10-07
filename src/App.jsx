@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./admin/auth/AuthContext";
-import { AdminApp } from "./admin/AdminApp";
+import { AdminApp } from "./admin/app/AdminApp";
 import { useTranslation } from "react-i18next";
 import SEO from "./components/common/SEO/SEO";
 
@@ -11,6 +11,7 @@ import "./components/common/neotek-components.css";
 
 const HomePage = lazy(() => import("./pages/home/HomePage"));
 const SolutionsPage = lazy(() => import("./pages/solutions/SolutionsPage"));
+const SolutionDetailPage = lazy(() => import("./pages/solutions/SolutionDetailPage"));
 const Login = lazy(() => import("./pages/auth/Login"));
 const Register = lazy(() => import("./pages/auth/Register"));
 const BookingPage = lazy(() => import("./pages/booking/BookingPage"));
@@ -46,6 +47,8 @@ export default function App() {
                 {/* SOLUTIONS */}
                 <Route path="/solutions" element={<SolutionsPage />} />
                 <Route path="/en/solutions" element={<SolutionsPage />} />
+                <Route path="/solutions/:slug" element={<SolutionDetailPage />} />
+                <Route path="/en/solutions/:slug" element={<SolutionDetailPage />} />
 
                 {/* BOOKING */}
                 <Route path="/booking" element={<BookingPage />} />

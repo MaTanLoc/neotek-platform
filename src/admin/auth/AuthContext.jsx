@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { adminApi, AdminApiError } from '../../services/admin/adminApi'
-import { AuthContext } from './context'
+import {useCallback, useEffect, useMemo, useState} from 'react'
+import {adminApi} from '../../services/admin/adminApi'
+import {AuthContext} from './context'
 
 export function AuthProvider({ children }) {
   const [status, setStatus] = useState('loading')
@@ -15,9 +15,13 @@ export function AuthProvider({ children }) {
       setCsrfToken(csrf.csrfToken)
       setStatus('authenticated')
     } catch (error) {
-      setUser(null)
-      setCsrfToken(null)
-      setStatus(error instanceof AdminApiError && error.status !== 401 ? 'unauthenticated' : 'unauthenticated')
+      if (error.status === 401) {
+        setUser(null)
+        setCsrfToken(null)
+        setStatus('unauthenticated')
+      } else {
+        setStatus('error')
+      }
     }
   }, [])
 
@@ -32,11 +36,12 @@ export function AuthProvider({ children }) {
   }, [])
 
   const logout = useCallback(async () => {
-    try { await adminApi.logout(csrfToken) } finally {
-      setUser(null)
-      setCsrfToken(null)
-      setStatus('unauthenticated')
+    try { await adminApi.logout(csrfToken) } catch (error) {
+      if (error.status !== 401) throw error
     }
+    setUser(null)
+    setCsrfToken(null)
+    setStatus('unauthenticated')
   }, [csrfToken])
 
   const clearAuth = useCallback(() => {

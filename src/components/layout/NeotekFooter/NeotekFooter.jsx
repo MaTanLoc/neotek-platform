@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { NeotekButton } from '../../common/NeotekButton/NeotekButton'
+import { FooterCtaView } from './FooterCtaView'
 import { NeotekContainer } from '../../common/NeotekContainer/NeotekContainer'
 import { useTranslation } from 'react-i18next'
 import './NeotekFooter.css'
@@ -44,12 +44,13 @@ const legalLinks = [
   { key: 'terms', href: null },
 ]
 
-export function NeotekFooter({ demoHref = '/demo', showCta = true }) {
+export function NeotekFooter({ demoHref = '/demo', showCta = true, cta, cmsManaged = false }) {
   const { t } = useTranslation()
+  const ctaVisible = showCta && (!cmsManaged || !!cta)
   const footerRef = useRef(null)
 
   useLayoutEffect(() => {
-    if (!showCta) return undefined
+    if (!ctaVisible) return undefined
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -70,30 +71,12 @@ export function NeotekFooter({ demoHref = '/demo', showCta = true }) {
     }, footerRef)
 
     return () => ctx.revert()
-  }, [showCta])
+  }, [ctaVisible])
 
   return (
     <div ref={footerRef}>
-      {showCta && (
-        <section className="neotek-footer-cta" aria-labelledby="footer-cta-title">
-          <NeotekContainer className="neotek-footer-cta__container">
-            <div className="neotek-footer-cta__card">
-              <div className="neotek-footer-cta__content">
-                <span className="neotek-footer-cta__eyebrow">NeoERP</span>
-                <h2 id="footer-cta-title" className="neotek-footer-cta__title">
-                  {t('footer.cta')}
-                </h2>
-                <p className="neotek-footer-cta__description">
-                  {t('footer.ctaDescription')}
-                </p>
-              </div>
-
-              <NeotekButton href={demoHref} className="neotek-footer-cta__button">
-                {t('footer.demo')}
-              </NeotekButton>
-            </div>
-          </NeotekContainer>
-        </section>
+      {ctaVisible && (
+        <FooterCtaView cta={cmsManaged ? cta : { eyebrow: 'NeoERP', title: t('footer.cta'), description: t('footer.ctaDescription'), primaryUrl: demoHref, primaryLabel: t('footer.demo') }} />
       )}
 
       <footer className="neotek-footer" id="contact">

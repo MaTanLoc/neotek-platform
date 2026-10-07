@@ -25,7 +25,7 @@ function updateHeadElement(selector, tagName, attributes) {
   if (!element.parentNode) document.head.appendChild(element)
 }
 
-export default function SEO({ title, description, robots = 'index, follow', type = 'website', image = '/assets/logo/logo_306x98.png' }) {
+export default function SEO({ title, description, robots = 'index, follow', type = 'website', image = '/assets/logo/logo_306x98.png', localized = false }) {
   const { pathname } = useLocation()
   const normalizedPath = pathname.replace(/\/+$/, '') || '/'
   const language = getLanguageFromPathname(normalizedPath)
@@ -57,7 +57,7 @@ export default function SEO({ title, description, robots = 'index, follow', type
     updateHeadElement('link[rel="canonical"]', 'link', { rel: 'canonical', href: canonical })
 
     // Unknown URLs have no verified translation counterpart. Clear stale alternates.
-    if (!localizedRoutes.includes(basePath)) {
+    if (!localized && !localizedRoutes.includes(basePath)) {
       document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((element) => element.remove())
       return
     }
@@ -66,7 +66,7 @@ export default function SEO({ title, description, robots = 'index, follow', type
     for (const [hreflang, href] of [['vi', viUrl], ['en', enUrl], ['x-default', viUrl]]) {
       updateHeadElement(`link[rel="alternate"][hreflang="${hreflang}"]`, 'link', { rel: 'alternate', hreflang, href })
     }
-  }, [normalizedPath, basePath, language, resolvedTitle, resolvedDescription, robots, type, image])
+  }, [normalizedPath, basePath, language, resolvedTitle, resolvedDescription, robots, type, image, localized])
 
   return null
 }

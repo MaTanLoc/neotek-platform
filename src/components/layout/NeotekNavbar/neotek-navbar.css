@@ -49,19 +49,6 @@
     visibility 0s linear 0s;
 }
 
-.neotek-navbar--sticky {
-  position: sticky;
-  top: 0;
-  left: auto;
-  z-index: 1000;
-
-  transform: none;
-  visibility: visible;
-  pointer-events: auto;
-  transition: none;
-  will-change: auto;
-}
-
 .neotek-navbar__inner {
   display: flex;
   align-items: center;

@@ -50,6 +50,8 @@ import { backendApiAdapter } from './adapters/backendApiAdapter.js'
  */
 
 export const contentService = {
+  getSolutionDetail: (slug, language = 'vi') => backendApiAdapter.getSolutionDetail(slug, language),
+  getSolutionDetails: () => backendApiAdapter.getSolutionDetails(),
   /** @param {string} [language='vi'] @returns {Promise<HomePageContent>} */
   getHomePage(language = 'vi') {
     return backendApiAdapter.getHomePage(language)

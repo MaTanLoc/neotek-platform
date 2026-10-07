@@ -13,6 +13,7 @@ import './WhySection.css'
 gsap.registerPlugin(ScrollTrigger)
 
 export function WhySection({
+  copy = {},
   items = [],
   loading = false,
   error = null,
@@ -83,16 +84,16 @@ export function WhySection({
             className="why-section__title"
           >
             <span className="why-section__title-highlight">
-              {t('why.titleHighlight')}
+              {(copy.titleHighlight || '')}
             </span>
 
             <span className="why-section__title-rest">
-              {t('why.titleRest')}
+              {(copy.title || '')}
             </span>
           </h2>
 
           <p className="why-section__description">
-            {t('why.description')}
+            {(copy.description || '')}
           </p>
         </motion.div>
 

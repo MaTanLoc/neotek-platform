@@ -1,18 +1,13 @@
+import { SolutionsHeroView } from './SolutionsHeroView'
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { ChevronRight } from 'lucide-react'
-import {
-  Briefcase04Icon,
-  Blockchain04Icon,
-  Settings01Icon,
-  FolderManagementIcon,
-} from '@hugeicons/core-free-icons'
+import { Briefcase04Icon } from '@hugeicons/core-free-icons'
+import { GROUP_ICONS, moduleIconSource, moduleDetailPath } from './solutionPresentation'
 import { NeotekNavbar } from '../../components/layout/NeotekNavbar/NeotekNavbar'
 import { NeotekFooter } from '../../components/layout/NeotekFooter/NeotekFooter'
 import { NeotekContainer } from '../../components/common/NeotekContainer/NeotekContainer'
-import { NeotekButton } from '../../components/common/NeotekButton/NeotekButton'
 import { TrustedBySection } from '../../components/sections/TrustedBySection/TrustedBySection'
 import { CTASection } from '../../components/sections/CTASection/CTASection'
 import { FAQSection } from '../../components/sections/FAQSection/FAQSection'
@@ -21,17 +16,12 @@ import './SolutionsPage.css'
 import { contentService } from '../../services/content/contentService'
 
 const EMPTY_SOLUTIONS_DATA = { hero: [], solutionGroups: [], solutionModules: {}, trustedLogos: [], ctaSection: null, faqs: [] }
-const GROUP_ICONS = {
-  business: Briefcase04Icon,
-  supplyChain: Blockchain04Icon,
-  operations: Settings01Icon,
-  management: FolderManagementIcon,
-}
 
 function ModuleIcon({ name, size = 20 }) {
+  if (!name) return null
   return (
     <img
-      src={`/assets/SolutionPageIcon/${name}`}
+      src={moduleIconSource(name)}
       width={size}
       height={size}
       alt=""
@@ -42,7 +32,7 @@ function ModuleIcon({ name, size = 20 }) {
   )
 }
 
-function ModuleAccordion({ group, modules, prefersReducedMotion, activeModule, onToggleModule }) {
+function ModuleAccordion({ group, modules, prefersReducedMotion, activeModule, onToggleModule, language }) {
   return (
     <div className="solutions-accordion" aria-label="Modules in this solution group">
       {group.modules.map((moduleId) => {
@@ -87,10 +77,11 @@ function ModuleAccordion({ group, modules, prefersReducedMotion, activeModule, o
               <div className="solutions-accordion__panel">
                 <p className="solutions-accordion__description">{module.description}</p>
                 <ul>
-                  {module.bullets.map((bullet) => (
+                  {(module.bullets || []).map((bullet) => (
                     <li key={bullet}>{bullet}</li>
                   ))}
                 </ul>
+                {moduleDetailPath(module.slug, language, module.detailAvailable) ? <a className="solutions-module-cta" href={moduleDetailPath(module.slug, language, module.detailAvailable)}>{module.ctaLabel || (language === 'en' ? 'View details' : 'Xem chi ti\u1ebft')}</a> : <button className="solutions-module-cta" type="button" disabled title={language === 'en' ? 'Module detail page is not available yet' : 'Ch\u01b0a c\u00f3 trang chi ti\u1ebft ph\u00e2n h\u1ec7'}>{module.ctaLabel || (language === 'en' ? 'View details' : 'Xem chi ti\u1ebft')}</button>}
               </div>
             </motion.div>
           </div>
@@ -100,14 +91,15 @@ function ModuleAccordion({ group, modules, prefersReducedMotion, activeModule, o
   )
 }
 
-function SolutionCluster({ group, modules, index, prefersReducedMotion }) {
+export function SolutionCluster({ group, modules, index = 0, prefersReducedMotion, language = 'vi' }) {
   // Open the first module on initial render so the visual always has a clear context.
   const [activeModule, setActiveModule] = useState(group.modules[0])
   const [visualModule, setVisualModule] = useState(group.modules[0])
   const reverse = index % 2 === 1
   const selectedModule = visualModule || group.modules[0]
-  const selectedDetails = modules[selectedModule] || {}
-  const selectedLabel = selectedDetails.title || selectedModule
+  const moduleDetails = modules[selectedModule] || {}
+  const selectedDetails = { ...moduleDetails, visualSrc: moduleDetails.visualSrc || group.visualSrc }
+  const selectedLabel = selectedDetails.title || selectedModule || group.title
 
   const toggleModule = (moduleId) => {
     // Keep one module open at all times: clicking the current module is a no-op.
@@ -146,6 +138,7 @@ function SolutionCluster({ group, modules, index, prefersReducedMotion }) {
           prefersReducedMotion={prefersReducedMotion}
           activeModule={activeModule}
           onToggleModule={toggleModule}
+          language={language}
         />
       </div>
       <div
@@ -178,7 +171,7 @@ function SolutionCluster({ group, modules, index, prefersReducedMotion }) {
 }
 
 export default function SolutionsPage() {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const language = i18n.language === 'en' ? 'en' : 'vi'
   const [cmsData, setCmsData] = useState(EMPTY_SOLUTIONS_DATA)
   const [loading, setLoading] = useState(true)
@@ -208,70 +201,25 @@ export default function SolutionsPage() {
   const prefersReducedMotion = useReducedMotion()
   const registerPath = getLocalizedPath('/register', i18n.language)
   const hero = cmsData.hero[0] || {}
-  const groups = cmsData.solutionGroups.map(group => ({ ...group, id: group.key, icon: GROUP_ICONS[group.key] })).filter(group => group.icon)
+  const groups = cmsData.solutionGroups.map(group => ({ ...group, id: group.key, icon: GROUP_ICONS[group.icon] || GROUP_ICONS[group.key] || Briefcase04Icon }))
 
   return (
     <div className="neotek-site-shell solutions-page">
       <NeotekNavbar heroSelector=".solutions-hero" heroLogoSrc="/assets/logo/logo_306x98.png" />
 
       <main>
-        <section className="solutions-hero" aria-labelledby="solutions-hero-title">
-          <NeotekContainer className="solutions-hero__inner">
-            <div className="solutions-hero__copy">
-              <p className="neotek-eyebrow">{hero.eyebrow}</p>
-              <h1 id="solutions-hero-title" className="solutions-hero__title">
-                <span className="solutions-hero__title-line">
-                  {hero.titleLine1 || hero.headline}
-                </span>
+        <SolutionsHeroView hero={hero} language={language} />
 
-                <span className="solutions-hero__title-line solutions-hero__title-line--highlight">
-                  {hero.titleHighlight}
-                </span>
-              </h1>
-              <p className="neotek-lead">{hero.description}</p>
-              <div className="solutions-hero__actions">
-                <NeotekButton
-                  href="#solution-clusters"
-                  className="solutions-hero__button solutions-hero__button--primary"
-                >
-                  {hero.primaryLabel}
-                </NeotekButton>
-
-                <a className="solutions-hero__link" href={registerPath}>
-                  {hero.secondaryLabel}
-                  <ChevronRight size={14} aria-hidden="true" />
-                </a>
-              </div>
-            </div>
-            <div
-              className="solutions-hero__visual"
-              role="img"
-              aria-label={hero.visualLabel || hero.headline}
-            >
-              <div className="solutions-hero__visual-surface">
-                <img
-                  className="solutions-hero__dashboard"
-                  src={hero.image || undefined}
-                  alt=""
-                  aria-hidden="true"
-                  loading="eager"
-                  decoding="async"
-                />
-              </div>
-            </div>
-          </NeotekContainer>
-        </section>
-
-        <TrustedBySection logos={cmsData.trustedLogos} loading={loading} error={error} />
+        <TrustedBySection copy={cmsData.sectionCopy?.trustedBy} logos={cmsData.trustedLogos} loading={loading} error={error} />
 
         <section id="solution-clusters" className="solutions-clusters" aria-labelledby="solutions-clusters-title">
           <NeotekContainer>
             <header className="solutions-clusters__intro">
-              <p className="neotek-eyebrow">{t('solutionsPage.intro.eyebrow')}</p>
+              <p className="neotek-eyebrow">{cmsData.sectionCopy?.groups?.eyebrow}</p>
               <h2 id="solutions-clusters-title">
-                {t('solutionsPage.intro.titleLine1')} <span>{t('solutionsPage.intro.titleHighlight')}</span>
+                {cmsData.sectionCopy?.groups?.title} <span>{cmsData.sectionCopy?.groups?.titleHighlight}</span>
               </h2>
-              <p>{t('solutionsPage.intro.description')}</p>
+              <p>{cmsData.sectionCopy?.groups?.description}</p>
             </header>
             <div className="solutions-clusters__list">
               {groups.map((group, index) => (
@@ -280,6 +228,7 @@ export default function SolutionsPage() {
                   group={group}
                   index={index}
                   modules={cmsData.solutionModules}
+                  language={language}
                   prefersReducedMotion={prefersReducedMotion}
                 />
               ))}
@@ -288,7 +237,7 @@ export default function SolutionsPage() {
         </section>
 
         <CTASection cta={cmsData.ctaSection} loading={loading} error={error} />
-        <FAQSection faqs={cmsData.faqs} loading={loading} error={error} />
+        <FAQSection copy={cmsData.sectionCopy?.faq} faqs={cmsData.faqs} loading={loading} error={error} />
       </main>
 
       <NeotekFooter demoHref={registerPath} showCta={false} />

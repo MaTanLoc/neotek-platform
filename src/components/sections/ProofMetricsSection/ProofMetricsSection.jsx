@@ -23,27 +23,6 @@ const metricIcons = {
   industries: City01Icon,
 }
 
-const sectionActions = [
-  {
-    id: 'trial',
-    labelKey: 'metrics.actions.trial',
-    href: '/demo',
-    variant: 'primary',
-  },
-  {
-    id: 'pricing',
-    labelKey: 'metrics.actions.pricing',
-    href: null,
-    variant: 'secondary',
-  },
-  {
-    id: 'purchase',
-    labelKey: 'metrics.actions.purchase',
-    href: null,
-    variant: 'ghost',
-  },
-]
-
 function formatMetricValue(value, language) {
   return new Intl.NumberFormat(
     language === 'en' ? 'en-US' : 'vi-VN',
@@ -134,11 +113,12 @@ function MetricCard({ metric, hasAnimated, prefersReducedMotion, language, loadi
 }
 
 export function ProofMetricsSection({
+  copy = {},
   metrics = [],
   loading = false,
   error = null,
 }) {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const sectionRef = useRef(null)
   const hasAnimatedRef = useRef(false)
   const [hasAnimated, setHasAnimated] = useState(false)
@@ -182,7 +162,7 @@ export function ProofMetricsSection({
       ref={sectionRef}
       className={`proof-metrics-section${loading ? ' is-loading' : ''}`}
       aria-busy={loading}
-      aria-label={t('metrics.title')}
+      aria-label={(copy.title || '')}
     >
       <NeotekContainer className="proof-metrics-container">
         <div className="proof-metrics-row">
@@ -197,11 +177,11 @@ export function ProofMetricsSection({
           <div className="proof-metrics-content">
             <div className="proof-metrics-intro">
               <h2 className="proof-metrics-intro__title">
-                {t('metrics.title')}
+                {(copy.title || '')}
               </h2>
 
               <p className="proof-metrics-intro__description">
-                {t('metrics.description')}
+                {(copy.description || '')}
               </p>
             </div>
 
@@ -211,7 +191,7 @@ export function ProofMetricsSection({
                 aria-hidden={loading || undefined}
                 inert={loading ? '' : undefined}
                 role="list"
-                aria-label={t('metrics.title')}
+                aria-label={(copy.title || '')}
               >
                 {visibleMetrics.map((metric) => (
                   <div key={metric.id} role="listitem">
@@ -232,19 +212,19 @@ export function ProofMetricsSection({
 
       <div
         className="proof-metrics-actions"
-        aria-label={t('metrics.title')}
+        aria-label={(copy.title || '')}
       >
-        {sectionActions.map((action) => (
+        {(copy.actions || []).map((action) => (
           <NeotekButton
-            key={action.id}
-            href={action.href || undefined}
+            key={action.key}
+            href={action.url || undefined}
             variant={action.variant}
-            className={`proof-metrics-action proof-metrics-action--${action.id}`}
-            disabled={!action.href}
-            aria-label={t(action.labelKey)}
+            className={`proof-metrics-action proof-metrics-action--${action.key}`}
+            disabled={!action.url}
+            aria-label={action.label}
           >
-            {t(action.labelKey)}
-            {action.id === 'purchase' ? ' →' : ''}
+            {action.label}
+            {action.key === 'purchase' ? ' →' : ''}
           </NeotekButton>
         ))}
       </div>

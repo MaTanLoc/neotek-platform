@@ -7,11 +7,13 @@ import { NeotekSection } from '../../common/NeotekSection/NeotekSection'
 
 import './CTASection.css'
 
-export function CTASection({
+export function CtaView({
   cta = null,
   loading = false,
   error = null,
   variant = 'default',
+  headingId = 'cta-heading',
+  preview = false,
   primaryHref,
   secondaryHref,
   showSecondary = true,
@@ -30,16 +32,16 @@ export function CTASection({
       id: 'demo',
       label: content.primaryLabel,
       href: primaryHref ?? content.primaryUrl,
-      variant: 'primary',
+      variant: content.primaryVariant === 'secondary' ? 'outline' : content.primaryVariant || 'primary',
     },
     {
       id: 'platform',
       label: content.secondaryLabel,
       href: secondaryHref ?? content.secondaryUrl,
-      variant: 'outline',
+      variant: content.secondaryVariant === 'secondary' || !content.secondaryVariant ? 'outline' : content.secondaryVariant,
     },
   ].filter((action) => (
-    action.id === 'demo' || showSecondary
+    action.id === 'demo' ? content.showPrimaryCta !== false : showSecondary && content.showSecondaryCta !== false
   ))
 
   return (
@@ -50,7 +52,7 @@ export function CTASection({
           ? ' cta-section--solutions'
           : ''
       }`}
-      aria-labelledby="cta-heading"
+      aria-labelledby={headingId}
     >
       <NeotekContainer
         className={`cta-container${
@@ -68,10 +70,11 @@ export function CTASection({
               : ''
           }`}
           initial={
-            loading || prefersReducedMotion
+            preview || loading || prefersReducedMotion
               ? false
               : { opacity: 0, y: 16 }
           }
+          animate={preview ? { opacity: 1, y: 0 } : undefined}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={
@@ -88,7 +91,7 @@ export function CTASection({
 
           {content.title ? (
             <h2
-              id="cta-heading"
+              id={headingId}
               className="cta-content__title skeleton-target"
             >
               {content.title}
@@ -129,3 +132,4 @@ export function CTASection({
     </NeotekSection>
   )
 }
+export function CTASection(props) { return <CtaView {...props} /> }

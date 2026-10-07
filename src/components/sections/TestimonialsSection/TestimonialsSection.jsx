@@ -12,7 +12,7 @@ function getPersonInitial(name) {
   return name.trim().charAt(0).toUpperCase()
 }
 
-function TestimonialCard({ testimonial, loading }) {
+export function TestimonialCard({ testimonial, loading }) {
   const hasContent = Boolean(testimonial.quote)
 
   return (
@@ -53,6 +53,7 @@ function TestimonialCard({ testimonial, loading }) {
                 <img
                   className="testimonial-card__avatar"
                   src={testimonial.avatar}
+                  style={{ objectPosition: `${testimonial.focalX ?? 50}% ${testimonial.focalY ?? 50}%`, transform: `scale(${testimonial.zoom ?? 1})`, transformOrigin: `${testimonial.focalX ?? 50}% ${testimonial.focalY ?? 50}%` }}
                   alt=""
                   loading="lazy" decoding="async"
                   onError={(event) => {
@@ -104,6 +105,7 @@ function TestimonialCard({ testimonial, loading }) {
 }
 
 export function TestimonialsSection({
+  copy = {},
   testimonials = [],
   loading = false,
   error = null,
@@ -123,7 +125,7 @@ export function TestimonialsSection({
             id="testimonials-heading"
             className="testimonials-heading__title"
           >
-            {t('testimonials.title')}
+            {(copy.title || '')}
           </h2>
         </div>
 
@@ -151,7 +153,7 @@ export function TestimonialsSection({
             className="testimonials-viewport"
                 aria-hidden={loading || undefined}
                 inert={loading ? '' : undefined}
-            aria-label={t('testimonials.title')}
+            aria-label={(copy.title || '')}
           >
             <div className="testimonials-track">
               {visibleTestimonials.map((testimonial) => (

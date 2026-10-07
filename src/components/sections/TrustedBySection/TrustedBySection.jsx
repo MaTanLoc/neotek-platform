@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import AutoScroll from 'embla-carousel-auto-scroll'
 import { useReducedMotion } from 'motion/react'
-import { useTranslation } from 'react-i18next'
 
 import { NeotekContainer } from '../../common/NeotekContainer/NeotekContainer'
 import { NeotekSection } from '../../common/NeotekSection/NeotekSection'
@@ -11,31 +10,38 @@ import { NeotekSection } from '../../common/NeotekSection/NeotekSection'
 import './TrustedBySection.css'
 
 function LogoItem({ logo, loading }) {
+  const width = Number(logo.width) || 150
+  const scale = Number(logo.scale) || 1
+
   return (
     <div
       className="trusted-by-logo-item"
       style={{
-        '--logo-width': `${logo.width}px`,
-        '--logo-scale': logo.scale ?? 1,
+        '--logo-width': `${width}px`,
+        '--logo-scale': scale,
       }}
     >
       <div className="trusted-logo skeleton-target">
-        {!loading && <img
-          src={logo.src}
-          alt={logo.alt}
-          loading="lazy" decoding="async"
-        />}
+        {!loading && (
+          <img
+            src={logo.src}
+            alt={logo.alt || ''}
+            loading="lazy"
+            decoding="async"
+          />
+        )}
       </div>
     </div>
   )
 }
 
-export function TrustedBySection({
+export function TrustedByView({
+  headingId = 'trusted-by-heading',
+  copy = {},
   logos = [],
   loading = false,
   error = null,
 }) {
-  const { t } = useTranslation()
   const prefersReducedMotion = useReducedMotion()
   const visibleLogos = loading ? createSkeletonItems(8, 'logo').map((logo) => ({ ...logo, width: 160 })) : logos
 
@@ -81,7 +87,7 @@ export function TrustedBySection({
     emblaApi,
     loading,
     error,
-    logos.length,
+    logos,
     prefersReducedMotion,
   ])
 
@@ -89,21 +95,21 @@ export function TrustedBySection({
     <NeotekSection
       className={`trusted-by-section${loading ? ' is-loading' : ''}`}
       aria-busy={loading}
-      aria-labelledby="trusted-by-heading"
+      aria-labelledby={headingId}
     >
       <NeotekContainer className="trusted-by-container">
         <h2
-          id="trusted-by-heading"
+          id={headingId}
           className="trusted-by-title"
         >
-          {t('trustedBy.title')}
+          {(copy.title || '')}
         </h2>
 
         {(loading || !error) && visibleLogos.length > 0 ? (
           <div
             className="trusted-by-viewport"
-                aria-hidden={loading || undefined}
-                inert={loading ? '' : undefined}
+            aria-hidden={loading || undefined}
+            inert={loading ? '' : undefined}
             ref={emblaRef}
           >
             <div className="trusted-by-track">
@@ -121,3 +127,4 @@ export function TrustedBySection({
     </NeotekSection>
   )
 }
+export function TrustedBySection(props) { return <TrustedByView {...props} /> }

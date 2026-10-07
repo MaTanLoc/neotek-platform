@@ -89,6 +89,7 @@ function FAQItem({
 }
 
 export function FAQSection({
+  copy = {},
   faqs = [],
   loading = false,
   error = null,
@@ -121,25 +122,25 @@ export function FAQSection({
       <NeotekContainer className="faq-container">
         <header className="faq-heading">
           <p className="faq-heading__eyebrow">
-            {t('faq.eyebrow')}
+            {(copy.eyebrow || '')}
           </p>
 
           <h2
             id="faq-heading"
             className="faq-heading__title"
           >
-            {t('faq.title')}
+            {(copy.title || '')}
           </h2>
 
           <p className="faq-heading__description">
-            {t('faq.description')}
+            {(copy.description || '')}
           </p>
 
           <a
-            href="#contact"
+            href={copy.ctaUrl || undefined}
             className="faq-heading__cta"
           >
-            {t('faq.cta')}
+            {(copy.ctaLabel || '')}
             <span aria-hidden="true">→</span>
           </a>
         </header>
