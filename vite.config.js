@@ -13,5 +13,5 @@ export default defineConfig(({ command, mode }) => {
     } catch { /* Only the explicit same-origin /api form is accepted. */ }
     if (!valid) throw new Error('Production VITE_API_BASE_URL must be an HTTPS API URL or /api; localhost is development-only')
   }
-  return { plugins: [react()] }
+  return { plugins: [react()], build: { sourcemap: false } }
 })

@@ -1,6 +1,6 @@
 # Production readiness audit — Phase A
 
-Audit date: 2026-10-08. **Production deployment is not approved. Phase B has not started.**
+Audit date: 2026-10-08. **Historical Phase A baseline. Production deployment is not approved. See Phase B/C resolutions below for current source status.**
 
 Scope: `neotek-platform` / Neotek Frontend checkpoint `2cfa8212` and `neotek-backend` / Neotek Backend checkpoint `5d51166`. Frontend paths below are relative to its repository; backend paths explicitly carry `Backend:`. This document is the single audit source for both repositories. Companion documents: [environment](ENVIRONMENT_REFERENCE.md), [proposed deployment gates](DEPLOYMENT_RUNBOOK.md), [proposed backup procedure](BACKUP_RESTORE.md).
 
@@ -260,3 +260,155 @@ Completed2026-10-09 (Asia/Saigon). B01-B04 source blockers resolved; all require
 The production build used explicit VITE_API_BASE_URL=/api; deployment must supply a same-origin API proxy or an explicitly configured HTTPS API base. Real development Home/Solutions remain DRAFT and intentionally return public404; publication is an existing admin/business operation, not a data change performed here. Shared Trusted is unchanged; CTA/FAQ migration and separate Footer CTA are untouched.
 
 STOPPED AFTER PHASE B. Infrastructure B05/B06 and other Phase C/D gates remain; this is not production deployment approval. No commit, push, seed, migration, restore or deployment was performed.
+
+
+## Phase C — Security & Runtime Hardening
+
+Delta against the completed Phase B source baseline,2026-10-09. Both repositories were clean at entry. This pass does not repeat Phase A or change CMS/auth architecture, public business content, schema or persisted publication state. No commit/push/deploy/production infrastructure/Docker/staging/seed/shared-content migration. Temporary runtime builds preserve developer backend dist. Phase C source acceptance is separate from production readiness.
+
+### Delta findings: evidence, fixes, files and validation
+
+Paths below are backend-relative unless explicitly frontend. Every source change has a regression or runtime check; policy-only findings remain Phase D.
+
+| ID/severity | Evidence at Phase C entry | Fix / changed files | Validation / current status |
+| --- | --- | --- | --- |
+| C01 HIGH | Production mode could be omitted; PORT optional; no safe proxy policy; HTTPS same-site origin not enforced. | package.json start:prod explicitly requires production; config/validate-environment.ts checks PORT, exact HTTPS origin, explicit IP/CIDR TRUST_PROXY and critical DB/Redis/media completeness; main.ts emits key-only configuration errors. .env.example documents trust. | Missing keys/bad port/mode/proxy/wildcard/path/partial media tests; real missing-mode start rejection. RESOLVED source; provider TLS/private credentials Phase D. |
+| C02 HIGH | Express did not trust verified proxy peers; login IP limits could collapse behind proxy. | config/http-security.ts configures explicit addresses, no arbitrary hop count/true; config validator rejects wildcard and /0. | Local proxy chain contract reviewed; exact-address policy tests. RESOLVED source; real edge/header spoof/HTTPS detection Phase D. |
+| C03 HIGH | Logout cleared only Path; nonproduction cookies could be insecure beyond localhost; malformed cookie accepted into datastore lookup. | auth/auth.controller.ts matches logout cookie flags and permits insecure only local HTTP; auth/session-auth.guard.ts validates43-character base64url token. | Production/dev/nonlocal flags, TTL, logout/revocation, malformed cookie401 tested. RESOLVED. |
+| C04 HIGH | Login lacked Origin guard and email/unknown-field bounds. | auth/auth.controller.ts adds exact Origin,254-char email and strict keys; password12-256 retained. | Real HTTP evil/missing-origin rejection; controller bounds checked; no auth substitution. RESOLVED. |
+| C05 HIGH | Redis had unbounded startup/offline/command waits and raw error logging. | cache/cache.service.ts connect2s/startup3s/command2s/quit2s, offline queue off, queue100, capped reconnect delay, destroy stalled socket without replay; config/deadline.ts shared deadline. | Fake-timer startup/command/close/recovery tests; real isolated process against unreachable Redis starts degraded, health503, public DB fallback, auth500/login503 and shutdown verified. RESOLVED source; actual recovery/capacity soak Phase D. |
+| C06 HIGH | Health200 even on dependency failure; no deadline or shutdown hooks. | health/health.controller.ts live/ready plus legacy combined-ready alias; main.ts shutdown hooks and drain; config/http-security.ts rejects new work while draining. | HTTP DB/Redis503 and live200, real healthy ports, real Nest SIGTERM/SIGINT handlers complete Prisma/Redis close and port closes. RESOLVED source; native Linux delivery/in-flight soak Phase D. |
+| C07 HIGH | Nest default parser preceded manual limit; recursive article validation could exhaust stack. | main.ts bodyParser:false; config/http-security.ts JSON2MiB/form64KiB/100 parameters; sections/validation/solution-detail.schemas.ts iterative32-level/50000-value guard; registry/admin service call it before Zod. | Real HTTP malformed JSON400/oversize413; nested article400 before DB writes; valid existing article/browser passes. RESOLVED. |
+| C08 MEDIUM | Raw datastore errors in auth/cache/public/invalidation logs; no correlation/no-store umbrella. | config/http-security.ts exception filter/status-safe errors and generated request IDs/route/status/duration/no-store; runtime-logger.ts scrubs dependency errors/stacks; auth/cache/pages logs remove raw messages. | HTTP injected secret/path/stack error safe500; fatal/startup secret test; auth/admin no-store; source logging inventory. RESOLVED source; monitoring/private diagnostics Phase D. |
+| C09 HIGH | Missing per-account/media/admin mutation/CSRF rates. | auth/login-rate-limit.guard.ts20/account/minute plus existing5/IP; auth/admin-rate-limit.guard.ts media20/user/minute, CSRF120, mutations120; controller/module wiring retained auth/roles/CSRF/Origin. | Account/media429 (including case/trailing-slash route variants), Redis503, real app DI graph, media auth/CSRF/Origin HTTP regressions. RESOLVED source; WAF/cost quotas Phase D. |
+| C10 MEDIUM | Helmet API defaults were not a deliberate JSON policy; no Permissions-Policy. | config/http-security.ts API default-src/frame-ancestors/base-uri/form-action/object-src none, no unsafe-inline, HSTS/nosniff/referrer/Permissions-Policy. | HTTP headers verified. RESOLVED API; separately hosted HTML/admin CSP remains Phase D with explicit staged policy and inline-style rationale. |
+| C11 HIGH | Standard media string fields accepted unsafe schemes; legacy values could reach public renderers. | sections/validation/content-urls.ts permits HTTPS/project paths/inert legacy attachment IDs; ordinary image fields validate at writes; pages.service.ts filters unsafe legacy media/URLs in fresh/cache responses without DB changes. | javascript/vbscript/data/protocol-relative/backslash tests; geometry/Cloudinary/legacy compatibility; complete editor/browser suite. RESOLVED. Article structured JSON remains its existing allowlist renderer, not an extra HTML sanitizer. |
+| C12 HIGH | Unsafe rich-content regression needed after runtime changes. | Existing real backend FAQ HTML sanitizer retained; only public dangerouslySetInnerHTML is FAQ. Structured article renderer uses allowed nodes/marks/safe URLs; CTA plain text escaped. | Real sanitizer script/event/iframe/style/unsafe-scheme tests; structured schema tests; complete public/admin browser pass. RESOLVED. |
+| C13 MEDIUM | Fatal process behavior and explicit frontend map policy unrecorded. | main.ts fatal exceptions/rejections terminate nonzero without secrets; frontend vite.config.js explicitly sourcemap:false. | Isolated FATAL/REJECTION tests and zero dist .map files; frontend src contains no console logging. RESOLVED source; supervisor/static packaging Phase D. |
+| C14 HIGH | Backend41 advisories and frontend3 at entry. | Frontend source-map-js1.2.1 ->1.2.2 compatible patch in lockfile; package engines retain Node22 minimum compatibility in both repositories. No major upgrade/force/downgrade. | Frontend lint/build/browser pass; final front2 (high1/moderate1), backend41 unchanged (critical1/high35/moderate5); backend omit-dev7 (critical1/high6). PARTIALLY RESOLVED; explained upgrade/provenance gate Phase D. |
+| C15 LOW | Prisma6 package seed config warns about Prisma7 removal. | Evaluated and retained existing6.19.0 client/CLI/seed contract; config migration is optional operational tooling change, not necessary security fix. | Prisma validate passes; no seed executed. DEFERRED TO PHASE D / separately approved tooling update; no major7. |
+
+### Security contracts preserved and checked
+
+- Opaque sessions remain32 random bytes, hash-only Redis key identity, fresh login token,8-hour absolute expiry, no sliding refresh. AuthService rechecks active user/current role from DB; malformed/expired session401, storage failure500. Logout revokes session plus CSRF keys. Dedicated real Redis integration remains opt-in and skipped without AUTH_REDIS_TEST_URL; HTTP fixture tests prove contract without real-account writes.
+- CSRF cannot replace authentication. Missing/invalid token403; logout/admin/media writes still require session, server-scoped matching CSRF and exact Origin. Atomic session-CSRF acquisition/expiry unchanged. CSRF storage failure500 preserves frontend session semantics. All actual backend controllers inventoried: AuthController, AdminController, MediaController, PagesController, HealthController; Users/Sections modules expose no extra unguarded HTTP controllers.
+- ADMIN vs EDITOR business policy unchanged: authenticated ADMIN/EDITOR edit content, existing ADMIN-only structural operations remain ADMIN-only. No complex RBAC, new users or customer auth. Direct unauthenticated admin/media access401; changed current role affects next request. Existing publish/shared-content policy was not guessed or expanded.
+- Exact single-origin credentialed CORS, safe OPTIONS and login/write Origin remain consistent. Rejecting Origin is distinct from CORS hiding a response; tests exercise server-side denial. Same-site HTTPS remains required for SameSite=Lax.
+- Strict Zod/manual endpoint DTO validation remains authoritative. No global ValidationPipe was installed because plain TypeScript DTOs without class-validator metadata would create misleading/breaking whitelist/coercion behavior. Existing schemas reject unknown article/editor keys and validate node/mark/link/image shapes. Login explicitly rejects unknown fields; public slug max120 with kebab syntax and locale vi/en prevents arbitrary cache-key segments.
+- Cache keys stay cms:page:<slug>:<locale>; no auth-key scanning/blanket flushing. Every hit rechecks PUBLISHED against DB; disabled/unpublished detail and publication transitions remain tested. Public FAQ/media boundary also protects older cache data. Shared Trusted canonical consumers/cache invalidation remain covered; CTA/FAQ inline data and separate Footer CTA unchanged. No shared migration ran.
+- Cloudinary API secret remains server-only; client cannot choose arbitrary signed parameters; fixed image resource path, formats, unique neotek/cms IDs, overwrite=false and preset remain. New signing rate is20/user/minute. Client10MB and secure Cloudinary response checks remain; actual signed-preset enforcement/quotas/live upload are unverified provider gates.
+
+## Phase C Resolution
+
+Historical Phase A/B rows above are retained. This table is the current status for every original finding. RESOLVED means the finding's authorized source correction/verification is complete; a row explicitly identifying infrastructure verification cannot be interpreted as production approval.
+
+| Finding / original severity | Current status | Evidence / remaining responsibility |
+| --- | --- | --- |
+| B01 BLOCKER | RESOLVED | PUBLISHED-only DB/cache guards preserved; draft/archive/browser and current publication-aware live checks. No DB publication changed here. |
+| B02 BLOCKER | RESOLVED | Real isolated default Nest build/start; explicit production-mode gate; compiled dist/src/main.js. |
+| B03 BLOCKER | RESOLVED | Public auth/Booking remain gated; no password/form logs; admin auth isolated. |
+| B04 BLOCKER | RESOLVED | One trusted FAQ sanitizer and real malicious HTML regression; structured article separately safe. |
+| B05 BLOCKER | DEFERRED TO PHASE D | Private/authenticated/TLS DB/Redis and origin network restrictions documented; dev Compose not promoted. |
+| B06 BLOCKER | DEFERRED TO PHASE D | Backup automation and isolated restore proof required before release. |
+| H01 HIGH | PARTIALLY RESOLVED | Source production mode/port/origin/proxy/dependency/media gates done; deployed secrets/private/TLS and patched runtime require Phase D proof. |
+| H02 HIGH | PARTIALLY RESOLVED | Source deadlines/offline/retry/fail-closed complete; live unreachable-Redis and unit reconnect pass; real recovery/soak/capacity proof Phase D. |
+| H03 HIGH | PARTIALLY RESOLVED | Ready503/live200/deadlines/drain/hooks tested, including real Nest handlers on Windows; native Linux/container delivery/in-flight drain Phase D. |
+| H04 HIGH | PARTIALLY RESOLVED | Explicit proxy trust, account/IP/media/mutation/CSRF quotas done; actual forwarded chain/private origin/WAF Phase D. |
+| H05 HIGH | PARTIALLY RESOLVED | Canonical/legacy client redirects retained; hosting permanent redirects and separately approved missing business slugs remain Phase D/data approval. |
+| H06 HIGH | DEFERRED TO PHASE D | Shared Trusted canonical preserved; CTA/FAQ migration remains separately approval-gated and was not run. Footer CTA distinct. |
+| H07 HIGH | RESOLVED | Exact login Origin/strict bounded login, effective parser limits, standard copy/media bounds and recursive complexity400 regression. |
+| H08 HIGH | PARTIALLY RESOLVED | Signing auth/CSRF/Origin/parameters/rate checks done; actual preset10MB/quota/permissions/live upload Phase D. |
+| H09 HIGH | DEFERRED TO PHASE D | Least privilege/private TLS/pool/drift policy documented; no DB/schema/credential changes here. |
+| H10 HIGH | PARTIALLY RESOLVED | Safe source-map-js patch; remaining tar native-install critical and Prisma/Jest/Vite tooling advisories explicitly explained below; approved breaking updates/install provenance Phase D. |
+| H11 HIGH | PARTIALLY RESOLVED | Admin noindex retained/browser verified; staging/domain/robots/sitemap/host404/CSP delivery Phase D. |
+| H12 HIGH | DEFERRED TO PHASE D | No seed/import/bootstrap/maintenance apply ran; deployment prohibition and reviewed migrate deploy gate documented. |
+| M01 MEDIUM | RESOLVED | Booking default-off flag/links/direct404 browser retained. |
+| M02 MEDIUM | RESOLVED | VI/EN section/relative reading position and normal navigation regression retained. |
+| M03 MEDIUM | RESOLVED | Admin/Tiptap lazy boundaries retained; final initial413.69KB/gzip143.93KB, AdminApp135.81KB/gzip41.21KB lazy. |
+| M04 MEDIUM | PARTIALLY RESOLVED | Strict API CSP/headers verified; actual public/admin HTML headers/report-only-to-enforced CSP Phase D. |
+| M05 MEDIUM | PARTIALLY RESOLVED | Request IDs/status/duration/redacted errors/logs done; monitoring/alerts/private diagnostics Phase D. |
+| M06 MEDIUM | DEFERRED TO PHASE D | Combined session/cache Redis noeviction/capacity/durability/alerts requirement; no store architecture change. |
+| M07 MEDIUM | DEFERRED TO PHASE D | Unused dependency removal is outside this security pass; do only separately reviewed cleanup, not blind deletions. |
+| M08 MEDIUM | DEFERRED TO PHASE D | Docker/static hosting/staging/supervisor/private-origin validation intentionally not started. |
+| L01 LOW | DEFERRED TO PHASE D | Optional empty/dead-code candidates outside scope; no confirmed duplicate replacement needed. |
+| L02 LOW | DEFERRED TO PHASE D | CSS/source redesign outside scope; user screenshot deletions stay intact. |
+| L03 LOW | DEFERRED TO PHASE D | Prisma6 package seed deprecation retained intentionally; no operational seed run or Prisma7. |
+| L04 LOW | PARTIALLY RESOLVED | Dev port5433 already fixed, frontend maps explicitly off; private backend/tool/map packaging Phase D. |
+
+### Dependency triage and remaining severities
+
+Final npm registry audit (2026-10-09): frontend critical0/high1/moderate1/low0, source-map-js1.2.2 fixed; backend critical1/high35/moderate5/low0, omit-dev critical1/high6/moderate0/low0. Counts include propagated advisories and do not equal independent internet exploits.
+
+- Critical tar via argon20.31.2 -> @mapbox/node-pre-gyp1.0.11 -> tar6.2.1 is native-package installation/extraction exposure. Application has no archive upload/extraction HTTP path; Cloudinary signs images directly. This is a concrete supply-chain/build risk, not dismissed as harmless. Fix recommendations require an Argon2 breaking upgrade or incompatible tar override, prohibited for this pass. Phase D must use trusted artifacts/restricted builders, not untrusted archives, and separately review upgrade/compatibility before release. No critical advisory is left unexplained. Advisory examples: https://github.com/advisories/GHSA-34x7-hfp2-rc4v and https://github.com/advisories/GHSA-23hp-3jrh-7fpw .
+- Backend high chains through Prisma config deepmerge-ts/Effect and Jest/braces remain build/config/tool exposure; no application Effect RPC endpoint. Audit suggests Prisma downgrade/Jest major/Argon2 breaking upgrade, not a safe blanket fix. No --force or framework major upgrade ran. Stage approved changes separately and rerun native auth/test/build compatibility.
+- Frontend Vite5/esbuild remaining high/moderate findings affect development servers/tooling. Static deployment must exclude Vite dev/preview; local servers must remain trusted/private. Upgrading Vite/esbuild crosses major versions; Phase D review required. source-map-js compatible patch was applied and all frontend checks pass. See existing advisory links above.
+- Node22 remains the compatible supported major; engines >=22.12.0 <23 is a compatibility floor, not a security-patch recommendation. Actual local22.12.0 is old; Phase D must select/pin current patched22.x and validate native Argon2, satisfying eslint's22.13+ constraint. Official support schedule: https://github.com/nodejs/Release . No system runtime major was changed.
+
+Remaining source-level security BLOCKER:0. Original operational release BLOCKERs:2 (B05 private infrastructure, B06 recovery). HIGH findings still awaiting Phase D/business/integration proof:H01-H06,H08-H12 (11 partially/deferred rows); H07 resolved. MEDIUM remaining:M04-M08 (5). LOW remaining:L01-L04 (4). Dependency package critical1 is explicitly explained and remains a release/install-provenance gate, not claimed fixed. These counts describe original audit finding rows, separate from npm advisories.
+
+### Validation and manual-check evidence
+
+- Frontend full lint PASS; explicit /api production build PASS; zero public .map files. No UI/CSS/editor change. Full browser suite PASS public/admin VI/EN1440/1024/820/390: publication transitions/direct drafts/archives, feature gates, alias/canonical/scroll, lazy admin, shared Trusted, article rail/Inspector/Tiptap/save/failure/undo/preview/related/final CTA. Auth/saves/Cloudinary are mocked; DB fixture reads only; no PNG artifacts regenerated.
+- Backend Prisma validate PASS; existing Prisma7 config deprecation remains. Full Jest25 suites/152 tests PASS,1 isolated Redis suite/test skipped because AUTH_REDIS_TEST_URL is not configured. HTTP fixture security checks cover production/dev cookies/logout, Origin/preflight, auth/CSRF/roles, media429, body400/413, safe500, DB/Redis readiness503 and drain. Unit tests cover real sanitization, unsafe media, recursive400, absolute/current-role session behavior and bounded Redis/reconnect/close.
+- Backend lint PASS with --no-fix; real isolated default npm build/start:prod PASS. Runtime harness rejects missing production mode, verifies healthy/live/readiness, direct auth/admin401, evil login Origin403 and publication according to current read-only DB state. It checks Nest SIGTERM/SIGINT handlers, Redis/Prisma close and closed port, fatal/rejection nonzero redacted exit, unavailable Redis degraded readiness503/public DB fallback/auth500/login503, and required DB unavailable startup nonzero/bounded/redacted.
+- Windows signal test emits events into the real Nest handlers, because native kill on Windows forcibly terminates. Native Linux/container signal forwarding and realistic in-flight drain/recovery soak explicitly remain Phase D. No actual Cloudinary upload/account policy or deployed WAF/private network/public HTML CSP/backup restore was tested.
+- Live production smoke uses existing development DB/Redis solely for read-only DB queries and ordinary public-cache operations. Session login/logout/security mutation tests use isolated dependency fixtures, not real accounts. No schema/data/reset/publish/shared migration executed. All temporary child processes/artifacts are owned and removed; original backend dist preserved.
+- Both repository git diff whitespace checks PASS at completion. Exact manifest below records only Phase C changes from clean entry.
+
+### Phase C exit gate
+
+Authorized source corrections complete; no unresolved source security blocker. Production start, cookie/session/CSRF/Origin protections, controlled exceptions, bounded health/failure behavior and real Nest shutdown handlers verified. No critical dependency left unexplained. Phase D infrastructure/proxy/WAF/TLS/provider/backup/native-signal/deployment requirements documented in the existing runbook and environment reference.
+
+This is NOT production-ready or deployment approval. Phase D remains required; no automatic continuation. Shared-content migration and business data approvals remain separate. No commit/push/deploy/Docker/staging work performed.
+
+
+### Exact Phase C changed-file manifest
+
+Neotek Frontend (6 files):
+
+- `docs/DEPLOYMENT_RUNBOOK.md`
+- `docs/ENVIRONMENT_REFERENCE.md`
+- `docs/PRODUCTION_READINESS_AUDIT.md`
+- `package-lock.json`
+- `package.json`
+- `vite.config.js`
+
+Neotek Backend (37 files):
+
+- `.env.example`
+- `package-lock.json`
+- `package.json`
+- `src/admin/admin.controller.ts`
+- `src/admin/admin.service.ts`
+- `src/admin/solution-detail.spec.ts`
+- `src/app.module.spec.ts`
+- `src/auth/auth.controller.spec.ts`
+- `src/auth/auth.controller.ts`
+- `src/auth/auth.module.ts`
+- `src/auth/auth.service.spec.ts`
+- `src/auth/auth.service.ts`
+- `src/auth/login-rate-limit.guard.spec.ts`
+- `src/auth/login-rate-limit.guard.ts`
+- `src/auth/session-auth.guard.ts`
+- `src/cache/cache.service.ts`
+- `src/cache/page-cache-invalidation.service.ts`
+- `src/config/validate-environment.spec.ts`
+- `src/config/validate-environment.ts`
+- `src/health/health.controller.ts`
+- `src/main.ts`
+- `src/media/media.controller.spec.ts`
+- `src/media/media.controller.ts`
+- `src/media/media.module.ts`
+- `src/pages/pages.controller.ts`
+- `src/pages/pages.service.ts`
+- `src/sections/validation/section-content.registry.ts`
+- `src/sections/validation/solution-detail.schemas.ts`
+- `scripts/check-runtime-hardening.cjs` (new)
+- `src/auth/admin-rate-limit.guard.ts` (new)
+- `src/cache/cache.service.spec.ts` (new)
+- `src/config/deadline.ts` (new)
+- `src/config/http-security.spec.ts` (new)
+- `src/config/http-security.ts` (new)
+- `src/config/runtime-logger.ts` (new)
+- `src/sections/validation/content-urls.spec.ts` (new)
+- `src/sections/validation/content-urls.ts` (new)
