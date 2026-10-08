@@ -253,7 +253,7 @@ async function fetchPage(slug, language) {
   } catch {
     throw new Error(`Unable to load ${slug} content from the Neotek API.`)
   }
-  if (!response.ok) throw new Error(`Unable to load ${slug} content from the Neotek API (${response.status}).`)
+  if (!response.ok) throw Object.assign(new Error(`Unable to load ${slug} content from the Neotek API (${response.status}).`), { status: response.status })
   const data = await response.json()
   if (!data || data.slug !== slug || !Array.isArray(data.sections)) {
     throw new Error(`Invalid ${slug} content response from the Neotek API.`)

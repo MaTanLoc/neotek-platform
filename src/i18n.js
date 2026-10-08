@@ -1,3 +1,4 @@
+import { buildSolutionDetailPath } from './config/solutionRoutes'
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 
@@ -61,6 +62,9 @@ export function getLocalizedPath(pathname, language) {
     normalizedPath === '/en'
       ? '/'
       : normalizedPath.replace(/^\/en(?=\/|$)/, '') || '/'
+
+  const detail = pathWithoutLocale.match(/^\/solutions\/([a-z0-9-]+)$/)
+  if (detail) return buildSolutionDetailPath(detail[1], language)
 
   if (language === 'en') {
     return pathWithoutLocale === '/'

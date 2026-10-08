@@ -1,4 +1,5 @@
 import { Briefcase04Icon, Blockchain04Icon, Settings01Icon, FolderManagementIcon } from '@hugeicons/core-free-icons'
+import { buildSolutionDetailPath } from '../../config/solutionRoutes'
 
 // Public group labels and the CMS selector share the actual icon source.
 export const GROUP_ICONS = {
@@ -10,7 +11,7 @@ export const GROUP_ICONS = {
 
 export function moduleDetailPath(slug, language = 'vi', available = false) {
   if (!available || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug || '')) return null
-  return `${language === 'en' ? '/en' : ''}/solutions/${slug}`
+  return buildSolutionDetailPath(slug, language)
 }
 
 export function moduleIconSource(icon) {

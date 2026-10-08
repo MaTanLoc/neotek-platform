@@ -17,19 +17,8 @@ export default function Register() {
       return
     }
 
-    const formData = new FormData(event.currentTarget)
+    // Public customer auth remains disabled until its service exists.
 
-    console.log('Register submitted', {
-      fullName: formData.get('fullName'),
-      phone: formData.get('phone'),
-      email: formData.get('email'),
-      password: formData.get('password'),
-      passwordConfirm: formData.get('passwordConfirm'),
-      company: formData.get('company'),
-      taxCode: formData.get('taxCode'),
-      product: formData.get('product'),
-      position: formData.get('position'),
-    })
   }
 
   return (

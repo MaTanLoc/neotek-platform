@@ -16,6 +16,7 @@ import { CTASection } from '../../components/sections/CTASection/CTASection'
 import { FAQSection } from '../../components/sections/FAQSection/FAQSection'
 
 import { contentService } from '../../services/content/contentService'
+import NotFoundPage from '../not-found/NotFoundPage'
 
 const EMPTY_HOMEPAGE_DATA = {
    heroSlides: [],
@@ -58,8 +59,7 @@ export default function HomePage() {
          } catch (err) {
             if (!active) return
 
-            console.error('Failed to load homepage data:', err)
-            if (!hasLoadedOnce.current) setError(err)
+            if (err.status === 404 || !hasLoadedOnce.current) setError(err)
          } finally {
             if (active) {
                setLoading(false)
@@ -73,6 +73,8 @@ export default function HomePage() {
          active = false
       }
    }, [language])
+
+   if (error?.status === 404) return <NotFoundPage />
 
    return (
       <div className="neotek-site-shell">

@@ -10,13 +10,8 @@ export default function Login() {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    const formData = new FormData(event.currentTarget)
+    // Public customer auth remains disabled until its service exists.
 
-    console.log('Login submitted', {
-      email: formData.get('email'),
-      password: formData.get('password'),
-      remember,
-    })
   }
 
   return (

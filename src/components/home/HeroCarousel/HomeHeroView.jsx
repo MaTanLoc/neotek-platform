@@ -1,3 +1,4 @@
+import { isPublicHrefEnabled } from '../../../config/features'
 import { optimizeCloudinaryImage } from '../../../utils/images'
 import { motion } from 'motion/react'
 import { ChevronRight } from 'lucide-react'
@@ -201,7 +202,7 @@ export function HomeHeroView({ slide, index = 0, active = true, showInitialSkele
                           </NeotekButton>
                         ) : null}
 
-                        {hasSecondaryCta ? (
+                        {hasSecondaryCta && isPublicHrefEnabled(slide.secondaryUrl) ? (
                           <a
                             className="hero-slide__link skeleton-target"
                             href={

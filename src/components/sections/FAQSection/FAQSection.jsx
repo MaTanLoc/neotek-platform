@@ -1,3 +1,4 @@
+import { isPublicHrefEnabled } from '../../../config/features'
 import { createSkeletonItems } from '../../../utils/skeleton'
 import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
@@ -136,13 +137,13 @@ export function FAQSection({
             {(copy.description || '')}
           </p>
 
-          <a
+          {isPublicHrefEnabled(copy.ctaUrl) && <a
             href={copy.ctaUrl || undefined}
             className="faq-heading__cta"
           >
             {(copy.ctaLabel || '')}
             <span aria-hidden="true">→</span>
-          </a>
+          </a>}
         </header>
 
         <div className="faq-list" aria-hidden={loading || undefined} inert={loading ? '' : undefined}>

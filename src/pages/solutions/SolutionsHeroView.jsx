@@ -2,6 +2,7 @@ import { NeotekContainer } from '../../components/common/NeotekContainer/NeotekC
 import { NeotekButton } from '../../components/common/NeotekButton/NeotekButton'
 import { ChevronRight } from 'lucide-react'
 import { getLocalizedPath } from '../../i18n'
+import { isPublicHrefEnabled } from '../../config/features'
 import './SolutionsPage.css'
 
 export function SolutionsHeroView({ hero, language = 'vi', titleId = 'solutions-hero-title' }) {
@@ -28,7 +29,7 @@ export function SolutionsHeroView({ hero, language = 'vi', titleId = 'solutions-
                   {hero.primaryLabel}
                 </NeotekButton>}
 
-                {hero.showSecondaryCta !== false && hero.secondaryLabel && <a className="solutions-hero__link" href={hero.secondaryUrl ? hero.secondaryUrl.startsWith('/') ? getLocalizedPath(hero.secondaryUrl, language) : hero.secondaryUrl : undefined}>
+                {hero.showSecondaryCta !== false && hero.secondaryLabel && isPublicHrefEnabled(hero.secondaryUrl) && <a className="solutions-hero__link" href={hero.secondaryUrl ? hero.secondaryUrl.startsWith('/') ? getLocalizedPath(hero.secondaryUrl, language) : hero.secondaryUrl : undefined}>
                   {hero.secondaryLabel}
                   <ChevronRight size={14} aria-hidden="true" />
                 </a>}

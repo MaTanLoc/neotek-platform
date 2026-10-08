@@ -1,3 +1,4 @@
+import { isPublicHrefEnabled } from '../../../config/features'
 import { useLayoutEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -115,7 +116,7 @@ export function NeotekFooter({ demoHref = '/demo', showCta = true, cta, cmsManag
                   </p>
 
                   <ul className="neotek-footer__links">
-                    {group.links.map((link) => (
+                    {group.links.filter(link => isPublicHrefEnabled(link.key === 'demo' ? demoHref : link.href)).map((link) => (
                       <li key={link.key}>
                         <a href={link.key === 'demo' ? demoHref : link.href}>
                           {t(link.translationKey || `footer.links.${link.key}`)}

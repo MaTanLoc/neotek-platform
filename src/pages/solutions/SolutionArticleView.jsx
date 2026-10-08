@@ -1,3 +1,4 @@
+import { isPublicHrefEnabled } from '../../config/features'
 /* eslint-disable react-refresh/only-export-components -- Keep the small renderer helpers beside their single rendering contract. */
 import { Fragment } from 'react'
 import { getLocalizedPath } from '../../i18n'
@@ -63,7 +64,7 @@ export function safeArticleUrl(value, image = false) {
 export function SolutionArticleView({ doc, language = 'vi' }) {
   const headings = articleHeadings(doc)
   const href = (value) => {
-    const safe = safeArticleUrl(value)
+    const safe = isPublicHrefEnabled(value) ? safeArticleUrl(value) : undefined
     return safe?.startsWith('/') ? getLocalizedPath(safe, language) : safe
   }
   function render(node, key) {

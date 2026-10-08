@@ -1,3 +1,4 @@
+import { buildSolutionDetailPath } from '../../../config/solutionRoutes'
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Dialog, Tabs, DropdownMenu } from "radix-ui";
@@ -337,7 +338,7 @@ export default function SolutionDetailEditor() {
               <a
                 className="admin-header-preview"
                 href={
-                  (locale === "en" ? "/en" : "") + "/solutions/" + saved.slug
+                  buildSolutionDetailPath(saved.slug, locale)
                 }
                 target="_blank"
                 rel="noreferrer"
@@ -558,9 +559,9 @@ export default function SolutionDetailEditor() {
                             }
                           />
                           <small>
-                            VI /solutions/{model.slug}
+                            VI {buildSolutionDetailPath(model.slug, "vi")}
                             <br />
-                            EN /en/solutions/{model.slug}
+                            EN {buildSolutionDetailPath(model.slug, "en")}
                           </small>
                         </label>
                         <p className="admin-muted">

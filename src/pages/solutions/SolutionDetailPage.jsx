@@ -1,6 +1,7 @@
+import { buildSolutionDetailPath, SOLUTION_ALIASES } from '../../config/solutionRoutes'
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 import { CalendarDays, Clock3 } from "lucide-react";
 import gsap from "gsap";
 import { contentService } from "../../services/content/contentService";
@@ -147,7 +148,7 @@ function ReadingRail({ headings, english, featured, language }) {
               {featured.map((item) => (
                 <Link
                   key={item.slug}
-                  to={getLocalizedPath("/solutions/" + item.slug, language)}
+                  to={buildSolutionDetailPath(item.slug, language)}
                   className="solution-detail-discovery-link"
                 >
                   <RelatedThumbnail
@@ -241,6 +242,7 @@ export default function SolutionDetailPage() {
   const english = language === "en";
   const [state, setState] = useState({ loading: true });
   useEffect(() => {
+    if (SOLUTION_ALIASES[slug]) return;
     let active = true;
     setState({ loading: true });
     Promise.all([
@@ -309,6 +311,8 @@ export default function SolutionDetailPage() {
       active = false;
     };
   }, [slug, language]);
+  if (SOLUTION_ALIASES[slug]) return <Navigate replace to={buildSolutionDetailPath(slug, language) + window.location.search + window.location.hash} />;
+
   if (state.loading)
     return (
       <main className="solution-detail-page" aria-busy="true">
@@ -454,10 +458,7 @@ export default function SolutionDetailPage() {
                   <Link
                     className={`solution-detail-related-card${index === 0 ? " is-featured" : ""}`}
                     key={item.key || item.title}
-                    to={getLocalizedPath(
-                      item.detail ? `/solutions/${item.slug}` : "/solutions",
-                      language,
-                    )}
+                    to={item.detail ? buildSolutionDetailPath(item.slug, language) : getLocalizedPath("/solutions", language)}
                   >
                     <RelatedThumbnail src={image} icon={icon} />
                     <div className="solution-detail-related-copy">

@@ -1,3 +1,6 @@
+import { FEATURES } from '../../../config/features'
+import { buildSolutionDetailPath } from '../../../config/solutionRoutes'
+import { captureLocaleScroll } from '../../common/SmoothScroll/SmoothScroll'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as Accordion from '@radix-ui/react-accordion'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
@@ -27,7 +30,7 @@ const navigationItems = [
           { key: 'logistics', href: '/solutions/logistics' },
           { key: 'projects', href: '/solutions/projects' },
           { key: 'production', href: '/solutions/production' },
-          { key: 'hrPayroll', href: '/solutions/hr-payroll' },
+          { key: 'hrPayroll', href: buildSolutionDetailPath('nhan-su-tien-luong') },
           { key: 'finance', href: '/solutions/finance' },
         ],
       },
@@ -89,7 +92,7 @@ const solutionGroups = [
   {
     key: 'management',
     modules: [
-      { key: 'hrPayroll', href: '/solutions/hr-payroll', image: 'https://images.unsplash.com/photo-1772588627342-5ec373e236d8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+      { key: 'hrPayroll', href: buildSolutionDetailPath('nhan-su-tien-luong'), image: 'https://images.unsplash.com/photo-1772588627342-5ec373e236d8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
       { key: 'finance', href: '/solutions/finance', image: 'https://images.unsplash.com/photo-1553877522-88290367491d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
     ],
   },
@@ -140,9 +143,10 @@ function LanguageDropdown({ mobile = false }) {
       nextLanguage,
     )
 
+    const localeScroll = captureLocaleScroll()
     await setLanguage(nextLanguage)
 
-    navigate(`${nextPath}${location.search}${location.hash}`)
+    navigate(`${nextPath}${location.search}${location.hash}`, { state: { localeScroll } })
 
     setIsOpen(false)
   }
@@ -480,9 +484,9 @@ export function NeotekNavbar({
           <div className="neotek-navbar__actions">
             <LanguageDropdown />
 
-            <a className="neotek-navbar__login" href={localizeHref('/login')}>
+            {FEATURES.publicAuth && <a className="neotek-navbar__login" href={localizeHref('/login')}>
               {t('nav.login')}
-            </a>
+            </a>}
 
             <NeotekButton href={localizeHref('/register')} className="neotek-navbar__cta">
               <span className="neotek-navbar__cta-text">
@@ -609,12 +613,12 @@ export function NeotekNavbar({
                   <div className="neotek-navbar__mobile-footer">
                     <LanguageDropdown mobile />
 
-                    <a
+                    {FEATURES.publicAuth && <a
                       className="neotek-navbar__login neotek-navbar__login--mobile"
                       href={localizeHref('/login')}
                     >
                       {t('nav.login')}
-                    </a>
+                    </a>}
 
                     <NeotekButton
                       href={localizeHref('/register')}

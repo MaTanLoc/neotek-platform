@@ -1,3 +1,4 @@
+import { AuthProvider } from '../auth/AuthContext'
 import {ADMIN_PAGES} from '../config/sectionMetadata'
 import {lazy, Suspense, useContext, useEffect, useState} from 'react'
 import {Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate} from 'react-router-dom'
@@ -225,7 +226,7 @@ function Overview() {
   </section>
 }
 export function AdminApp() {
-  return <ConfirmProvider><CmsProvider><Routes>
+  return <AuthProvider><ConfirmProvider><CmsProvider><Routes>
     <Route path="login" element={<LoginRoute />} />
     <Route index element={<Protected><Shell><Overview /></Shell></Protected>} />
     <Route path="pages" element={<Protected><Shell><PagesList /></Shell></Protected>} />
@@ -234,5 +235,5 @@ export function AdminApp() {
     <Route path="pages/:slug/:sectionKey" element={<Protected><Shell><PageEditor /></Shell></Protected>} />
     <Route path="solutions/:slug" element={<Protected><Shell><Suspense fallback={<p>Đang tải trình soạn thảo…</p>}><SolutionDetailEditor /></Suspense></Shell></Protected>} />
     <Route path="*" element={<Navigate to="/admin" replace />} />
-  </Routes></CmsProvider></ConfirmProvider>
+  </Routes></CmsProvider></ConfirmProvider></AuthProvider>
 }

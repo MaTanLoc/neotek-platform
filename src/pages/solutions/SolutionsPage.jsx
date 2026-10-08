@@ -1,5 +1,6 @@
 import { SolutionsHeroView } from './SolutionsHeroView'
 import { useEffect, useRef, useState } from 'react'
+import NotFoundPage from '../not-found/NotFoundPage'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -189,8 +190,7 @@ export default function SolutionsPage() {
         hasLoadedOnce.current = true
       } catch (err) {
         if (!active) return
-        console.error('Failed to load solutions page data:', err)
-        if (!hasLoadedOnce.current) setError(err)
+        if (err.status === 404 || !hasLoadedOnce.current) setError(err)
       } finally {
         if (active) setLoading(false)
       }
@@ -202,6 +202,8 @@ export default function SolutionsPage() {
   const registerPath = getLocalizedPath('/register', i18n.language)
   const hero = cmsData.hero[0] || {}
   const groups = cmsData.solutionGroups.map(group => ({ ...group, id: group.key, icon: GROUP_ICONS[group.icon] || GROUP_ICONS[group.key] || Briefcase04Icon }))
+
+  if (error?.status === 404) return <NotFoundPage />
 
   return (
     <div className="neotek-site-shell solutions-page">

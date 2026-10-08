@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { AuthProvider } from "./admin/auth/AuthContext";
-import { AdminApp } from "./admin/app/AdminApp";
+import { FEATURES } from "./config/features";
 import { useTranslation } from "react-i18next";
 import SEO from "./components/common/SEO/SEO";
 
@@ -9,6 +8,7 @@ import { SmoothScroll, SmoothScrollRouteSync } from "./components/common/SmoothS
 
 import "./components/common/neotek-components.css";
 
+const AdminApp = lazy(() => import("./admin/app/AdminApp").then(module => ({ default: module.AdminApp })));
 const HomePage = lazy(() => import("./pages/home/HomePage"));
 const SolutionsPage = lazy(() => import("./pages/solutions/SolutionsPage"));
 const SolutionDetailPage = lazy(() => import("./pages/solutions/SolutionDetailPage"));
@@ -22,6 +22,7 @@ function RouteSEO() {
   const { t } = useTranslation();
   const path = pathname.replace(/\/+$/, "") || "/";
   const basePath = path.replace(/^\/en(?=\/|$)/, "") || "/";
+  if (basePath.startsWith('/admin')) return <SEO robots="noindex, nofollow" />;
   const pageKey = ({ "/": "home", "/solutions": "solutions", "/booking": "booking", "/login": "login", "/register": "register" })[basePath];
   return ["/", "/solutions", "/booking", "/login", "/register"].includes(basePath)
     ? <SEO title={t(`seo.${pageKey}.title`)} description={t(`seo.${pageKey}.description`)} robots={["/login", "/register"].includes(basePath) ? "noindex, follow" : "index, follow"} />
@@ -31,7 +32,7 @@ function RouteSEO() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
+
         <SmoothScroll>
           <div id="smooth-wrapper">
             <div id="smooth-content">
@@ -51,15 +52,15 @@ export default function App() {
                 <Route path="/en/solutions/:slug" element={<SolutionDetailPage />} />
 
                 {/* BOOKING */}
-                <Route path="/booking" element={<BookingPage />} />
-                <Route path="/en/booking" element={<BookingPage />} />
+                {FEATURES.booking && <Route path="/booking" element={<BookingPage />} />}
+                {FEATURES.booking && <Route path="/en/booking" element={<BookingPage />} />}
 
                 {/* AUTH */}
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+                {FEATURES.publicAuth && <Route path="/login" element={<Login />} />}
+                {FEATURES.publicAuth && <Route path="/register" element={<Register />} />}
 
-                <Route path="/en/login" element={<Login />} />
-                <Route path="/en/register" element={<Register />} />
+                {FEATURES.publicAuth && <Route path="/en/login" element={<Login />} />}
+                {FEATURES.publicAuth && <Route path="/en/register" element={<Register />} />}
 
                 {/* FALLBACK */}
                 <Route path="*" element={<NotFoundPage />} />
@@ -68,7 +69,7 @@ export default function App() {
             </div>
           </div>
         </SmoothScroll>
-      </AuthProvider>
+
     </BrowserRouter>
   );
 }

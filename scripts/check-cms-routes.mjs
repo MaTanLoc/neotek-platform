@@ -29,6 +29,9 @@ const call = (method, params = {}, sessionId) => new Promise((resolve, reject) =
 })
 let server
 try {
+  for (const file of ['src/pages/auth/Login.jsx', 'src/pages/auth/Register.jsx']) {
+    assert(!/console\.(log|debug|info)|logger\./.test(await readFile(file, 'utf8')), 'Public auth placeholder must not log form data: '+file);
+  }
   require('../../Neotek Backend/node_modules/dotenv').config({path:'../Neotek Backend/.env',quiet:true})
   const {PrismaClient}=require('../../Neotek Backend/node_modules/@prisma/client')
   const prisma=new PrismaClient()
@@ -38,6 +41,8 @@ try {
     const {resolveSharedTranslations}=require('../../Neotek Backend/dist/src/sections/shared-content.js');
     for(const page of fixtures) for(const section of page.sections) section.translations=await resolveSharedTranslations(prisma,section.translations);
   } finally {await prisma.$disconnect()}
+  // Published delivery fixtures are in-memory only; never change development DB status.
+  for (const page of fixtures) if (page.kind !== 'SOLUTION_DETAIL') page.status = 'PUBLISHED';
   for (const page of fixtures) for (const section of page.sections) {
     if (['cta', 'faq', 'trustedBy'].includes(section.key)) Object.assign(section, { source: 'shared.' + (section.key === 'trustedBy' ? 'trustedLogos' : section.key), sharedPages: ['home', 'solutions'] });
   }
@@ -101,7 +106,7 @@ try {
       }
       if(route.startsWith('/pages/')){
         const page=window.fixtures.find(p=>p.slug===route.split('/').pop());const locale=parsed.searchParams.get('locale')||'vi';
-        if(!page||(page.kind==='SOLUTION_DETAIL'&&page.status!=='PUBLISHED'))return new Response('{}',{status:404});
+        if(!page||page.status!=='PUBLISHED')return new Response('{}',{status:404});
         const translation=page.translations.find(t=>t.locale===locale);
         return reply({slug:page.slug,locale,kind:page.kind,updatedAt:page.updatedAt,publishedAt:page.publishedAt,title:translation.title,seo:{title:translation.seoTitle,description:translation.seoDescription},sections:page.sections.filter(s=>s.enabled).map(s=>({key:s.key,type:s.type,content:s.translations.find(t=>t.locale===locale)?.content||{}}))});
       }
@@ -115,6 +120,9 @@ try {
       await call('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:false},sessionId)
       await navigate(route)
       await evaluate('new Promise(resolve=>setTimeout(resolve,200))')
+      assert.equal(await evaluate('[...document.querySelectorAll("a[href]")].some(a=>/^(\\/en)?\\/(booking|login|register)(\\/|$)/.test(a.pathname))'),false,'Disabled feature link exposed');
+      assert.equal(await evaluate('window.requests.some(r=>r.route.startsWith("/auth/"))'),false,'Public page loads admin authentication');
+      assert.equal(await evaluate('performance.getEntriesByType("resource").some(r=>/AdminApp-|SolutionDetailEditor-|BookingPage-/.test(r.name))'),false,'Public page eagerly loads disabled/admin editor code');
       const dimensions=await evaluate('({width:innerWidth,scroll:document.documentElement.scrollWidth,title:document.querySelector("h1").textContent,missingImages:[...document.querySelectorAll("main img")].filter(i=>!i.getAttribute("src")).length,clamp:document.querySelector(".solutions-cluster__description")?getComputedStyle(document.querySelector(".solutions-cluster__description")).webkitLineClamp:null,containers:[...document.querySelectorAll(".solutions-hero__title-line,.solutions-cluster__description")].map(e=>({scroll:e.scrollWidth,width:e.clientWidth}))})')
       assert(dimensions.scroll<=width+1,route+' overflow at '+width+': '+dimensions.scroll)
       assert.equal(dimensions.missingImages,0,route+' empty media')
@@ -137,7 +145,57 @@ try {
       }
     }
   }
-  for (const route of ['/solutions/crm','/en/solutions/crm','/solutions/not-a-detail','/en/solutions/not-a-detail']) { await navigate(route);assert.equal(await evaluate('!!document.querySelector(".neotek-not-found")'),true,'Unexpected detail route '+route) }
+  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false},sessionId);
+  for (const slug of ['home', 'solutions']) {
+    const route = slug === 'home' ? '/' : '/solutions';
+    await navigate(route);
+    await evaluate('new Promise(resolve=>setTimeout(resolve,500))');
+    await evaluate('window.fixtures.find(page=>page.slug==='+JSON.stringify(slug)+').status="DRAFT";sessionStorage.setItem("solutionDetailFixtures",JSON.stringify(window.fixtures))');
+    await evaluate('document.querySelector(".neotek-navbar:not([aria-hidden=true]) .neotek-navbar__language").click()');
+    await evaluate('document.querySelectorAll(".neotek-navbar:not([aria-hidden=true]) .neotek-navbar__language-menu button")[1].click();new Promise(resolve=>setTimeout(resolve,700))');
+    assert.equal(await evaluate('!!document.querySelector(".neotek-not-found")'),true,'Unpublished page retains previously loaded content across locale switch: '+slug);
+    for (const status of ['DRAFT', 'ARCHIVED']) {
+      await evaluate('window.fixtures.find(page=>page.slug==='+JSON.stringify(slug)+').status='+JSON.stringify(status)+';sessionStorage.setItem("solutionDetailFixtures",JSON.stringify(window.fixtures))');
+      for (const localized of [route, slug === 'home' ? '/en/' : '/en/solutions']) {
+        await navigate(localized);
+        assert.equal(await evaluate('!!document.querySelector(".neotek-not-found")'),true,'Unpublished standard route visible: '+localized+'/'+status);
+      }
+    }
+    await evaluate('window.fixtures.find(page=>page.slug==='+JSON.stringify(slug)+').status="PUBLISHED";sessionStorage.setItem("solutionDetailFixtures",JSON.stringify(window.fixtures))');
+  }
+  for (const route of ['/solutions/crm','/en/solutions/crm','/solutions/constructor','/en/solutions/constructor','/solutions/not-a-detail','/en/solutions/not-a-detail','/booking','/en/booking','/login','/en/login','/register','/en/register']) {
+    await navigate(route);
+    assert.equal(await evaluate('!!document.querySelector(".neotek-not-found")'),true,'Unexpected disabled/unknown route '+route);
+    assert(await evaluate('document.querySelector("meta[name=robots]").content.includes("noindex")'),'Disabled route must stay noindex');
+    assert.equal(await evaluate('performance.getEntriesByType("resource").some(r=>["BookingPage-","/Login-","/Register-"].some(name=>r.name.includes(name)))'),false,'Disabled route loads placeholder code');
+  }
+  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false},sessionId);
+  for (const prefix of ['', '/en']) {
+    await navigate(prefix+'/solutions/hr-payroll?source=legacy');
+    assert.equal(await evaluate('location.pathname'),prefix+'/solutions/nhan-su-tien-luong','Legacy redirect loses canonical slug/locale');
+    assert.equal(await evaluate('location.search'),'?source=legacy','Legacy redirect loses query');
+  }
+  for (const route of ['/solutions','/solutions/nhan-su-tien-luong']) {
+    await navigate(route);
+    await evaluate('new Promise(resolve=>setTimeout(resolve,700))');
+    assert.equal(await evaluate('history.scrollRestoration'),'auto','Browser restoration was globally disabled');
+    await evaluate(route.endsWith('nhan-su-tien-luong')?'document.querySelectorAll(".solution-article h2")[1].scrollIntoView()':'window.scrollTo(0,1200)');
+    await evaluate('new Promise(resolve=>setTimeout(resolve,1200))');
+    const before=await evaluate('({y:scrollY,ratio:scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight),headingTop:document.querySelectorAll(".solution-article h2")[1]?.getBoundingClientRect().top})');
+    for (const english of [true,false]) {
+      await evaluate('document.querySelector(".neotek-navbar.is-visible .neotek-navbar__language").click()');
+      await evaluate('[...document.querySelectorAll(".neotek-navbar.is-visible .neotek-navbar__language-menu button")]['+(english?1:0)+'].click()');
+      await evaluate('new Promise(resolve=>setTimeout(resolve,3000))');
+      assert.equal(await evaluate('location.pathname'),(english?'/en':'')+route,'Locale switch route');
+      const after=await evaluate('({y:scrollY,ratio:scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight),headingTop:document.querySelectorAll(".solution-article h2")[1]?.getBoundingClientRect().top})');
+      assert(after.y>300,'Locale switch returned to top');
+      if (route.endsWith('nhan-su-tien-luong')) assert(Math.abs(after.headingTop-before.headingTop)<180,'Locale switch loses active H2');
+      else assert(Math.abs(after.ratio-before.ratio)<0.08,'Locale switch loses relative position');
+    }
+    await evaluate('document.querySelector(".neotek-navbar.is-visible .neotek-navbar__brand").click()');
+    await evaluate('new Promise(resolve=>setTimeout(resolve,1200))');
+    assert(await evaluate('scrollY<20'),'Ordinary navigation fails to return to top');
+  }
   await evaluate('sessionStorage.setItem("tutorialTest","overview");localStorage.removeItem("neotek:cms:tutorial:v1:test:overview")');
   await navigate('/admin');await evaluate('new Promise(resolve=>setTimeout(resolve,1200))');
   assert.equal(await evaluate('!!document.querySelector(".admin-tutorial-panel")'),true,'First-time overview tutorial missing');
@@ -363,9 +421,8 @@ try {
       await evaluate('document.querySelector(".solution-detail-toc summary").click()');
       assert.equal(await evaluate('document.querySelector(".solution-detail-toc details").open'),true,'Reading disclosure cannot open');
     }
-    await evaluate('window.testClickTab(document.querySelector(".solution-detail-rail-tabs [role=tab][data-state=inactive]"))');await pause();
-    assert.equal(await evaluate('!!document.querySelector(".solution-detail-rail-empty")||!!document.querySelector(".solution-detail-discovery-link")'),true,'Featured tab missing data/empty state');
-    await evaluate('window.testClickTab(document.querySelector(".solution-detail-rail-tabs [role=tab][data-state=inactive]"))');await pause();
+    assert.equal(await evaluate('document.querySelectorAll(".solution-detail-rail [role=tablist]").length'),0,'Reading rail must not use tabs');
+    assert.equal(await evaluate('!!document.querySelector(".solution-detail-rail-empty")||!!document.querySelector(".solution-detail-discovery-link")'),true,'Visible Featured section missing data/empty state');
     await evaluate('document.querySelectorAll(".solution-article h2")[1].scrollIntoView()');await pause();
     await evaluate('Promise.all([...document.querySelectorAll(".solution-detail-cover img, .solution-article-image img")].map(image=>image.complete?Promise.resolve():new Promise(resolve=>{image.addEventListener("load",resolve,{once:true});image.addEventListener("error",resolve,{once:true})})))');
     await evaluate('new Promise(resolve=>setTimeout(resolve,500))');
@@ -516,11 +573,10 @@ try {
     await call('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:false},sessionId);
     await navigate((language==='en'?'/en':'')+'/solutions/'+detailSlug);await pause();
     if(width<1200)await evaluate('document.querySelector(".solution-detail-toc summary").click()');
-    await evaluate('window.testClickTab(document.querySelector(".solution-detail-rail-tabs [role=tab][data-state=inactive]"))');await pause();
     assert.equal(await evaluate('document.querySelectorAll(".solution-detail-discovery-link").length'),2,'Featured should exclude current article and draft');
     assert(await evaluate('[...document.querySelectorAll(".solution-detail-discovery-link")].every(a=>a.pathname.startsWith('+JSON.stringify((language==='en'?'/en':'')+'/solutions/')+')&&!a.pathname.endsWith("discovery-test-3"))'),'Featured links must preserve locale/publication');
     assert(await evaluate('document.documentElement.scrollWidth<=innerWidth+1'),'Featured causes overflow');
     assert.equal(await evaluate('document.querySelectorAll(".solution-detail-related-card").length'),4,'Discovery removed bottom recommendations');
   }
-  console.log('PASS public/admin at 1440/1024/820/390: single-locale metadata/article save/discard, responsive Inspector/toolbar/block overlays, rail tabs/published discovery, existing regressions, Tiptap typing/Enter/slash/H2/block duplicate/reorder/delete/bold/list/upload/CTA/locales/atomic save validation/failure/undo/redo/saved preview, TOC/SEO/related/final CTA');
+  console.log('PASS public/admin at 1440/1024/820/390: single-locale metadata/article save/discard, responsive Inspector/toolbar/block overlays, visible TOC/Featured and published discovery, existing regressions, Tiptap typing/Enter/slash/H2/block duplicate/reorder/delete/bold/list/upload/CTA/locales/atomic save validation/failure/undo/redo/saved preview, TOC/SEO/related/final CTA');
 } finally {server?.close();chrome.kill();await rm(profile,{recursive:true,force:true,maxRetries:10,retryDelay:200}).catch(error=>console.error('Profile cleanup:',error.code))}

@@ -153,3 +153,110 @@ Prisma schema syntax and an applied migration ledger do not establish full schem
 Likely future frontend files: App.jsx, config/api.js, pages/auth/*, booking routes, navbar, SmoothScroll, SEO, solutionPresentation/preview route helpers, FAQ rendering, package manifests and public robots/sitemap generation. Likely backend files: package manifests, main.ts, pages.service.ts/tests, health/cache/auth/media boundaries, validation registry, env example and eventually deployment config. These are proposals, not changes made here.
 
 Safe candidates require no additional architectural/destructive approval **after the Phase A acceptance gate**. Risky items require explicit acceptance: persisted publication/content edits, shared-content apply, major dependency upgrades, sanitization of existing values, network/provider policy, session-store changes, production infrastructure, migration/restore operations. No automatic continuation to Phase B.
+
+
+## Post-UX Delta Audit
+
+Baseline retained above. Compared frontend Phase A checkpoint 2cfa8212 with current checkpoint 8cda151f; backend remains 5d51166 before Phase B edits. Both working trees were clean at entry. Rechecked SolutionDetailEditor, ArticleEditor, CmsTutorial, their scoped styles, SolutionDetailPage/styles and the article renderer contract. The current TOC and Featured rail are two visible sections, not tabs; no rail redesign or CSS changes were made. The regression suite's obsolete tab assertions were corrected to match this checkpoint.
+
+The existing browser suite passed VI/EN public/admin at1440/1024/820/390, independent locale drafts, metadata/SEO fallback, save/discard, failed save/undo, slash commands, Inspector, block operations, saved preview, heading anchors/active TOC, published discovery, related content and shared footer. Tests mock authentication, saves and Cloudinary; they do not prove live uploads or hosting HTTP semantics. Phase B adds feature/route/scroll/network-graph checks. No new source blocker was found in the final article architecture; the Phase A standard-page draft exposure remained and is fixed below. Fourteen screenshot deletions already in the checkpoint remain intact.
+
+## Phase B Resolution
+
+Safe source fixes only. No schema/database/content migration, seed, Docker, WAF, infrastructure, restore or deployment work. No commit/push. Production deployment remains unapproved.
+
+| Original finding | Status | Phase B evidence / remaining responsibility |
+| --- | --- | --- |
+| B01 | RESOLVED | All public DB paths require PUBLISHED; every Redis hit rechecks current DB status. Draft/archived/missing normal and detail records are tested, including stale cache. Authorized admin draft access is unchanged. Standard frontend views also render the existing public404 on API404, including after a previously loaded locale. Existing Draft Home/Solutions were not published. |
+| B02 | RESOLVED | Real isolated default Nest builds emitted dist/src/main.js, no dist/main.js. start:prod now runs node dist/src/main.js. The npm production command bound temporary port59451 and returned health200 with database/cache up; existing watch process was untouched. |
+| B03 | RESOLVED | Removed public form payload/password logs. Central publicAuth=false hides actions and removes public login/register routes; direct paths use public404. No admin-login fallback or auth replacement. |
+| B04 | RESOLVED | One public backend FAQ sanitizer, sanitize-html2.18.0, allowlists formatting/links and removes scripts/events/unsafe schemes/embeds. Fresh and old cached FAQ responses are sanitized; stored/admin data is untouched. Tests use the real sanitizer. |
+| B05 | DEFERRED TO PHASE C | Private DB/Redis transport/auth/ACL policy not provisioned or verified; development Compose unchanged. |
+| B06 | DEFERRED TO PHASE D | Backup automation and isolated restore evidence remain a release blocker. |
+| H01 | PARTIALLY RESOLVED | Frontend production API build gate and small backend production URL/port/media completeness checks implemented. Explicit production mode, private endpoints, TLS and secret injection remain operational gates. |
+| H02 | DEFERRED TO PHASE C | Redis deadlines/retry/offline and isolated outage/recovery policy unchanged. |
+| H03 | DEFERRED TO PHASE C | Readiness failure status/deadlines and graceful signal draining remain unverified. Healthy temporary production start is not outage/shutdown acceptance. |
+| H04 | DEFERRED TO PHASE C | Proxy trust, account/media quotas and WAF/origin policy unchanged. |
+| H05 | PARTIALLY RESOLVED | Canonical locale/shared-slug helper reused; verified hr-payroll alias redirects with replace while preserving locale/query/hash. No hr-solution source evidence, so no invented alias. Host-level permanent redirects belong to Phase D; ten modules still need business-approved slugs/data. |
+| H06 | DEFERRED TO PHASE C | Shared Trusted implementation preserved. CTA/FAQ inline copies and separate Footer CTA preserved; shared-content DB migration requires separate explicit approval and was not run. |
+| H07 | DEFERRED TO PHASE C | Login Origin/input-size/body-parser policy unchanged; existing auth/CSRF/Origin regression retained. |
+| H08 | DEFERRED TO PHASE C | Cloudinary preset/quota/live-upload policy not verified; existing signed flow preserved. |
+| H09 | DEFERRED TO PHASE C | DB least privilege/TLS/pool/production drift policy not changed. |
+| H10 | DEFERRED TO PHASE C | Existing41 backend advisories remain; no automatic major upgrades. Only sanitizer/types added. Jest transforms the parser's ESM dependencies without mocking security behavior. |
+| H11 | PARTIALLY RESOLVED | Admin routes explicitly noindex/nofollow; detail canonicals/hreflang preserved. Staging/domain/sitemap/robots and host HTTP404/permanent redirects remain Phase D. |
+| H12 | DEFERRED TO PHASE D | No seed/import/bootstrap/migration was run. Deployment must prohibit automatic content resets and separate reviewed operational commands. |
+
+Additional accepted source fixes: M01 booking defaults off via VITE_FEATURE_BOOKING; disabled links/routes and normal-navigation chunk loading are checked. M02 locale switching carries active-H2 index/offset where available, otherwise relative scroll ratio, across VI/EN; short layout observation handles localized content, stops on user interaction, and POP navigation is left to browser restoration. M03 AdminApp plus AuthProvider now load only on admin routes; Tiptap remains lazy. No vendor strategy was added. Other Phase A medium/low findings remain unchanged unless explicitly noted in environment docs.
+
+### Source behavior and validation
+
+- Publication smoke against the isolated production process: home404, solutions404, admin-test404, unknown404, published nhan-su-tien-luong200. Database content unchanged. Browser standard-page fixtures are explicitly PUBLISHED only in memory.
+- Legacy aliases are client-side controlled redirects, not a claim of deployed HTTP301. Canonical HR path uses the same Vietnamese slug in both locales. Manager/editor paths remain admin paths; only public destinations use buildSolutionDetailPath.
+- FAQ allowlist preserves p/br/div/strong/b/em/i/ul/ol/li/a; link attributes href/title and HTTP(S)/mailto/tel/relative URLs. Protocol-relative URLs and embedded content are excluded. Sanitization is separate from deferred shared-content migration. Maintainer policy: https://github.com/apostrophecms/apostrophe/tree/main/packages/sanitize-html#readme
+- Frontend lint PASS; production build PASS with explicit /api; production-base rejection tests PASS for missing/localhost/unsafe schemes. No password/form logger remains in public auth source. Final browser suite PASS at1440/1024/820/390, including Draft/Archived Home/Solutions404 in VI/EN, unpublishing during locale switching, disabled routes/noindex/no chunks/no public auth requests, constructor/unknown slugs, legacy aliases, VI-to-EN and EN-to-VI H2/relative scroll, native restoration mode and existing admin/editor regressions.
+- Backend Prisma validate PASS (existing Prisma7 config deprecation); Jest22 suites/125 tests PASS, one isolated Redis integration suite/test skipped because AUTH_REDIS_TEST_URL is not configured; backend lint PASS. Real isolated npm run build and npm run start:prod PASS. No developer dist was deleted/replaced by the isolated build.
+
+| JS boundary | Before Phase B (post-UX) | After Phase B |
+| --- | --- | --- |
+| Initial index |664.57KB / gzip220.34KB |413.69KB / gzip143.93KB |
+| AdminApp |Eager inside public entry |135.81KB / gzip41.21KB, lazy |
+| SolutionDetailEditor/Tiptap |488.10KB / gzip152.51KB, lazy |486.77KB / gzip152.63KB, lazy |
+| React shared |127.14KB / gzip41.56KB |127.14KB / gzip41.56KB |
+
+Before sizes were measured by a real isolated build of checkpoint8cda151f with the same explicit /api base; after sizes come from the final production build. Temporary checkpoint/build files were removed. Chunk sizes reflect current build configuration, not total page download size. Disabled feature chunks may still be emitted as build artifacts but must not be requested through default public navigation. No warning-threshold tuning was performed.
+
+### Exact Phase B changed-file manifest
+
+Neotek Frontend (27 files):
+
+- `.env.example`
+- `docs/ENVIRONMENT_REFERENCE.md`
+- `docs/PRODUCTION_READINESS_AUDIT.md`
+- `scripts/check-cms-routes.mjs`
+- `src/App.jsx`
+- `src/admin/app/AdminApp.jsx`
+- `src/admin/editors/solution-detail/SolutionDetailEditor.jsx`
+- `src/components/common/NeotekButton/NeotekButton.jsx`
+- `src/components/common/SmoothScroll/SmoothScroll.jsx`
+- `src/components/home/HeroCarousel/HomeHeroView.jsx`
+- `src/components/layout/NeotekFooter/NeotekFooter.jsx`
+- `src/components/layout/NeotekNavbar/NeotekNavbar.jsx`
+- `src/components/sections/FAQSection/FAQSection.jsx`
+- `src/config/api.js`
+- `src/config/features.js`
+- `src/config/solutionRoutes.js`
+- `src/i18n.js`
+- `src/pages/auth/Login.jsx`
+- `src/pages/auth/Register.jsx`
+- `src/pages/home/HomePage.jsx`
+- `src/pages/solutions/SolutionArticleView.jsx`
+- `src/pages/solutions/SolutionDetailPage.jsx`
+- `src/pages/solutions/SolutionsHeroView.jsx`
+- `src/pages/solutions/SolutionsPage.jsx`
+- `src/pages/solutions/solutionPresentation.js`
+- `src/services/content/adapters/backendApiAdapter.js`
+- `vite.config.js`
+
+Neotek Backend (12 files):
+
+- `.env.example`
+- `jest.config.cjs`
+- `package-lock.json`
+- `package.json`
+- `src/config/validate-environment.spec.ts`
+- `src/config/validate-environment.ts`
+- `src/main.ts`
+- `src/pages/pages.service.spec.ts`
+- `src/pages/pages.service.ts`
+- `src/pages/public-html.spec.ts`
+- `src/pages/public-html.ts`
+- `src/sections/shared-content.spec.ts`
+
+
+### Phase B exit gate
+
+Completed2026-10-09 (Asia/Saigon). B01-B04 source blockers resolved; all required source validations PASS. Frontend lint/build and both git diff checks PASS. Backend Prisma validate, full Jest22 suites/125 tests (one isolated Redis integration suite/test skipped), lint, real isolated Nest build and npm production-start/healthy-port check PASS. The final full browser suite PASS includes publication/feature/alias/locale checks plus existing public/admin regressions; API writes/auth/Cloudinary remain mocked and all fixture reads are read-only. No screenshot artifacts were regenerated. No new source BLOCKER was identified.
+
+The production build used explicit VITE_API_BASE_URL=/api; deployment must supply a same-origin API proxy or an explicitly configured HTTPS API base. Real development Home/Solutions remain DRAFT and intentionally return public404; publication is an existing admin/business operation, not a data change performed here. Shared Trusted is unchanged; CTA/FAQ migration and separate Footer CTA are untouched.
+
+STOPPED AFTER PHASE B. Infrastructure B05/B06 and other Phase C/D gates remain; this is not production deployment approval. No commit, push, seed, migration, restore or deployment was performed.
