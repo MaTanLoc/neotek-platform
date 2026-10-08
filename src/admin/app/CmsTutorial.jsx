@@ -14,13 +14,13 @@ const tutorials = {
   ],
   article: [
     ['.admin-sidebar', 'Điều hướng bài viết', 'Mở Chi tiết giải pháp để xem danh sách bài viết theo phân hệ.'],
-    ['.admin-detail-actions .admin-language-buttons', 'Bài viết VI / EN', 'Chọn Tiếng Việt hoặc English để viết từng phiên bản. Nội dung của hai ngôn ngữ được giữ riêng.'],
+    ['.admin-detail-language-tabs', 'Bài viết VI / EN', 'Chọn Tiếng Việt hoặc English để viết từng phiên bản. Nội dung của hai ngôn ngữ được giữ riêng.'],
     ['.admin-article-document', 'Vùng viết Tiptap', 'Viết trực tiếp trong bài. Dùng thanh công cụ để định dạng đoạn, tiêu đề và danh sách.'],
     ['.admin-article-document', 'Lệnh nhanh /', 'Gõ / ở đầu đoạn trống để chọn tiêu đề, hình ảnh, danh sách hoặc khối nội dung.'],
     ['.admin-article-document', 'Kéo thả hình ảnh', 'Kéo ảnh vào vùng viết để tải lên. Thêm mô tả ảnh, chú thích và chọn độ rộng phù hợp.'],
-    ['.admin-solution-detail .admin-editor-tab-rail', 'Bản nháp / Đã xuất bản', 'Mở Cài đặt để chọn trạng thái. Bản nháp không hiển thị trên website; chọn Đã xuất bản rồi lưu khi bài đã sẵn sàng.'],
+    ['.admin-detail-inspector', 'Bản nháp / Đã xuất bản', 'Mở Thông tin & cài đặt bài viết để chọn trạng thái. Bản nháp không hiển thị trên website; chọn Đã xuất bản rồi lưu khi bài đã sẵn sàng.'],
     ['.admin-detail-actions', 'Lưu bài viết', 'Lưu thay đổi lưu nội dung và cài đặt. Có thể dùng Ctrl+S. Bản xem đã lưu chỉ hiển thị nội dung đã lưu.'],
-    ['.admin-solution-detail .admin-editor-tab-rail', 'Thông tin SEO', 'Mở SEO để nhập tiêu đề, mô tả tìm kiếm VI / EN và ảnh chia sẻ.'],
+    ['.admin-detail-inspector', 'Thông tin SEO', 'Trong Inspector, nhập tiêu đề và mô tả SEO cho ngôn ngữ đang chọn. Để trống để dùng tiêu đề và mô tả bài viết.'],
   ],
 }
 

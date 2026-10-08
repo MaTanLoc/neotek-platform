@@ -58,6 +58,7 @@ try {
   await call('Page.addScriptToEvaluateOnNewDocument',{source: `
     window.fixtures=JSON.parse(sessionStorage.getItem('solutionDetailFixtures')||'null')||${JSON.stringify(fixtures)};window.requests=[];window.saved=[];
     for(const context of ['overview','section','article']){const key='neotek:cms:tutorial:v1:test:'+context;if(context!==sessionStorage.getItem('tutorialTest')&&!localStorage.getItem(key))localStorage.setItem(key,'seen');}
+    window.testClickTab=tab=>{tab.dispatchEvent(new MouseEvent("mousedown",{bubbles:true,button:0}));tab.click()};
     window.confirm=()=>{throw Error('Native confirm used')};window.alert=()=>{throw Error('Native alert used')};
     const nativeFetch=window.fetch;
     window.fetch=async(url,options={})=>{
@@ -330,6 +331,8 @@ try {
     await navigate(`${language==='en'?'/en':''}/solutions/${detailSlug}`);await pause();
     assert.equal(await evaluate('!!document.querySelector(".solution-article")'),true,'Detail article missing');
     assert.equal(await evaluate('document.querySelectorAll("h1").length'),1,'Multiple H1 headings');
+    assert.equal(await evaluate('!!document.querySelector(".solution-detail-reading-layout .solution-detail-main-article > .solution-detail-header")&&!!document.querySelector(".solution-detail-main-article > .solution-detail-cover")'),true,'Header/cover outside reading composition');
+    assert.equal(await evaluate('[...document.querySelectorAll(".solution-article h2")].every(h=>["none","normal"].includes(getComputedStyle(h,"::before").content))'),true,'Standalone section numbers remain');
     assert.equal(await evaluate('document.querySelectorAll(".solution-detail-toc a").length'),4,'TOC missing');
     assert.equal(await evaluate('document.querySelectorAll(".solution-detail-toc").length'),1,'TOC duplicated');
     assert.equal(await evaluate('[...document.querySelectorAll(".solution-detail-toc a")].every(a=>document.getElementById(a.hash.slice(1)))'),true,'TOC anchors broken');
@@ -360,6 +363,9 @@ try {
       await evaluate('document.querySelector(".solution-detail-toc summary").click()');
       assert.equal(await evaluate('document.querySelector(".solution-detail-toc details").open'),true,'Reading disclosure cannot open');
     }
+    await evaluate('window.testClickTab(document.querySelector(".solution-detail-rail-tabs [role=tab][data-state=inactive]"))');await pause();
+    assert.equal(await evaluate('!!document.querySelector(".solution-detail-rail-empty")||!!document.querySelector(".solution-detail-discovery-link")'),true,'Featured tab missing data/empty state');
+    await evaluate('window.testClickTab(document.querySelector(".solution-detail-rail-tabs [role=tab][data-state=inactive]"))');await pause();
     await evaluate('document.querySelectorAll(".solution-article h2")[1].scrollIntoView()');await pause();
     await evaluate('Promise.all([...document.querySelectorAll(".solution-detail-cover img, .solution-article-image img")].map(image=>image.complete?Promise.resolve():new Promise(resolve=>{image.addEventListener("load",resolve,{once:true});image.addEventListener("error",resolve,{once:true})})))');
     await evaluate('new Promise(resolve=>setTimeout(resolve,500))');
@@ -376,24 +382,69 @@ try {
       await evaluate('new Promise((resolve,reject)=>{let count=0;const timer=setInterval(()=>{const images=[...document.querySelectorAll(".solution-detail-related-card img")];if(images.every(image=>image.complete&&image.naturalWidth>0)){clearInterval(timer);resolve()}else if(++count>100){clearInterval(timer);reject(Error("Related thumbnail failed to load: "+JSON.stringify(images.map(image=>({src:image.src,complete:image.complete,width:image.naturalWidth})))))}},100)})');
     }
   }
-  for (const width of [1440,1024,820]) {
+  for (const width of [1440,1024,820,390]) {
     await call('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:false},sessionId);await navigate(`/admin/solutions/${detailSlug}`);await pause();
+    assert.equal(await evaluate('document.querySelectorAll(".admin-detail-language-tabs [role=tab]").length'),2,'Language tabs missing');
+    assert.equal(await evaluate('document.querySelectorAll(".admin-solution-detail .admin-bilingual-panel").length'),0,'Detail still renders bilingual columns');
+    assert.equal(await evaluate('document.querySelectorAll(".admin-solution-detail [role=tablist]").length'),1,'Old workspace tabs remain');
+    assert.equal(await evaluate('!!document.querySelector(".admin-article-toolbar")'),true,'Formatting toolbar missing');
+    assert.equal(await evaluate('document.querySelector(".admin-detail-inspector").open'),await evaluate('document.querySelector(".admin-solution-detail").clientWidth>=960'),'Inspector layout does not follow available canvas width');
     assert.equal(await evaluate('!!document.querySelector(".admin-article-document")'),true,'Article editor missing');
     assert(await evaluate('document.documentElement.scrollWidth<=innerWidth+1'),'Detail admin overflow');
+    await evaluate('const p=document.querySelector(".admin-article-document p");p.scrollIntoView({block:"center"});const range=document.createRange();range.selectNodeContents(p);range.collapse(false);window.getSelection().removeAllRanges();window.getSelection().addRange(range);document.querySelector(".admin-article-document").focus();');await pause();
+    await call('Input.insertText',{text:'Responsive block test'},sessionId);await pause();
+    const blockButtonSelector=width<1200?'.admin-article-block-trigger':'.admin-article-block-tools button';
+    assert(await evaluate('const button=document.querySelector('+JSON.stringify(blockButtonSelector)+');const r=button.getBoundingClientRect();r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight&&!!document.elementFromPoint(r.left+r.width/2,r.top+r.height/2)?.closest("button")'),'Block controls clipped at '+width);
+    if(width<1200) {
+      await evaluate('document.querySelector(".admin-article-block-trigger").click()');await pause();
+      assert.equal(await evaluate('document.querySelectorAll(".admin-article-block-tools button").length'),4,'Compact block menu incomplete');
+      await evaluate('document.querySelector(".admin-article-block-tools button[title=\\"Nhân đôi\\"]").click()');await pause();
+      assert.equal(await evaluate('[...document.querySelectorAll(".admin-article-document p")].filter(p=>p.textContent.includes("Responsive block test")).length'),2,'Compact duplicate failed');
+    }
+    // Explicitly discard this test draft; the existing beforeunload guard must remain intact.
+    await evaluate('[...document.querySelectorAll(".admin-detail-save-actions button")].find(b=>b.textContent==="Bỏ thay đổi").click()');await pause();
+    await evaluate('document.querySelector(".admin-confirm-content .admin-button--primary").click()');await pause();
+
   }
+  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false},sessionId);await navigate(`/admin/solutions/${detailSlug}`);await pause();
+  // Metadata uses one active locale; switching retains independent unsaved drafts.
+  for(const language of ['vi','en']) {
+    await evaluate('const tab=document.querySelector(".admin-detail-language-tabs [role=tab][data-state=inactive]");'+(language==='en'?'window.testClickTab(tab)':''));await pause();
+    await evaluate('const input=document.querySelector(".admin-detail-title-field textarea");Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,"value").set.call(input,'+JSON.stringify('Locale title '+language)+');input.dispatchEvent(new Event("input",{bubbles:true}));');await pause();
+    await evaluate('const inspector=document.querySelector(".admin-detail-inspector");if(!inspector.open)inspector.querySelector("summary").click();');await pause();
+    await evaluate('const input=document.querySelector(".admin-detail-seo input");Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value").set.call(input,"");input.dispatchEvent(new Event("input",{bubbles:true}));');await pause();
+    assert.equal(await evaluate('document.querySelector(".admin-detail-seo input").placeholder'),'Locale title '+language,'SEO fallback is not active-locale metadata');
+  }
+  await evaluate('window.testClickTab(document.querySelector(".admin-detail-language-tabs [role=tab][data-state=inactive]"))');await pause();
+  assert.equal(await evaluate('document.querySelector(".admin-detail-title-field textarea").value'),'Locale title vi','VI metadata draft lost');
+  await evaluate('[...document.querySelectorAll(".admin-detail-save-actions button")].find(b=>b.textContent==="Lưu thay đổi").click()');await pause();
+  assert.equal(await evaluate('window.detailSaved.translations.vi.hero.title'),'Locale title vi','VI save lost metadata');
+  assert.equal(await evaluate('window.detailSaved.translations.en.hero.title'),'Locale title en','EN save lost metadata');
+  await evaluate('const input=document.querySelector(".admin-detail-title-field textarea");Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,"value").set.call(input,"Discard metadata");input.dispatchEvent(new Event("input",{bubbles:true}));');await pause();
+  await evaluate('[...document.querySelectorAll(".admin-detail-save-actions button")].find(b=>b.textContent==="Bỏ thay đổi").click()');await pause();
+  await evaluate('document.querySelector(".admin-confirm-content .admin-button--primary").click()');await pause();
+  assert.equal(await evaluate('document.querySelector(".admin-detail-title-field textarea").value'),'Locale title vi','Discard did not restore saved metadata');
   const press=async(key,code,windowsVirtualKeyCode,modifiers=0)=>{await call('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode,modifiers},sessionId);await call('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode,modifiers},sessionId);};
   await evaluate('document.querySelector(".admin-article-document p").focus();const p=document.querySelector(".admin-article-document p");const range=document.createRange();range.selectNodeContents(p);range.collapse(false);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);document.querySelector(".admin-article-document").focus();');
   await press('Enter','Enter',13);await call('Input.insertText',{text:'Browser paragraph'},sessionId);
   await press('Enter','Enter',13);await call('Input.insertText',{text:'/'},sessionId);await pause();
   assert.equal(await evaluate('!!document.querySelector(".admin-article-command")'),true,'Slash command menu missing');
-  await press('ArrowDown','ArrowDown',40);await press('Enter','Enter',13);await call('Input.insertText',{text:'Browser heading'},sessionId);await pause();
+  await call('Input.insertText',{text:'heading'} ,sessionId);await pause();
+  assert(await evaluate('document.querySelectorAll(".admin-article-command [role=option]").length<10'),'Slash filter ignored query');
+  await press('ArrowDown','ArrowDown',40);await press('ArrowUp','ArrowUp',38);await press('Enter','Enter',13);await call('Input.insertText',{text:'Browser heading'},sessionId);await pause();
   assert.equal(await evaluate('[...document.querySelectorAll(".admin-article-document h2")].some(node=>node.textContent==="Browser heading")'),true,'Slash H2 failed');
+  if(await evaluate('!!document.querySelector(".admin-article-block-trigger")')) {await evaluate('document.querySelector(".admin-article-block-trigger").click()');await pause();}
   await evaluate('document.querySelector(".admin-article-block-tools button[title=\\"Nhân đôi\\"]").click()');await pause();
   assert.equal(await evaluate('[...document.querySelectorAll(".admin-article-document h2")].filter(node=>node.textContent==="Browser heading").length'),2,'Block duplicate failed');
+  assert.equal(await evaluate('!!document.querySelector(".admin-article-block-tools")'),true,'Duplicated block controls vanished: '+JSON.stringify(await evaluate('({active:document.activeElement.className,selection:window.getSelection().anchorNode?.parentElement?.outerHTML,headings:[...document.querySelectorAll(".admin-article-document h2")].filter(h=>h.textContent==="Browser heading").map(h=>({top:h.getBoundingClientRect().top,bottom:h.getBoundingClientRect().bottom})),toolbar:document.querySelector(".admin-article-toolbar").getBoundingClientRect().bottom})')));
+
   const followingBlock = await evaluate('[...document.querySelectorAll(".admin-article-document h2")].filter(node=>node.textContent==="Browser heading")[1].nextElementSibling.textContent');
+  if(await evaluate('!!document.querySelector(".admin-article-block-trigger")')) {await evaluate('document.querySelector(".admin-article-block-trigger").click()');await pause();}
   await evaluate('document.querySelector(".admin-article-block-tools button[title=\\"Xuống\\"]").click()');await pause();
   assert.equal(await evaluate('[...document.querySelectorAll(".admin-article-document h2")].filter(node=>node.textContent==="Browser heading")[1].previousElementSibling.textContent'),followingBlock,'Block move down failed');
+  if(await evaluate('!!document.querySelector(".admin-article-block-trigger")')) {await evaluate('document.querySelector(".admin-article-block-trigger").click()');await pause();}
   await evaluate('document.querySelector(".admin-article-block-tools button[title=\\"Lên\\"]").click()');await pause();
+  if(await evaluate('!!document.querySelector(".admin-article-block-trigger")')) {await evaluate('document.querySelector(".admin-article-block-trigger").click()');await pause();}
   await evaluate('document.querySelector(".admin-article-block-tools button[title=\\"Xóa đoạn\\"]").click()');await pause();
   assert.equal(await evaluate('[...document.querySelectorAll(".admin-article-document h2")].filter(node=>node.textContent==="Browser heading").length'),1,'Block delete failed');
   await evaluate('const heading=[...document.querySelectorAll(".admin-article-document h2")].find(node=>node.textContent==="Browser heading");const range=document.createRange();range.selectNodeContents(heading);range.collapse(false);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);document.querySelector(".admin-article-document").focus();');
@@ -418,9 +469,14 @@ try {
   await evaluate('const input=document.querySelector(".admin-article-dialog input");Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value").set.call(input,"Browser CTA title");input.dispatchEvent(new Event("input",{bubbles:true}));');await pause();
   await evaluate('const input=[...document.querySelectorAll(".admin-article-dialog select")].find(select=>[...select.options].some(option=>option.value==="final"));Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,"value").set.call(input,"final");input.dispatchEvent(new Event("change",{bubbles:true}));');await pause();
   await evaluate('[...document.querySelectorAll(".admin-article-dialog button")].find(b=>b.textContent==="Áp dụng").click()');await pause();
-  await evaluate('[...document.querySelectorAll("button")].find(b=>b.textContent==="English").click()');await pause();
+  await evaluate('window.testClickTab([...document.querySelectorAll(".admin-detail-language-tabs button")].find(b=>b.textContent==="English"))');await pause();
   assert.equal(await evaluate('document.querySelector(".admin-article-document").textContent.includes("Browser paragraph")'),false,'VI text overwrote English');
-  await evaluate('[...document.querySelectorAll("button")].find(b=>b.textContent==="Tiếng Việt").click()');await pause();
+  await evaluate('const p=document.querySelector(".admin-article-document p");p.scrollIntoView({block:"center"});const range=document.createRange();range.selectNodeContents(p);range.collapse(false);window.getSelection().removeAllRanges();window.getSelection().addRange(range);document.querySelector(".admin-article-document").focus();');
+  await press('Enter','Enter',13);await call('Input.insertText',{text:'/heading'},sessionId);await pause();
+  assert.equal(await evaluate('[...document.querySelectorAll(".admin-article-command [role=option]")].map(b=>b.textContent.trim()).join(",")'),'Heading 2,Heading 3','English slash filter/labels failed');
+  await press('Enter','Enter',13);await call('Input.insertText',{text:'English browser heading'},sessionId);await pause();
+
+  await evaluate('window.testClickTab([...document.querySelectorAll(".admin-detail-language-tabs button")].find(b=>b.textContent==="Tiếng Việt"))');await pause();
   assert.equal(await evaluate('document.querySelector(".admin-article-document").textContent.includes("Browser paragraph")'),true,'VI draft lost during locale switch');
   await evaluate('window.failSave=true;[...document.querySelectorAll("button")].find(b=>b.textContent==="Lưu thay đổi").click()');await pause();
   assert.equal(await evaluate('!!document.querySelector(".admin-alert--error")'),true,'Failed detail save not shown');
@@ -429,21 +485,24 @@ try {
   const savedDetail=await evaluate('window.detailSaved');
   const {detailSaveSchema}=require('../../Neotek Backend/dist/src/sections/validation/solution-detail.schemas.js');
   assert.equal(detailSaveSchema.safeParse(savedDetail).success,true,'Tiptap JSON fails backend validation');
+  assert(JSON.stringify(savedDetail.translations.en.article.doc).includes('English browser heading'),'Save lost unsaved English article');
+  assert(!JSON.stringify(savedDetail.translations.vi.article.doc).includes('English browser heading'),'English article silently copied into Vietnamese');
   await evaluate('document.querySelector(".admin-article-document").focus()');await press('End','End',35,2);await call('Input.insertText',{text:'Undo marker'},sessionId);await press('z','KeyZ',90,2);await pause();
   assert.equal(await evaluate('document.querySelector(".admin-article-document").textContent.includes("Undo marker")'),false,'Undo failed');await press('z','KeyZ',90,10);await pause();
   assert.equal(await evaluate('document.querySelector(".admin-article-document").textContent.includes("Undo marker")'),true,'Redo failed');
   await evaluate('[...document.querySelectorAll("button")].find(b=>b.textContent==="Lưu thay đổi").click()');await pause();
-  await evaluate('[...document.querySelectorAll("button")].find(b=>b.textContent==="Xem trang đã lưu").click()');await pause();assert.equal(await evaluate('!!document.querySelector(".admin-detail-preview .solution-article")'),true,'Saved preview missing');
+  await evaluate('document.querySelector("button[aria-label=\\"Tùy chọn bản xem\\"]").dispatchEvent(new PointerEvent("pointerdown",{bubbles:true,button:0,pointerType:"mouse"}))');await pause();
+  await evaluate('[...document.querySelectorAll("[role=menuitem]")].find(b=>b.textContent==="Xem trang đã lưu").click()');await pause();assert.equal(await evaluate('!!document.querySelector(".admin-detail-preview .solution-article")'),true,'Saved preview missing');
   await evaluate('document.querySelector("button[aria-label=\\"Đóng bản xem\\"]").click()');await pause();
   const screenshot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false},sessionId);await writeFile('docs/solution-detail-admin-820.png',Buffer.from(screenshot.data,'base64'));
-  await evaluate('const tab=[...document.querySelectorAll("button[role=tab]")].find(b=>b.textContent==="Cài đặt");tab.dispatchEvent(new MouseEvent("mousedown",{bubbles:true,button:0}));tab.click()');await pause();
-  await evaluate('const input=document.querySelector(".admin-editor-tab-panel[data-state=active] select");Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,"value").set.call(input,"DRAFT");input.dispatchEvent(new Event("change",{bubbles:true}));');await pause();
+  await evaluate('const inspector=document.querySelector(".admin-detail-inspector");if(!inspector.open)inspector.querySelector("summary").click()');await pause();
+  await evaluate('const input=document.querySelector(".admin-detail-publishing select");Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,"value").set.call(input,"DRAFT");input.dispatchEvent(new Event("change",{bubbles:true}));');await pause();
   await evaluate('[...document.querySelectorAll("button")].find(b=>b.textContent==="Lưu thay đổi").click()');await pause();
   await navigate(`/solutions/${detailSlug}`);assert.equal(await evaluate('!!document.querySelector(".neotek-not-found")'),true,'Draft leaked publicly');
   await navigate(`/admin/solutions/${detailSlug}`);await pause();
   assert.equal(await evaluate('document.querySelector(".admin-article-document").textContent.includes("Browser paragraph")'),true,'Save/reload lost article');
-  await evaluate('const tab=[...document.querySelectorAll("button[role=tab]")].find(b=>b.textContent==="Cài đặt");tab.dispatchEvent(new MouseEvent("mousedown",{bubbles:true,button:0}));tab.click()');await pause();
-  await evaluate('const input=document.querySelector(".admin-editor-tab-panel[data-state=active] select");Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,"value").set.call(input,"PUBLISHED");input.dispatchEvent(new Event("change",{bubbles:true}));');await pause();
+  await evaluate('const inspector=document.querySelector(".admin-detail-inspector");if(!inspector.open)inspector.querySelector("summary").click()');await pause();
+  await evaluate('const input=document.querySelector(".admin-detail-publishing select");Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,"value").set.call(input,"PUBLISHED");input.dispatchEvent(new Event("change",{bubbles:true}));');await pause();
   await evaluate('[...document.querySelectorAll("button")].find(b=>b.textContent==="Lưu thay đổi").click()');await pause();
   await navigate(`/solutions/${detailSlug}`);assert.equal(await evaluate('document.querySelector(".solution-article").textContent.includes("Browser paragraph")'),true,'Published page unavailable');
   assert.equal(await evaluate('!!document.querySelector(".solution-detail-final-cta .solution-article-cta")'),true,'Final page CTA missing');
@@ -451,5 +510,17 @@ try {
   await navigate(`/solutions/${detailSlug}`);await pause();
   assert.equal(await evaluate('!!document.querySelector(".solution-detail-toc a[href=\\"#nested-heading\\"]")&&!!document.querySelector(".solution-article blockquote h2#nested-heading")'),true,'Nested H2 missing from TOC');
   assert.equal(await evaluate('!!document.querySelector(".solution-detail-toc a[href=\\"#collision-2\\"]")&&document.querySelectorAll(".solution-article #collision").length===1'),true,'Fallback heading anchors collide');
-  console.log('PASS public/admin at 1440/1024/820, detail VI/EN at 390: existing regressions, Tiptap typing/Enter/slash/H2/block duplicate/reorder/delete/bold/list/upload/CTA/locales/atomic save validation/failure/undo/redo/saved preview, TOC/SEO/related/final CTA');
+  // Published discovery uses CMS availability; test-only records never touch the DB.
+  await evaluate('const original=window.fixtures.find(p=>p.slug==="nhan-su-tien-luong");for(let i=1;i<=3;i++){const copy=structuredClone(original);copy.id="discovery-test-"+i;copy.slug="discovery-test-"+i;copy.status=i===3?"DRAFT":"PUBLISHED";window.fixtures.push(copy)}sessionStorage.setItem("solutionDetailFixtures",JSON.stringify(window.fixtures))');
+  for(const language of ['vi','en']) for(const width of [1440,1024,820,390]) {
+    await call('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:false},sessionId);
+    await navigate((language==='en'?'/en':'')+'/solutions/'+detailSlug);await pause();
+    if(width<1200)await evaluate('document.querySelector(".solution-detail-toc summary").click()');
+    await evaluate('window.testClickTab(document.querySelector(".solution-detail-rail-tabs [role=tab][data-state=inactive]"))');await pause();
+    assert.equal(await evaluate('document.querySelectorAll(".solution-detail-discovery-link").length'),2,'Featured should exclude current article and draft');
+    assert(await evaluate('[...document.querySelectorAll(".solution-detail-discovery-link")].every(a=>a.pathname.startsWith('+JSON.stringify((language==='en'?'/en':'')+'/solutions/')+')&&!a.pathname.endsWith("discovery-test-3"))'),'Featured links must preserve locale/publication');
+    assert(await evaluate('document.documentElement.scrollWidth<=innerWidth+1'),'Featured causes overflow');
+    assert.equal(await evaluate('document.querySelectorAll(".solution-detail-related-card").length'),4,'Discovery removed bottom recommendations');
+  }
+  console.log('PASS public/admin at 1440/1024/820/390: single-locale metadata/article save/discard, responsive Inspector/toolbar/block overlays, rail tabs/published discovery, existing regressions, Tiptap typing/Enter/slash/H2/block duplicate/reorder/delete/bold/list/upload/CTA/locales/atomic save validation/failure/undo/redo/saved preview, TOC/SEO/related/final CTA');
 } finally {server?.close();chrome.kill();await rm(profile,{recursive:true,force:true,maxRetries:10,retryDelay:200}).catch(error=>console.error('Profile cleanup:',error.code))}
