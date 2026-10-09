@@ -1,4 +1,5 @@
 import './neotek-auth.css'
+import { useTranslation } from 'react-i18next'
 
 export default function AuthLayout({
   children,
@@ -7,6 +8,8 @@ export default function AuthLayout({
   description,
 }) {
   const isRegister = mode === 'register'
+  const { i18n } = useTranslation()
+  const en = i18n.language === 'en'
 
   return (
     <main className="auth-page">
@@ -16,7 +19,7 @@ export default function AuthLayout({
       <aside className="auth-visual">
         <div className="auth-visual-content">
           <a
-            href="/"
+            href={en ? '/en' : '/'}
             className="auth-visual-brand"
             aria-label="NeoTek"
           >
@@ -28,19 +31,19 @@ export default function AuthLayout({
 
           <div className="auth-visual-copy">
             <span className="auth-visual-eyebrow">
-              {isRegister
+              {en ? (isRegister ? 'Start with NeoTek' : 'Welcome back') : isRegister
                 ? 'Bắt đầu cùng NeoTek'
                 : 'Chào mừng trở lại'}
             </span>
 
             <p className="auth-visual-copy__title">
-              {isRegister
+              {en ? 'Your NeoTek consultation account.' : isRegister
                 ? 'Bắt đầu hành trình quản trị doanh nghiệp thông minh.'
                 : 'Quản trị doanh nghiệp tập trung. Vận hành hiệu quả hơn.'}
             </p>
 
             <p>
-              {isRegister
+              {en ? 'Sign in to request a consultation and view your appointments.' : isRegister
                 ? 'Trải nghiệm hệ sinh thái giải pháp quản trị doanh nghiệp NeoTek và kết nối mọi hoạt động trên một nền tảng.'
                 : 'Đăng nhập để tiếp tục sử dụng các giải pháp và dịch vụ quản trị doanh nghiệp của NeoTek.'}
             </p>

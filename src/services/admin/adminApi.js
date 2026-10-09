@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '../../config/api'
+import { httpRequest } from '../http'
 
 export class AdminApiError extends Error {
   constructor(status, message, details) {
@@ -35,39 +35,18 @@ async function request(
     signal,
   } = {},
 ) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    method,
-    credentials: 'include',
-    signal,
-    headers: {
-      ...(body ? { 'Content-Type': 'application/json' } : {}),
-      ...(csrfToken ? { 'x-csrf-token': csrfToken } : {}),
-    },
-    ...(body ? { body: JSON.stringify(body) } : {}),
-  })
-
-  const text = await response.text()
-
-  let payload
-
-  try {
-    payload = text ? JSON.parse(text) : null
-  } catch {
-    payload = null
+  try { return await httpRequest(path, { method, body, csrfToken, signal }) }
+  catch (error) {
+    if (!error.status) throw error
+    throw new AdminApiError(error.status, errorMessage(error.status, error.payload), error.payload)
   }
-
-  if (!response.ok) {
-    throw new AdminApiError(
-      response.status,
-      errorMessage(response.status, payload),
-      payload,
-    )
-  }
-
-  return payload
 }
 
 export const adminApi = {
+  listBookings: query => request('/admin/bookings?' + new URLSearchParams(query)),
+  getBooking: id => request('/admin/bookings/' + encodeURIComponent(id)),
+  transitionBooking: (id, body, csrfToken) => request('/admin/bookings/' + encodeURIComponent(id) + '/status', { method: 'POST', body, csrfToken }),
+  addBookingNote: (id, text, csrfToken) => request('/admin/bookings/' + encodeURIComponent(id) + '/notes', { method: 'POST', body: { text }, csrfToken }),
   listSolutionDetails: () => request('/admin/solutions'),
   getSolutionDetail: slug => request(`/admin/solutions/${encodeURIComponent(slug)}`),
   createSolutionDetail: (moduleKey, csrfToken) => request('/admin/solutions', { method: 'POST', body: { moduleKey }, csrfToken }),

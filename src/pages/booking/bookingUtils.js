@@ -40,15 +40,15 @@ export function timeMinutes(time) {
   return hours * 60 + minutes
 }
 
-export function rangeAvailable(range, events) {
+export function rangeAvailable(range, events, startMinute = START_MINUTE, endMinute = END_MINUTE) {
   return Number.isFinite(range.startMinutes) && Number.isFinite(range.endMinutes) &&
-    range.startMinutes >= START_MINUTE && range.endMinutes <= END_MINUTE && range.endMinutes > range.startMinutes &&
+    range.startMinutes >= startMinute && range.endMinutes <= endMinute && range.endMinutes > range.startMinutes &&
     !events.some((event) => event.date === range.date && range.startMinutes < event.endMinutes && range.endMinutes > event.startMinutes)
 }
 
-export function minuteAtPosition(clientY, top, height, includeEnd = false) {
-  const minutes = START_MINUTE + Math.floor((clientY - top) / height * (END_MINUTE - START_MINUTE) / 30) * 30
-  return Math.max(START_MINUTE, Math.min(includeEnd ? END_MINUTE : END_MINUTE - 30, minutes))
+export function minuteAtPosition(clientY, top, height, includeEnd = false, startMinute = START_MINUTE, endMinute = END_MINUTE) {
+  const minutes = startMinute + Math.floor((clientY - top) / height * (endMinute - startMinute) / 30) * 30
+  return Math.max(startMinute, Math.min(includeEnd ? endMinute : endMinute - 30, minutes))
 }
 
 export function dragSelection(date, anchor, cursor, events) {

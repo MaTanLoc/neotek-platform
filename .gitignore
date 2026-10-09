@@ -1,4 +1,6 @@
 node_modules/
+docs/booking-phase1c-browser/*.png
+docs/booking-phase1c1-browser/*.png
 dist/
 .tmp-*/
 *.log

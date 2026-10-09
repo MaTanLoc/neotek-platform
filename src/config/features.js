@@ -1,8 +1,6 @@
-// Build-time opt-in; incomplete public features fail closed by default.
+// Booking is enabled by default; set VITE_FEATURE_BOOKING=false to disable it.
 export const FEATURES = Object.freeze({
-  booking: import.meta.env.VITE_FEATURE_BOOKING === 'true',
-  // Customer authentication has no implementation; an env flag cannot enable it.
-  publicAuth: false,
+  booking: import.meta.env.VITE_FEATURE_BOOKING !== 'false',
 })
 
 export function isPublicHrefEnabled(href) {
@@ -13,7 +11,6 @@ export function isPublicHrefEnabled(href) {
     if (url.origin !== window.location.origin) return true
     const path = url.pathname.replace(/^\/en(?=\/|$)/, '').replace(/\/+$/, '')
     if (/^\/booking(?:\/|$)/.test(path)) return FEATURES.booking
-    if (/^\/(login|register|forgot-password)(?:\/|$)/.test(path)) return FEATURES.publicAuth
     return true
   } catch { return false }
 }

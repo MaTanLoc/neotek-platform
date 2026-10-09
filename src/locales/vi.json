@@ -52,8 +52,6 @@
     "available": "Có thể đặt lịch",
     "busy": "Không khả dụng",
     "selected": "Lịch đã chọn",
-    "mockAvailability": "Lịch trống mô phỏng để trải nghiệm. Đây không phải lịch thực tế của chuyên viên.",
-    "mockNotice": "Chế độ demo: thông tin chỉ lưu trong phiên trang này. Chưa gửi lời mời hoặc đặt lịch với chuyên viên.",
     "instructions": "Nhấn vùng trống hoặc kéo để chọn khoảng thời gian. Kéo lịch đã chọn để đổi giờ.",
     "keyboardHelp": "Bàn phím: Tab đến một ngày, dùng ↑ / ↓ chọn giờ, rồi Enter để chọn lịch.",
     "calendar": "Lịch trống tư vấn",
@@ -71,8 +69,8 @@
       "message": "Nội dung muốn trao đổi"
     },
     "confirm": "Xác nhận lịch tư vấn",
-    "successTitle": "Lịch tư vấn đã được xác nhận",
-    "successDescription": "Đã hoàn tất xác nhận mô phỏng. Khung giờ được giữ trong phiên hiện tại cho đến khi bạn rời trang.",
+    "successTitle": "Đã nhận yêu cầu đặt lịch",
+    "successDescription": "NeoTek sẽ xác nhận lịch hẹn qua email.",
     "bookAnother": "Đặt lịch khác",
     "home": "Về trang chủ"
   },

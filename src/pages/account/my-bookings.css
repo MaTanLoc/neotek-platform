@@ -1,0 +1,5 @@
+.customer-actions { display:flex; gap:var(--neotek-space-4); flex-wrap:wrap; margin-block:var(--neotek-space-4); align-items:center; }
+.customer-actions button { padding:var(--neotek-space-2) var(--neotek-space-3); border:1px solid var(--neotek-gray-300); border-radius:var(--neotek-radius-sm); background:var(--neotek-white); cursor:pointer; }
+.customer-actions button[aria-pressed="true"] { border-color:var(--neotek-color-primary); color:var(--neotek-color-primary); }
+.customer-booking-card { border:1px solid var(--neotek-gray-200); padding:var(--neotek-space-4); margin-block:var(--neotek-space-4); border-radius:var(--neotek-radius-md); overflow-wrap:anywhere; }
+.customer-booking-card h2 { font-size:var(--neotek-font-size-lg); }

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { DragDropVerticalIcon } from '@hugeicons/core-free-icons'
-import { dateKey, dragSelection, END_MINUTE, formatDate, minuteAtPosition, rangeAvailable, START_MINUTE, timeLabel } from './bookingUtils'
+import { dateKey, dragSelection, formatDate, minuteAtPosition, rangeAvailable as isRangeAvailable, timeLabel } from './bookingUtils'
 
-function DayColumn({ day, today, events, selectedSlot, duration, onSelect, t, language }) {
+function DayColumn({ day, today, events, selectedSlot, duration, onSelect, t, language, startMinute: START_MINUTE = 480, endMinute: END_MINUTE = 1080 }) {
+  const rangeAvailable = (range, items) => isRangeAvailable(range, items, START_MINUTE, END_MINUTE)
   const [cursor, setCursor] = useState(START_MINUTE)
   const [preview, setPreview] = useState(null)
   const columnRef = useRef(null)
@@ -24,15 +25,15 @@ function DayColumn({ day, today, events, selectedSlot, duration, onSelect, t, la
     if (document.activeElement !== columnRef.current || dragRef.current) return
     const scrollArea = columnRef.current.closest('.booking-calendar__scroll')
     const headerHeight = scrollArea.querySelector('.booking-calendar__corner').offsetHeight
-    const rowHeight = columnRef.current.offsetHeight / 20
+    const rowHeight = columnRef.current.offsetHeight / ((END_MINUTE - START_MINUTE) / 30)
     const top = headerHeight + (cursor - START_MINUTE) / 30 * rowHeight
     if (top < scrollArea.scrollTop + headerHeight) scrollArea.scrollTop = top - headerHeight
     else if (top + rowHeight > scrollArea.scrollTop + scrollArea.clientHeight) scrollArea.scrollTop = top + rowHeight - scrollArea.clientHeight
-  }, [cursor])
+  }, [cursor, START_MINUTE, END_MINUTE])
 
   const pointerMinute = (clientY, includeEnd = false) => {
     const bounds = columnRef.current.getBoundingClientRect()
-    return minuteAtPosition(clientY, bounds.top, bounds.height, includeEnd)
+    return minuteAtPosition(clientY, bounds.top, bounds.height, includeEnd, START_MINUTE, END_MINUTE)
   }
   const updatePreview = (clientY) => {
     const drag = dragRef.current
@@ -142,7 +143,7 @@ function DayColumn({ day, today, events, selectedSlot, duration, onSelect, t, la
   )
 }
 
-export default function WeekCalendar({ days, today, events, selectedSlot, duration, onSelect, t, language }) {
+export default function WeekCalendar({ days, today, events, selectedSlot, duration, onSelect, t, language, startMinute = 480, endMinute = 1080 }) {
   return (
     <section className={`booking-calendar booking-calendar--${days.length}-days`} aria-label={t('booking.calendar')}>
       <div className="booking-calendar__scroll" tabIndex={0} aria-label={t('booking.timeline')}>
@@ -151,8 +152,8 @@ export default function WeekCalendar({ days, today, events, selectedSlot, durati
           {days.map((day) => <div className={`booking-calendar__day-heading${dateKey(day) === dateKey(today) ? ' is-today' : ''}`} key={dateKey(day)}>
             <span>{formatDate(day, language, { weekday: 'short' })}</span><strong>{day.getDate()}</strong>
           </div>)}
-          <div className="booking-time-axis" aria-hidden="true">{Array.from({ length: 11 }, (_, index) => <span key={index} style={{ top: `${index * 10}%` }}>{timeLabel(START_MINUTE + index * 60)}</span>)}</div>
-          {days.map((day) => <DayColumn key={dateKey(day)} {...{ day, today, duration, selectedSlot, onSelect, t, language }} events={events.filter((event) => event.date === dateKey(day))} />)}
+          <div className="booking-time-axis" aria-hidden="true">{Array.from({ length: Math.ceil((endMinute - startMinute) / 60) + 1 }, (_, index) => <span key={index} style={{ top: `${Math.min(index * 60 / (endMinute - startMinute), 1) * 100}%` }}>{timeLabel(Math.min(startMinute + index * 60, endMinute))}</span>)}</div>
+          {days.map((day) => <DayColumn key={dateKey(day)} {...{ day, today, duration, selectedSlot, onSelect, t, language, startMinute, endMinute }} events={events.filter((event) => event.date === dateKey(day))} />)}
         </div>
       </div>
     </section>

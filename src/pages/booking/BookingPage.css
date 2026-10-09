@@ -169,3 +169,8 @@
   .booking-dialog *, .booking-dialog *::before, .booking-dialog *::after { scroll-behavior: auto; transition: none; }
   .booking-page *, .booking-page *::before, .booking-page *::after { scroll-behavior: auto; transition: none; }
 }
+
+.booking-form__field select { width:100%; min-width:0; padding:var(--neotek-space-3); border:1px solid var(--neotek-gray-300); border-radius:var(--neotek-radius-sm); background:var(--neotek-white); color:var(--neotek-color-text-primary); }
+.booking-flow-actions { display:flex; flex-wrap:wrap; gap:var(--neotek-space-3); margin-top:var(--neotek-space-4); }
+.booking-dialog [role="alert"] { color:var(--neotek-color-error); overflow-wrap:anywhere; }
+.booking-dialog [role="timer"] { padding:var(--neotek-space-3); background:var(--neotek-color-primary-soft); border-radius:var(--neotek-radius-sm); }

@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { FEATURES } from "./config/features";
 import { useTranslation } from "react-i18next";
 import SEO from "./components/common/SEO/SEO";
+import CustomerProvider from './customer/CustomerProvider';
 
 import { SmoothScroll, SmoothScrollRouteSync } from "./components/common/SmoothScroll/SmoothScroll";
 
@@ -15,6 +16,9 @@ const SolutionDetailPage = lazy(() => import("./pages/solutions/SolutionDetailPa
 const Login = lazy(() => import("./pages/auth/Login"));
 const Register = lazy(() => import("./pages/auth/Register"));
 const BookingPage = lazy(() => import("./pages/booking/BookingPage"));
+const VerifyEmail = lazy(() => import('./pages/auth/VerifyEmail'));
+const PasswordRecovery = lazy(() => import('./pages/auth/PasswordRecovery'));
+const MyBookings = lazy(() => import('./pages/account/MyBookings'));
 const NotFoundPage = lazy(() => import("./pages/not-found/NotFoundPage"));
 
 function RouteSEO() {
@@ -22,7 +26,7 @@ function RouteSEO() {
   const { t } = useTranslation();
   const path = pathname.replace(/\/+$/, "") || "/";
   const basePath = path.replace(/^\/en(?=\/|$)/, "") || "/";
-  if (basePath.startsWith('/admin')) return <SEO robots="noindex, nofollow" />;
+  if (basePath.startsWith('/admin') || basePath.startsWith('/account') || ['/verify-email', '/forgot-password', '/reset-password'].includes(basePath)) return <SEO robots="noindex, nofollow" />;
   const pageKey = ({ "/": "home", "/solutions": "solutions", "/booking": "booking", "/login": "login", "/register": "register" })[basePath];
   return ["/", "/solutions", "/booking", "/login", "/register"].includes(basePath)
     ? <SEO title={t(`seo.${pageKey}.title`)} description={t(`seo.${pageKey}.description`)} robots={["/login", "/register"].includes(basePath) ? "noindex, follow" : "index, follow"} />
@@ -32,7 +36,7 @@ function RouteSEO() {
 export default function App() {
   return (
     <BrowserRouter>
-
+      <CustomerProvider>
         <SmoothScroll>
           <div id="smooth-wrapper">
             <div id="smooth-content">
@@ -56,11 +60,19 @@ export default function App() {
                 {FEATURES.booking && <Route path="/en/booking" element={<BookingPage />} />}
 
                 {/* AUTH */}
-                {FEATURES.publicAuth && <Route path="/login" element={<Login />} />}
-                {FEATURES.publicAuth && <Route path="/register" element={<Register />} />}
+                <Route path="/forgot-password" element={<PasswordRecovery key="forgot" />} />
+                <Route path="/en/forgot-password" element={<PasswordRecovery key="forgot-en" />} />
+                <Route path="/reset-password" element={<PasswordRecovery key="reset" reset />} />
+                <Route path="/en/reset-password" element={<PasswordRecovery key="reset-en" reset />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
+                <Route path="/en/verify-email" element={<VerifyEmail />} />
+                <Route path="/account/bookings" element={<MyBookings />} />
+                <Route path="/en/account/bookings" element={<MyBookings />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
-                {FEATURES.publicAuth && <Route path="/en/login" element={<Login />} />}
-                {FEATURES.publicAuth && <Route path="/en/register" element={<Register />} />}
+                <Route path="/en/login" element={<Login />} />
+                <Route path="/en/register" element={<Register />} />
 
                 {/* FALLBACK */}
                 <Route path="*" element={<NotFoundPage />} />
@@ -70,6 +82,7 @@ export default function App() {
           </div>
         </SmoothScroll>
 
+      </CustomerProvider>
     </BrowserRouter>
   );
 }

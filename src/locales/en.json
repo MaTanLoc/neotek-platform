@@ -52,8 +52,6 @@
     "available": "Available",
     "busy": "Unavailable",
     "selected": "Your selection",
-    "mockAvailability": "Sample availability for demonstration. This is not a live consultant calendar.",
-    "mockNotice": "Demo only: information stays in this page session. No meeting is sent or booked with a consultant.",
     "instructions": "Click an open time or drag to select a range. Drag your selected block to change its time.",
     "keyboardHelp": "Keyboard: Tab to a day, use ↑ / ↓ to change time, then Enter to select.",
     "calendar": "Consultation availability calendar",
@@ -71,8 +69,8 @@
       "message": "What would you like to discuss?"
     },
     "confirm": "Confirm consultation",
-    "successTitle": "Your consultation is confirmed",
-    "successDescription": "The demo confirmation is complete. Your selected time is reserved locally until you leave this page.",
+    "successTitle": "Booking request received",
+    "successDescription": "NeoTek will confirm your appointment by email.",
     "bookAnother": "Book another time",
     "home": "Back to home"
   },

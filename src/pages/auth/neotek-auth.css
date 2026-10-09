@@ -90,15 +90,16 @@
   min-width: 0;
   height: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: #fff;
 }
 
 .auth-form-wrapper {
   width: min(100%, 620px);
-  max-height: 100%;
+  margin-block: auto;
   padding: 24px 32px;
   display: flex;
   flex-direction: column;
