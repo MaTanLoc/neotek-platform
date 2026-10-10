@@ -8,6 +8,6 @@ export function safeReturn(value, language) {
   return [`${prefix}/booking`, `${prefix}/account/bookings`].includes(value) ? value : `${prefix}/booking`
 }
 export function statusLabel(status, language) {
-  const values = { PENDING: ['Chờ xác nhận', 'Pending'], CONFIRMED: ['Đã xác nhận', 'Confirmed'], CANCELLED: ['Đã hủy', 'Cancelled'], COMPLETED: ['Hoàn tất', 'Completed'], NO_SHOW: ['Vắng mặt', 'No show'] }
+  const values = { PENDING: ['Chờ xác nhận', 'Pending'], CONFIRMED: ['Đã xác nhận', 'Confirmed'], CANCELLED: ['Đã hủy', 'Cancelled'], COMPLETED: ['Hoàn thành', 'Completed'], NO_SHOW: ['Vắng mặt', 'No show'] }
   return values[status]?.[language === 'en' ? 1 : 0] ?? status
 }

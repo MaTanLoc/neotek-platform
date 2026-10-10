@@ -12,6 +12,10 @@ export default function CustomerProvider({ children }) {
   useEffect(() => { restore().catch(() => {}) }, [restore])
   useEffect(() => { const refresh = () => restore().catch(() => {}); window.addEventListener('focus', refresh); return () => window.removeEventListener('focus', refresh) }, [restore])
   const login = async body => { const result = await customerApi.login(body); setCustomer(result.customer); setStatus('ready'); return result.customer }
-  const logout = async () => { await customerApi.logout(); setCustomer(null); setStatus('ready') }
-  return <CustomerContext.Provider value={{ customer, status, restore, login, logout }}>{children}</CustomerContext.Provider>
+  const googleLogin = async credential => { await customerApi.googleLogin(credential); return restore() }
+  const logout = async () => {
+    await customerApi.logout(); setCustomer(null); setStatus('ready')
+    try { window.google?.accounts?.id?.disableAutoSelect?.() } catch { /* GIS must not prevent a completed NeoTek logout. */ }
+  }
+  return <CustomerContext.Provider value={{ customer, status, restore, login, googleLogin, logout }}>{children}</CustomerContext.Provider>
 }

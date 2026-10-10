@@ -3,6 +3,12 @@ export const FEATURES = Object.freeze({
   booking: import.meta.env.VITE_FEATURE_BOOKING !== 'false',
 })
 
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
+export const GOOGLE_LOGIN = Object.freeze({
+  enabled: import.meta.env.VITE_FEATURE_GOOGLE_LOGIN === 'true' && /^[a-zA-Z0-9_-]+\.apps\.googleusercontent\.com$/.test(googleClientId),
+  clientId: googleClientId,
+})
+
 export function isPublicHrefEnabled(href) {
   if (!href) return true
   try {

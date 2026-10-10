@@ -70,7 +70,11 @@ export function SmoothScrollRouteSync() {
 }
 
 export function SmoothScroll({ children }) {
+   const { pathname } = useLocation()
+   // Scheduling and account lists use native page scrolling, including touch and keyboard navigation.
+   const nativeScroll = /^\/(?:en\/)?(?:booking|account\/bookings)(?:\/|$)/.test(pathname) || /^\/admin\/bookings(?:\/|$)/.test(pathname)
    useLayoutEffect(() => {
+      if (nativeScroll) return
       const smoother = ScrollSmoother.create({
          wrapper: '#smooth-wrapper',
          content: '#smooth-content',
@@ -82,7 +86,7 @@ export function SmoothScroll({ children }) {
       return () => {
          smoother.kill()
       }
-   }, [])
+   }, [nativeScroll])
 
    return children
 }

@@ -12,7 +12,6 @@ import MiniCalendar from './MiniCalendar'
 import MonthCalendar from './MonthCalendar'
 import WeekCalendar from './WeekCalendar'
 import BookingDialog from './BookingDialog'
-import { Link } from 'react-router-dom'
 import useBookingFlow, { holdSlot } from './useBookingFlow'
 import { customerApi } from '../../services/customer/customerApi'
 import { authError } from '../../customer/customerCopy'
@@ -36,6 +35,7 @@ export default function BookingPage() {
   const flow = useBookingFlow(i18n.language)
   const [availability, setAvailability] = useState(null)
   const [availabilityError, setAvailabilityError] = useState('')
+  const [mine, setMine] = useState({ customerId:null, items:[] })
   const [feedback, setFeedback] = useState('')
   const returnFocusRef = useRef(null)
   const resumedIntent = useRef(null)
@@ -49,6 +49,24 @@ export default function BookingPage() {
   const events = []
   const policy = flow.options?.policy
   const own = flow.hold && flow.seconds > 0 ? flow.hold : null
+  const ownBookings = mine.customerId === flow.customer?.customerId ? mine.items.filter(b => b.status !== 'CANCELLED').map(b => ({ ...holdSlot(b), id:b.id, solution:b.solution, status:b.status })) : []
+  useEffect(() => {
+    const customerId = flow.customer?.customerId, controller = new AbortController()
+    if (!customerId) return
+    const load = async () => {
+      const items = []
+      let page = 1, result
+      do {
+        result = await customerApi.bookings(page++, null, { from, to }, controller.signal)
+        items.push(...result.items)
+      } while (items.length < result.total && result.items.length && page <= 10000)
+      if (!controller.signal.aborted) setMine({ customerId, items })
+    }
+    const refresh = () => load().catch(error => { if (error.name !== 'AbortError') setMine({ customerId, items:[] }) })
+    refresh()
+    const timer = setInterval(refresh, 30000)
+    return () => { controller.abort(); clearInterval(timer) }
+  }, [flow.customer?.customerId, from, to, flow.revision])
   useEffect(() => { if (policy && !selectedSlot && !policy.durations.includes(duration)) setDuration(policy.durations[0]) }, [policy, selectedSlot, duration])
   for (const day of viewMode === 'month' ? monthDays(currentDate) : days) {
     const key = dateKey(day)
@@ -109,7 +127,7 @@ export default function BookingPage() {
     setFeedback('')
     setViewMode(nextView === 'workWeek' && (date.getDay() === 0 || date.getDay() === 6) ? 'week' : nextView)
   }
-  const navigatePeriod = (offset) => navigateDate(viewMode === 'month' ? changeMonth(currentDate, offset) : addDays(selectedDate, offset * (isMobile ? 1 : 7)))
+  const navigatePeriod = (offset) => navigateDate(viewMode === 'month' ? changeMonth(currentDate, offset) : addDays(isMobile ? selectedDate : monday, offset * (isMobile ? 1 : 7)))
   const changeView = async (view) => {
     if (dialogOpen && !await clearSelection()) return
     setViewMode(view)
@@ -137,12 +155,14 @@ export default function BookingPage() {
     }
     setFeedback('')
   }
-  const submitBooking = async form => {
-    if (await flow.finalize(form)) setSubmitState('success')
+  const submitBooking = async (form, validate) => {
+    const activeHold = matchesHold && flow.seconds > 0 ? flow.hold : await acquire()
+    if (!activeHold || !validate()) return
+    if (await flow.finalize(form, activeHold)) setSubmitState('success')
   }
   const acquire = async () => {
     if (!selectedSlot || !flow.options?.policy.durations.includes(selectedSlot.endMinutes - selectedSlot.startMinutes)) { flow.setError(language === 'en' ? 'Choose a supported duration.' : 'Vui lòng chọn thời lượng được hỗ trợ.'); return }
-    await flow.acquire(selectedSlot)
+    return flow.acquire(selectedSlot)
   }
   const matchesHold = flow.hold && selectedSlot && flow.hold.moduleKey === flow.moduleKey && JSON.stringify(holdSlot(flow.hold)) === JSON.stringify(selectedSlot)
   useEffect(() => {
@@ -156,12 +176,34 @@ export default function BookingPage() {
 
   return (
     <div className="neotek-site-shell booking-page">
-      {createPortal(<NeotekNavbar />, document.body)}
+      {createPortal(<NeotekNavbar beforeCustomerLogout={async () => !flow.busy && await clearSelection()} />, document.body)}
       <main className="booking-main">
         <NeotekContainer><header className="booking-header"><p className="neotek-eyebrow">{t('booking.eyebrow')}</p><h1>{t('booking.title')}</h1><p>{t('booking.description')}</p></header></NeotekContainer>
         <div className="booking-page__workspace">
           <div className="booking-workspace">
-            <div className="booking-toolbar">
+            <div className="booking-workspace__body">
+              <aside className="booking-sidebar" aria-label={t('booking.preferences')}>
+                <details className="booking-sidebar__calendar" open={!isMobile}>
+                  <summary><HugeiconsIcon icon={Calendar03Icon} size={18} color="currentColor" strokeWidth={1.6} aria-hidden="true" />{t('booking.chooseDate')}</summary>
+                  <MiniCalendar {...{ month, currentDate, selectedDate, today, t, language }} onMonthChange={setMonth} onSelect={navigateDate} />
+                </details>
+                <fieldset className="booking-duration"><legend><HugeiconsIcon icon={Clock01Icon} size={16} color="currentColor" strokeWidth={1.6} aria-hidden="true" />{t('booking.duration')}</legend>
+                  <div>{(policy?.durations ?? [30, 45, 60]).map((value) => <label key={value} className={duration === value ? 'is-selected' : ''}><input type="radio" name="duration" value={value} checked={duration === value} onChange={() => changeDuration(value)} /><span>{value} {language === 'en' ? 'min' : 'phút'}</span></label>)}</div>
+                  {![30, 45, 60].includes(duration) && <p className="booking-duration__custom">{t('booking.customDuration', { count: duration })}</p>}
+                </fieldset>
+                <section className="booking-sidebar__legend" aria-label={language === 'en' ? 'Calendar legend' : 'Chú thích lịch'}>
+                  <h2>{language === 'en' ? 'Calendar legend' : 'Chú thích lịch'}</h2>
+                  <div className="booking-legend">
+                    <span><i className="booking-legend__available" />{t('booking.available')}</span>
+                    <span><i className="booking-legend__busy" />{language === 'en' ? 'Booked / unavailable' : 'Đã đặt / không khả dụng'}</span>
+                    <span><i className="booking-legend__selected" />{t('booking.selected')}</span>
+                    <span><i className="booking-legend__held" />{language === 'en' ? 'Your active hold' : 'Chỗ đang giữ của bạn'}</span>
+                  </div>
+                  <p className="booking-timezone"><HugeiconsIcon icon={Globe02Icon} size={14} color="currentColor" strokeWidth={1.6} aria-hidden="true" />{TIME_ZONE} · GMT+7</p>
+                </section>
+              </aside>
+              <div className="booking-calendar-area" id="booking-view-panel" role="tabpanel" aria-labelledby={`booking-tab-${viewMode}`} tabIndex={0}>
+                <div className="booking-toolbar">
               <div className="booking-toolbar__navigation">
                 <NeotekButton variant="secondary" onClick={() => navigateDate(todayInTimezone())}>{t('booking.today')}</NeotekButton>
                 <button type="button" className="booking-icon-button" aria-label={t(`booking.previous${navUnit}`)} onClick={() => navigatePeriod(-1)}><HugeiconsIcon icon={ArrowLeft01Icon} size={20} color="currentColor" strokeWidth={1.6} /></button>
@@ -179,29 +221,11 @@ export default function BookingPage() {
                 }}>{t(`booking.${view}`)}</button>)}
               </div>
             </div>
-            <div className="booking-workspace__body">
-              <aside className="booking-sidebar" aria-label={t('booking.preferences')}>
-                <details className="booking-sidebar__calendar" open={!isMobile}>
-                  <summary><HugeiconsIcon icon={Calendar03Icon} size={18} color="currentColor" strokeWidth={1.6} aria-hidden="true" />{t('booking.chooseDate')}</summary>
-                  <MiniCalendar {...{ month, currentDate, selectedDate, today, t, language }} onMonthChange={setMonth} onSelect={navigateDate} />
-                </details>
-                <fieldset className="booking-duration"><legend><HugeiconsIcon icon={Clock01Icon} size={16} color="currentColor" strokeWidth={1.6} aria-hidden="true" />{t('booking.duration')}</legend>
-                  <div>{(policy?.durations ?? [30, 45, 60]).map((value) => <label key={value} className={duration === value ? 'is-selected' : ''}><input type="radio" name="duration" value={value} checked={duration === value} onChange={() => changeDuration(value)} /><span>{t('booking.minutes', { count: value })}</span></label>)}</div>
-                  {![30, 45, 60].includes(duration) && <p className="booking-duration__custom">{t('booking.customDuration', { count: duration })}</p>}
-                </fieldset>
-                <div className="booking-timezone"><HugeiconsIcon icon={Globe02Icon} size={16} color="currentColor" strokeWidth={1.6} aria-hidden="true" /><div><strong>{t('booking.timezone')}</strong><span>{TIME_ZONE}</span><span>{t('booking.gmt')}</span></div></div>
-                <div className="booking-legend"><span><i className="booking-legend__available" />{t('booking.available')}</span><span><i className="booking-legend__busy" />{t('booking.busy')}</span></div>
-<label className="booking-form__field">{flow.copy.solution}<select value={flow.moduleKey} onChange={event => { flow.setModuleKey(event.target.value); if (selectedSlot) flow.saveIntent(selectedSlot, event.target.value) }}><option value="">{flow.copy.choose}</option>{flow.options?.modules.map(item => <option key={item.key} value={item.key}>{item[language === 'en' ? 'en' : 'vi']}</option>)}</select></label>
-                <p className="booking-sidebar__notice">{flow.copy.real}</p>
-                <Link to={getLocalizedPath('/account/bookings', language)}>{flow.copy.bookings}</Link>
-                {flow.customer ? <NeotekButton variant="secondary" onClick={async () => { if (await clearSelection()) await flow.logout().catch(error => flow.setError(authError(error, flow.copy))) }}>{flow.copy.logout}</NeotekButton> : <Link to={getLocalizedPath('/login', language)}>{flow.copy.login}</Link>}
-                {(flow.error || availabilityError) && <p role="alert">{flow.error || availabilityError} <button onClick={flow.retry}>{flow.copy.retry}</button></p>}
-                {!availability && !availabilityError && <p role="status">{flow.copy.loading}</p>}
-                {flow.hold && !dialogOpen && <button type="button" onClick={() => { const range = holdSlot(flow.hold); setSelectedSlot(range); setSelectedDate(parseDate(range.date)); setCurrentDate(parseDate(range.date)); setDialogOpen(true) }}>{flow.copy.hold} {Math.floor(flow.seconds / 60)}:{String(flow.seconds % 60).padStart(2, '0')}</button>}
-              </aside>
-              <div className="booking-calendar-area" id="booking-view-panel" role="tabpanel" aria-labelledby={`booking-tab-${viewMode}`} tabIndex={0}>
+                {(flow.error || availabilityError) && <p className="booking-calendar-status" role="alert">{flow.error || availabilityError} <button type="button" onClick={flow.retry}>{flow.copy.retry}</button></p>}
+                {!availability && !availabilityError && <p className="booking-calendar-status" role="status">{flow.copy.loading}</p>}
+                {flow.hold && !dialogOpen && <button className="booking-resume-hold" type="button" onClick={() => { const range = holdSlot(flow.hold); setSelectedSlot(range); setSelectedDate(parseDate(range.date)); setCurrentDate(parseDate(range.date)); setDialogOpen(true) }}>{flow.copy.hold} {Math.floor(flow.seconds / 60)}:{String(flow.seconds % 60).padStart(2, '0')}</button>}
                 <p className="booking-calendar-help">{t(viewMode === 'month' ? 'booking.monthInstructions' : 'booking.instructions')}</p>
-                {viewMode === 'month' ? <MonthCalendar {...{ currentDate, selectedDate, today, events, t, language }} onSelect={(date) => navigateDate(date, 'workWeek')} /> : <WeekCalendar {...{ days, today, events, selectedSlot, duration, t, language }} startMinute={policy?.startMinute} endMinute={policy?.endMinute} onSelect={selectSlot} />}
+                {viewMode === 'month' ? <MonthCalendar {...{ currentDate, selectedDate, today, events, ownBookings, t, language }} onSelect={(date) => navigateDate(date, 'workWeek')} /> : <WeekCalendar {...{ days, today, events, ownBookings, selectedSlot, duration, t, language }} heldSlot={own ? holdSlot(own) : null} startMinute={policy?.startMinute} endMinute={policy?.endMinute} onSelect={selectSlot} />}
                 <p className={`booking-feedback${feedback ? ' has-error' : ''}`} role="status">{feedback ? t(`booking.${feedback}`) : t(viewMode === 'month' ? 'booking.monthKeyboardHelp' : 'booking.keyboardHelp')}</p>
               </div>
             </div>
@@ -209,7 +233,7 @@ export default function BookingPage() {
         </div>
       </main>
       <NeotekFooter showCta={false} demoHref={getLocalizedPath('/booking', language)} />
-      {selectedSlot && <BookingDialog {...{ submitState, returnFocusRef, t, language }} flow={flow} matchesHold={matchesHold} onAcquire={acquire} onChangeTime={() => setDialogOpen(false)} open={dialogOpen} slot={selectedSlot} onSubmit={submitBooking} onClose={closeDialog} onBookAnother={clearSelection} homePath={getLocalizedPath('/', language)} />}
+      {selectedSlot && <BookingDialog {...{ submitState, returnFocusRef, t, language }} flow={flow} matchesHold={matchesHold} onChangeTime={() => setDialogOpen(false)} open={dialogOpen} slot={selectedSlot} onSubmit={submitBooking} onClose={closeDialog} onBookAnother={clearSelection} homePath={getLocalizedPath('/', language)} />}
     </div>
   )
 }

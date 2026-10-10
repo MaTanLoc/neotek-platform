@@ -424,6 +424,20 @@
   gap: var(--neotek-space-4);
 }
 
+.neotek-navbar__auth-slot { display:flex; align-items:center; justify-content:center; width:76px; flex-shrink:0; min-height:40px; }
+.neotek-navbar__auth-placeholder { display:block; width:40px; height:40px; }
+.neotek-navbar__account { display:inline-flex; align-items:center; gap:var(--neotek-space-1); padding:var(--neotek-space-1); border:0; border-radius:var(--neotek-radius-full); background:transparent; color:var(--neotek-color-text-primary); cursor:pointer; }
+.neotek-navbar__avatar { display:inline-grid; place-items:center; width:34px; height:34px; flex-shrink:0; border-radius:var(--neotek-radius-full); background:var(--neotek-color-primary-soft); color:var(--neotek-color-primary); font-size:var(--neotek-font-size-sm); font-weight:var(--neotek-font-weight-semibold); }
+.neotek-navbar__account:focus-visible { outline:2px solid var(--neotek-color-border-focus); outline-offset:2px; }
+.neotek-account-menu { z-index:2100; width:min(280px, calc(100vw - 32px)); padding:var(--neotek-space-2); border:1px solid var(--neotek-color-border); border-radius:var(--neotek-radius-md); background:var(--neotek-color-background); color:var(--neotek-color-text-primary); box-shadow:var(--neotek-shadow-lg); }
+.neotek-account-menu__header { display:grid; gap:var(--neotek-space-1); padding:var(--neotek-space-2); font-size:var(--neotek-font-size-sm); overflow-wrap:anywhere; }
+.neotek-account-menu__header span { color:var(--neotek-color-text-secondary); font-size:var(--neotek-font-size-xs); }
+.neotek-account-menu__item { display:flex; align-items:center; min-height:40px; padding:var(--neotek-space-2); border-radius:var(--neotek-radius-sm); color:inherit; text-decoration:none; font-size:var(--neotek-font-size-sm); outline:none; cursor:pointer; }
+.neotek-account-menu__item[data-highlighted] { background:var(--neotek-color-primary-soft); color:var(--neotek-color-primary); }
+.neotek-account-menu__item[data-disabled] { opacity:.6; pointer-events:none; }
+.neotek-account-menu__separator { height:1px; margin:var(--neotek-space-1) 0; background:var(--neotek-color-border); }
+.neotek-account-menu__error { padding:var(--neotek-space-2); color:var(--neotek-color-error); font-size:var(--neotek-font-size-sm); }
+
 .neotek-navbar__language-dropdown {
   position: relative;
   display: inline-flex;
@@ -788,13 +802,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 42px;
+    width: 72px;
     height: 42px;
     padding: 0;
     border: none;
     background: transparent;
     color: var(--neotek-color-text-primary);
     cursor: pointer;
+    gap: var(--neotek-space-2);
   }
 
   .neotek-navbar__cta:hover {

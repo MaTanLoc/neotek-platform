@@ -43,6 +43,9 @@ async function request(
 }
 
 export const adminApi = {
+  getGoogleCalendar: () => request('/admin/integrations/google/calendar'),
+  connectGoogleCalendar: csrfToken => request('/admin/integrations/google/calendar/connect', { method: 'POST', csrfToken }),
+  createGoogleMeet: (id, csrfToken) => request('/admin/bookings/' + encodeURIComponent(id) + '/google-meet', { method: 'POST', csrfToken }),
   listBookings: query => request('/admin/bookings?' + new URLSearchParams(query)),
   getBooking: id => request('/admin/bookings/' + encodeURIComponent(id)),
   transitionBooking: (id, body, csrfToken) => request('/admin/bookings/' + encodeURIComponent(id) + '/status', { method: 'POST', body, csrfToken }),

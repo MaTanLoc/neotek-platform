@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { DragDropVerticalIcon } from '@hugeicons/core-free-icons'
 import { dateKey, dragSelection, formatDate, minuteAtPosition, rangeAvailable as isRangeAvailable, timeLabel } from './bookingUtils'
+import { statusLabel } from '../../customer/customerCopy'
 
-function DayColumn({ day, today, events, selectedSlot, duration, onSelect, t, language, startMinute: START_MINUTE = 480, endMinute: END_MINUTE = 1080 }) {
+function DayColumn({ day, today, events, ownBookings, selectedSlot, heldSlot, duration, onSelect, t, language, startMinute: START_MINUTE = 480, endMinute: END_MINUTE = 1080 }) {
   const rangeAvailable = (range, items) => isRangeAvailable(range, items, START_MINUTE, END_MINUTE)
   const [cursor, setCursor] = useState(START_MINUTE)
   const [preview, setPreview] = useState(null)
@@ -13,6 +14,7 @@ function DayColumn({ day, today, events, selectedSlot, duration, onSelect, t, la
   const key = dateKey(day)
   const selected = selectedSlot?.date === key
   const visibleRange = preview || (selected ? selectedSlot : null)
+  const isHeld = heldSlot?.date === key && visibleRange?.startMinutes === heldSlot.startMinutes && visibleRange?.endMinutes === heldSlot.endMinutes
   const position = (range) => ({ top: `${(range.startMinutes - START_MINUTE) / (END_MINUTE - START_MINUTE) * 100}%`, height: `${(range.endMinutes - range.startMinutes) / (END_MINUTE - START_MINUTE) * 100}%` })
 
   useEffect(() => () => {
@@ -23,12 +25,10 @@ function DayColumn({ day, today, events, selectedSlot, duration, onSelect, t, la
 
   useEffect(() => {
     if (document.activeElement !== columnRef.current || dragRef.current) return
-    const scrollArea = columnRef.current.closest('.booking-calendar__scroll')
-    const headerHeight = scrollArea.querySelector('.booking-calendar__corner').offsetHeight
     const rowHeight = columnRef.current.offsetHeight / ((END_MINUTE - START_MINUTE) / 30)
-    const top = headerHeight + (cursor - START_MINUTE) / 30 * rowHeight
-    if (top < scrollArea.scrollTop + headerHeight) scrollArea.scrollTop = top - headerHeight
-    else if (top + rowHeight > scrollArea.scrollTop + scrollArea.clientHeight) scrollArea.scrollTop = top + rowHeight - scrollArea.clientHeight
+    const top = columnRef.current.getBoundingClientRect().top + (cursor - START_MINUTE) / 30 * rowHeight
+    if (top < 88) window.scrollBy(0, top - 88)
+    else if (top + rowHeight > window.innerHeight - 24) window.scrollBy(0, top + rowHeight - window.innerHeight + 24)
   }, [cursor, START_MINUTE, END_MINUTE])
 
   const pointerMinute = (clientY, includeEnd = false) => {
@@ -51,13 +51,10 @@ function DayColumn({ day, today, events, selectedSlot, duration, onSelect, t, la
   const autoScroll = () => {
     const drag = dragRef.current
     if (!drag) return
-    const scrollArea = columnRef.current.closest('.booking-calendar__scroll')
-    const bounds = scrollArea.getBoundingClientRect()
-    const headerHeight = scrollArea.querySelector('.booking-calendar__corner').offsetHeight
-    const previousTop = scrollArea.scrollTop
-    if (drag.moved && drag.clientY > bounds.bottom - 24) scrollArea.scrollTop += 8
-    else if (drag.moved && drag.clientY < bounds.top + headerHeight + 24) scrollArea.scrollTop -= 8
-    if (scrollArea.scrollTop !== previousTop) updatePreview(drag.clientY)
+    const previousTop = window.scrollY
+    if (drag.moved && drag.clientY > window.innerHeight - 24) window.scrollBy(0, 8)
+    else if (drag.moved && drag.clientY < 96) window.scrollBy(0, -8)
+    if (window.scrollY !== previousTop) updatePreview(drag.clientY)
     frameRef.current = requestAnimationFrame(autoScroll)
   }
   const startDrag = (event, mode) => {
@@ -123,8 +120,11 @@ function DayColumn({ day, today, events, selectedSlot, duration, onSelect, t, la
       {events.map((event) => <div key={`${event.startMinutes}-${event.endMinutes}`} className="booking-event booking-event--busy" aria-disabled="true" style={position(event)}>
         <span>{t('booking.busy')}</span><small>{timeLabel(event.startMinutes)} – {timeLabel(event.endMinutes)}</small>
       </div>)}
+      {ownBookings.map(b => <a key={b.id} className="booking-event booking-event--own" href={`${language === 'en' ? '/en' : ''}/account/bookings`} style={position(b)} title={`${b.solution} · ${timeLabel(b.startMinutes)}–${timeLabel(b.endMinutes)} · ${statusLabel(b.status, language)}`}>
+        <span><strong>{b.solution}</strong><em>{statusLabel(b.status, language)}</em></span><small>{timeLabel(b.startMinutes)} – {timeLabel(b.endMinutes)}</small>
+      </a>)}
       {visibleRange && <button type="button"
-        className={`booking-event booking-event--selected${preview ? ' is-preview' : ''}${preview && !rangeAvailable(preview, events) ? ' is-conflict' : ''}`}
+        className={`booking-event booking-event--selected${isHeld ? ' is-held' : ''}${preview ? ' is-preview' : ''}${preview && !rangeAvailable(preview, events) ? ' is-conflict' : ''}`}
         style={position(visibleRange)} aria-label={t('booking.moveSelection', { start: timeLabel(visibleRange.startMinutes), end: timeLabel(visibleRange.endMinutes) })}
         onPointerDown={(event) => startDrag(event, 'move')} {...pointerHandlers}
         onClick={(event) => { if (event.detail === 0 && selectedSlot) onSelect(selectedSlot, event.currentTarget) }}
@@ -143,17 +143,17 @@ function DayColumn({ day, today, events, selectedSlot, duration, onSelect, t, la
   )
 }
 
-export default function WeekCalendar({ days, today, events, selectedSlot, duration, onSelect, t, language, startMinute = 480, endMinute = 1080 }) {
+export default function WeekCalendar({ days, today, events, ownBookings = [], selectedSlot, heldSlot, duration, onSelect, t, language, startMinute = 480, endMinute = 1080 }) {
   return (
     <section className={`booking-calendar booking-calendar--${days.length}-days`} aria-label={t('booking.calendar')}>
       <div className="booking-calendar__scroll" tabIndex={0} aria-label={t('booking.timeline')}>
-        <div className="booking-calendar__grid">
+        <div className="booking-calendar__grid" style={{ gridTemplateRows: `56px ${Math.max(320, (endMinute - startMinute) / 30 * 32)}px` }}>
           <div className="booking-calendar__corner">{t('booking.gmt')}</div>
           {days.map((day) => <div className={`booking-calendar__day-heading${dateKey(day) === dateKey(today) ? ' is-today' : ''}`} key={dateKey(day)}>
             <span>{formatDate(day, language, { weekday: 'short' })}</span><strong>{day.getDate()}</strong>
           </div>)}
           <div className="booking-time-axis" aria-hidden="true">{Array.from({ length: Math.ceil((endMinute - startMinute) / 60) + 1 }, (_, index) => <span key={index} style={{ top: `${Math.min(index * 60 / (endMinute - startMinute), 1) * 100}%` }}>{timeLabel(Math.min(startMinute + index * 60, endMinute))}</span>)}</div>
-          {days.map((day) => <DayColumn key={dateKey(day)} {...{ day, today, duration, selectedSlot, onSelect, t, language, startMinute, endMinute }} events={events.filter((event) => event.date === dateKey(day))} />)}
+          {days.map((day) => <DayColumn key={dateKey(day)} {...{ day, today, duration, selectedSlot, heldSlot, onSelect, t, language, startMinute, endMinute }} ownBookings={ownBookings.filter(b => b.date === dateKey(day))} events={events.filter((event) => event.date === dateKey(day))} />)}
         </div>
       </div>
     </section>

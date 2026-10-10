@@ -69,7 +69,7 @@ export default function useBookingFlow(language) {
       const body = { ...slotInterval(slot), moduleKey }, signature = JSON.stringify(body)
       if (!requestKeys.current.has(signature)) requestKeys.current.set(signature, crypto.randomUUID())
       const result = await customerApi.acquire({ ...body, idempotencyKey: requestKeys.current.get(signature) })
-      setClock(Date.now() + serverOffset.current); setHold(result); finalizeKey.current = crypto.randomUUID(); setRevision(n => n + 1); saveIntent(slot, moduleKey, false); return true
+      setClock(Date.now() + serverOffset.current); setHold(result); finalizeKey.current = crypto.randomUUID(); setRevision(n => n + 1); saveIntent(slot, moduleKey, false); return result
     } catch (err) {
       if (err.status && err.status < 500) requestKeys.current.clear()
       if (err.status === 401) { await restore().catch(() => {}); navigate(`${prefix}/login?returnTo=${encodeURIComponent(`${prefix}/booking`)}`) }
@@ -86,11 +86,11 @@ export default function useBookingFlow(language) {
     } catch (err) { setError(err.status === 401 ? copy.credentials : copy.releaseError); return false }
     finally { pending.current = false; setBusy(false) }
   }
-  const finalize = async form => {
-    if (pending.current || !hold || seconds <= 0) { setError(copy.expired); return false }
+  const finalize = async (form, activeHold = hold) => {
+    if (pending.current || !activeHold || new Date(activeHold.expiresAt).getTime() <= clock) { setError(copy.expired); return false }
     pending.current = true; setBusy(true); setError('')
     try {
-      await customerApi.finalize({ holdId: hold.id, contactName: form.name, contactPhone: form.phone, contactCompany: form.company, customerMessage: form.message, locale: lang, idempotencyKey: finalizeKey.current })
+      await customerApi.finalize({ holdId: activeHold.id, contactName: form.name, contactPhone: form.phone, contactCompany: form.company, customerMessage: form.message, locale: lang, idempotencyKey: finalizeKey.current })
       setHold(null); clearIntent(); setRevision(n => n + 1); return true
     } catch (err) { const expired = ['HOLD_EXPIRED', 'HOLD_NOT_ACTIVE'].includes(err.message); if (expired) { setHold(null); requestKeys.current.clear() } setError(expired ? copy.expired : authError(err, copy)); return false }
     finally { pending.current = false; setBusy(false) }

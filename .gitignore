@@ -1,6 +1,16 @@
 node_modules/
-docs/booking-phase1c-browser/*.png
-docs/booking-phase1c1-browser/*.png
+.env
+.env.*
+!.env.example
+# Generated browser/test evidence
+docs/*-browser/
+docs/**/*-browser/
+docs/**/screenshots/
+docs/**/test-results/
+docs/**/playwright-report/
+
+# Local generated artifacts
+.local/
 dist/
 .tmp-*/
 *.log

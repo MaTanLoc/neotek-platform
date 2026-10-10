@@ -1,4 +1,6 @@
-import { FEATURES } from '../../../config/features'
+import { useCustomer } from '../../../customer/context'
+import CustomerAccountMenu from './CustomerAccountMenu'
+import { customerInitial } from './customerInitial'
 import { buildSolutionDetailPath } from '../../../config/solutionRoutes'
 import { captureLocaleScroll } from '../../common/SmoothScroll/SmoothScroll'
 import * as Dialog from '@radix-ui/react-dialog'
@@ -217,9 +219,11 @@ export function NeotekNavbar({
   brand = 'NeoTek',
   heroSelector = '[data-neotek-hero], .neotek-hero, .hero',
   heroLogoSrc = '/assets/logo/logo_306x98_w.png',
+  beforeCustomerLogout,
 }) {
   const { t, i18n } = useTranslation()
   const location = useLocation()
+  const { customer } = useCustomer()
   const normalizedPath = location.pathname.replace(/\/+$/, '') || '/'
   const isHomePage = normalizedPath === '/' || normalizedPath === '/en' || normalizedPath === '/vi'
 
@@ -484,11 +488,9 @@ export function NeotekNavbar({
           <div className="neotek-navbar__actions">
             <LanguageDropdown />
 
-            {FEATURES.publicAuth && <a className="neotek-navbar__login" href={localizeHref('/login')}>
-              {t('nav.login')}
-            </a>}
+            <div className="neotek-navbar__auth-slot"><CustomerAccountMenu language={language} beforeLogout={beforeCustomerLogout} /></div>
 
-            <NeotekButton href={localizeHref('/register')} className="neotek-navbar__cta">
+            {!customer && <NeotekButton href={localizeHref('/register')} className="neotek-navbar__cta">
               <span className="neotek-navbar__cta-text">
                 {t('nav.demo')}
               </span>
@@ -498,7 +500,7 @@ export function NeotekNavbar({
                 aria-hidden="true"
                 className="neotek-navbar__cta-arrow"
               />
-            </NeotekButton>
+            </NeotekButton>}
           </div>
 
           <div className="neotek-navbar__mobile-tools">
@@ -507,6 +509,7 @@ export function NeotekNavbar({
                 className="neotek-navbar__menu-button"
                 aria-label={t('nav.openMenu')}
               >
+                {customer && <span className="neotek-navbar__avatar" aria-hidden="true">{customerInitial(customer)}</span>}
                 <Menu size={20} aria-hidden="true" />
               </Dialog.Trigger>
 
@@ -516,7 +519,9 @@ export function NeotekNavbar({
                 <Dialog.Content
                   className="neotek-navbar__dialog"
                   aria-label={t('nav.mobile')}
+                  aria-describedby={undefined}
                 >
+                  <Dialog.Title className="neotek-visually-hidden">{t('nav.mobile')}</Dialog.Title>
                   <div className="neotek-navbar__dialog-header">
                     <a
                       className="neotek-navbar__dialog-brand"
@@ -613,20 +618,15 @@ export function NeotekNavbar({
                   <div className="neotek-navbar__mobile-footer">
                     <LanguageDropdown mobile />
 
-                    {FEATURES.publicAuth && <a
-                      className="neotek-navbar__login neotek-navbar__login--mobile"
-                      href={localizeHref('/login')}
-                    >
-                      {t('nav.login')}
-                    </a>}
+                    <CustomerAccountMenu language={language} mobile beforeLogout={beforeCustomerLogout} />
 
-                    <NeotekButton
+                    {!customer && <NeotekButton
                       href={localizeHref('/register')}
                       className="neotek-navbar__cta neotek-navbar__cta--mobile"
                     >
                       {t('nav.demo')}
                       <ChevronRight size={16} aria-hidden="true" />
-                    </NeotekButton>
+                    </NeotekButton>}
                   </div>
                 </Dialog.Content>
               </Dialog.Portal>
